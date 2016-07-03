@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <reference name="head">
+            <action method="addJs"><script>netresearch/ops/payment.js</script></action>
+        </reference>
+        <reference name="head">
+            <action method="addCss"><stylesheet>css/ops.css</stylesheet></action>
+        </reference>
+        <reference name="payment.method">
+            <block type="core/template" name="ops_iframe" as="ops_iframe" template="ops/iframe.phtml" />
+        </reference>
+    </firecheckout_index_index>
+</layout>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <reference name="before_body_end">
+            <block type="core/template" name="myparcel" template="myparcel/myparcel.js.phtml" />
+        </reference>
+    </firecheckout_index_index>
+</layout>

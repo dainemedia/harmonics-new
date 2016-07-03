@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Affinity Cloud - Bootstrap Navigation
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is Copyright (c) 2014 Affinity Cloud Limited. All Rights Reserved. (http://affinitycloud.co.uk)
+ *
+ * @category    AffinityCloud
+ * @package     AffinityCloud_Page
+ * @copyright   Copyright (c) 2013 Affinity Cloud Limited. (http://affinitycloud.co.uk)
+ */
+-->
+<config>
+    <modules>
+        <AffinityCloud_Page>
+            <active>true</active>
+            <codePool>local</codePool>
+        </AffinityCloud_Page>
+    </modules>
+</config>

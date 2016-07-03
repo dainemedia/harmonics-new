@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <reference name="head">
+            <action method="addCss"><stylesheet>css/vaimo/klarna/checkout.css</stylesheet></action>
+            <action method="addCss"><stylesheet>css/vaimo/klarna/checkout_osc.css</stylesheet></action>
+            <action method="addJs"><script>vaimo/klarna/klarna.js</script></action>
+            <!--
+            <action method="addJs"><script>klarnaselection.js</script></action>
+
+            <action method="addJs"><script>klarna.min.js</script></action>
+            <action method="addJs"><script>klarna.lib.js</script></action>
+            <action method="addJs"><script>checkout/all.js</script></action>
+            -->
+            <block type="page/html_head" name="klarna_head" as="klarna_head" template="vaimo/klarna/checkout/header.phtml" />
+        </reference>
+        <reference name="content">
+            <block type="klarna/checkout_top" after="-" name="klarna_checkout_top" as="klarna_checkout_top" template="vaimo/klarna/checkout/top.phtml" />
+        </reference>
+    </firecheckout_index_index>
+</layout>

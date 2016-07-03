@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <reference name="head">
+            <action method="addItem"><type>skin_js</type><name>js/tig/postcode/onepage.js</name></action>
+            <action method="addItem"><type>skin_css</type><name>css/tig/postcode/onepage.css</name></action>
+        </reference>
+        <reference name="checkout.onepage.billing">
+            <action method="setTemplate"><template>tm/firecheckout/tig/billing.phtml</template></action>
+        </reference>
+        <reference name="checkout.onepage.shipping">
+            <action method="setTemplate"><template>tm/firecheckout/tig/shipping.phtml</template></action>
+        </reference>
+    </firecheckout_index_index>
+</layout>

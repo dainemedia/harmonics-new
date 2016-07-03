@@ -1,0 +1,114 @@
+<?php
+$quote = Mage::getSingleton('adminhtml/session_quote')->getQuote();
+$order = Mage::getSingleton('adminhtml/session_quote')->getOrder();
+
+// $quote->getStoreId()
+$useCalendar = Mage::getStoreConfig('firecheckout/delivery_date/use_calendar');
+$useRange    = Mage::getStoreConfig('firecheckout/delivery_date/use_time_range');
+
+if (!$useCalendar && !$useRange) :
+    return;
+endif;
+
+$helper = Mage::helper('firecheckout/deliverydate');
+?>
+
+<div id="shipping_form_delivery_date" class="box-right">
+    <div class="entry-edit">
+        <div class="entry-edit-head">
+            <h4 class="fieldset-legend head-shipping-method icon-head">
+                <?php if ($useCalendar && $useRange): ?>
+                    <?php echo $this->__('Delivery Date and Time') ?>
+                <?php elseif ($useCalendar): ?>
+                    <?php echo $this->__('Delivery Date') ?>
+                <?php else: ?>
+                    <?php echo $this->__('Delivery Time') ?>
+                <?php endif; ?>
+            </h4>
+        </div>
+        <div class="fieldset">
+            <table cellspacing="0" class="form-list">
+                <tbody>
+                <?php if ($useCalendar) : ?>
+                    <tr>
+                        <td class="label"><label for="delivery_date"><?php echo $this->__('Delivery Date') ?></label></td>
+                        <td class="value">
+                            <div class="v-fix delivery-date">
+                                <?php
+                                    // $date = new Zend_Date($quote->getFirecheckoutDeliveryDate(), 'yyyy-MM-dd');
+                                    // $format = Mage::app()->getLocale()->getDateFormat(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT);
+                                    // $formatted = $date->toString($format);
+
+                                    $date = strtotime($quote->getFirecheckoutDeliveryDate());
+                                    if (empty($date)) {
+                                        $date = null; // magento 1.5 fix
+                                    }
+                                    $formatted = Mage::app()->getLocale()
+                                        ->date($date, null, null, false)
+                                        ->toString(Mage::app()->getLocale()->getDateFormat(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT));
+                                ?>
+                                <input type="text" class="input-text" value="<?php echo $formatted; ?>" id="delivery_date" name="delivery_date[date]" />
+                                <img title="Select Date" id="delivery_date_button" class="v-middle" alt="" src="<?php echo $this->getSkinUrl("images/calendar.gif", array('_area' => 'frontend'));?> "/><br/>
+                                <label for="delivery_date"><small><?php echo $this->__("Example: %s", '{{date}}') ?></small></label>
+                            </div>
+                        </td>
+                    </tr>
+                <?php endif; ?>
+                <?php if ($useRange) : ?>
+                    <tr>
+                        <td class="label"><label for="delivery_time"><?php echo $this->__('Delivery Time') ?></label></td>
+                        <td class="value">
+                            <div class="v-fix delivery-time">
+                                <select name="delivery_date[time]" id="delivery_time">
+                                    <option value=""></option>
+                                    <?php
+                                    $value = $quote->getFirecheckoutDeliveryTimerange();
+                                    foreach ($helper->getTimeRangeStrings() as $range):
+                                        echo '<option value="'.$range.'"'.($value == $range ? ' selected="selected"' : '').'>'.$range.'</option>';
+                                    endforeach;
+                                    ?>
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+<?php
+$shippingMethods = array();
+if (Mage::getStoreConfig('firecheckout/delivery_date/filter_per_shipping_method')):
+    $shippingMethods = explode(',', Mage::getStoreConfig('firecheckout/delivery_date/shipping_methods'));
+endif;
+?>
+
+var deliveryDate = new FireCheckout.DeliveryDate({
+    startDate         : <?php echo Zend_Json::encode($order->getCreatedAt()); ?>,
+    excludedDates     : <?php echo Zend_Json::encode($helper->getExcludedDateStrings()); ?>,
+    periodicalDates   : <?php echo Zend_Json::encode($helper->getExcludedPeriodicalDateStrings()); ?>,
+    nonPeriodicalDates: <?php echo Zend_Json::encode($helper->getExcludedNonPeriodicalDateStrings()); ?>,
+    excludeWeekend    : <?php echo (int)Mage::getStoreConfig('firecheckout/delivery_date/exclude_weekend'); ?>,
+    useCalendar       : <?php echo (int)$useCalendar ?>,
+    weekendDays       : Calendar._TT["WEEKEND"],
+    ifFormat          : <?php echo Mage::helper('core')->jsonEncode($helper->getCalendarDateFormat()) ?>,
+    shippingMethods   : <?php echo Zend_Json::encode($shippingMethods) ?>,
+    todayOffset       : <?php echo (int)Mage::getStoreConfig('firecheckout/delivery_date/date_offset') ?>
+});
+
+if (typeof order === 'object') {
+    order.loadAreaResponseHandler = order.loadAreaResponseHandler.wrap(
+        function(original, response) {
+            original(response);
+            $$('input[name="order[shipping_method]"]').each(function(el) {
+                el.observe('click', function() {
+                    deliveryDate.toggleDisplay(this.value);
+                });
+            });
+        }
+    );
+}
+</script>

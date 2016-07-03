@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout>
+    <firecheckout_index_index>
+        <reference name="head">
+            <action method="addItem"><type>js</type><name>amasty/amdeliverydate/deliverydate.js</name></action>
+        </reference>
+    </firecheckout_index_index>
+</layout>

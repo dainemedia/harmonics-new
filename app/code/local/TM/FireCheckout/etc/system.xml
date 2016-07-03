@@ -1,0 +1,922 @@
+<?xml version="1.0"?>
+<config>
+    <tabs>
+        <templates_master>
+            <label>Templates-master</label>
+            <sort_order>195</sort_order>
+        </templates_master>
+    </tabs>
+    <sections>
+        <firecheckout translate="label" module="firecheckout">
+            <label>Fire Checkout</label>
+            <tab>templates_master</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>640</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <general translate="label" module="core">
+                    <label>General</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>10</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <enabled translate="label" module="core">
+                            <label>Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </enabled>
+                        <title translate="label" module="cms">
+                            <label>Page Title</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </title>
+                        <layout translate="label" module="core">
+                            <label>Layout</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>firecheckout/system_config_source_layout</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </layout>
+                        <registration_mode translate="label" module="firecheckout">
+                            <label>Registration mode</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>firecheckout/system_config_source_registrationMode</source_model>
+                            <sort_order>15</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </registration_mode>
+                        <redirect_to_checkout translate="label" module="firecheckout">
+                            <label>Redirect to firecheckout after adding an item to the shopping cart</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </redirect_to_checkout>
+
+                        <heading_shipping translate="label">
+                            <label>Advanced shipping settings</label>
+                            <frontend_model>adminhtml/system_config_form_field_heading</frontend_model>
+                            <sort_order>35</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </heading_shipping>
+                        <shipping_method translate="label" module="firecheckout">
+                            <label>Default Shipping Method</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>firecheckout/system_config_source_shipping_allmethods</source_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </shipping_method>
+                        <shipping_method_code translate="label" module="firecheckout">
+                            <comment>Use this field to enter shipping code, if you are not able to find it in previous selectbox.</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>41</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </shipping_method_code>
+                        <country translate="label" module="firecheckout">
+                            <label>Default Country</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_country</source_model>
+                            <sort_order>45</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </country>
+                        <hide_shipping_if_free translate="label" module="firecheckout">
+                            <label>Hide Other Shipping Methods if Free is Available</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </hide_shipping_if_free>
+                        <shipping_address translate="label" module="firecheckout">
+                            <label>Show Shipping Address Form</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>55</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </shipping_address>
+                        <shipping_address_checkbox_state translate="label" module="firecheckout">
+                            <label>Ship to the same address checkbox is checked by default</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <depends><shipping_address>1</shipping_address></depends>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </shipping_address_checkbox_state>
+
+                        <heading_payment translate="label">
+                            <label>Advanced payment settings</label>
+                            <frontend_model>adminhtml/system_config_form_field_heading</frontend_model>
+                            <sort_order>80</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </heading_payment>
+                        <payment_method translate="label" module="firecheckout">
+                            <label>Default Payment Method</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>firecheckout/system_config_source_payment_allmethods</source_model>
+                            <sort_order>85</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </payment_method>
+                        <paypalexpress_register translate="label" module="firecheckout">
+                            <label>Register customer during Paypal Express checkout if prompted</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>90</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </paypalexpress_register>
+
+                        <heading_fields translate="label">
+                            <label>Additional fields setup</label>
+                            <frontend_model>adminhtml/system_config_form_field_heading</frontend_model>
+                            <sort_order>110</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </heading_fields>
+                        <newsletter_checkbox translate="label" module="firecheckout">
+                            <label>Show Subscribe to Newsletter Checkbox</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>115</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </newsletter_checkbox>
+                        <newsletter_checkbox_state translate="label" module="firecheckout">
+                            <label>Newsletter checkbox is checked by default</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <depends><newsletter_checkbox>1</newsletter_checkbox></depends>
+                            <sort_order>116</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </newsletter_checkbox_state>
+                        <comment translate="label" module="firecheckout">
+                            <label>Show Comment Field</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>125</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </comment>
+                        <discount translate="label" module="firecheckout">
+                            <label>Show Discount Coupon Field</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>130</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </discount>
+                        <giftcard translate="label comment" module="firecheckout">
+                            <label>Show Giftcard Field</label>
+                            <comment>Works with Magento Enterprise/Pro Versions Only</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>135</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </giftcard>
+                        <order_review>
+                            <label>Show Address Review Block</label>
+                            <comment>Show address review block, inside checkout review section. Useful for EU countries</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>140</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </order_review>
+                    </fields>
+                </general>
+                <additional_content>
+                    <label>Additional content</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>15</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <top>
+                            <label>Above form</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>firecheckout/system_config_source_cmsBlock</source_model>
+                            <sort_order>160</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </top>
+                        <bottom>
+                            <label>Below form</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>firecheckout/system_config_source_cmsBlock</source_model>
+                            <sort_order>170</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </bottom>
+                        <reviewtable_after>
+                            <label>Below checkout review table</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>firecheckout/system_config_source_cmsBlock</source_model>
+                            <sort_order>180</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </reviewtable_after>
+                    </fields>
+                </additional_content>
+                <geo_ip translate="label">
+                    <label>GeoIP</label>
+                    <comment><![CDATA[If you would like to use more accurate database, use the <a href='https://www.maxmind.com/en/download_files'>paid versions of the same files</a>]]></comment>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>20</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <country translate="label">
+                            <label>Enable Country Detection</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </country>
+                        <country_file translate="label comment">
+                            <label>GeoIp filename</label>
+                            <comment><![CDATA[<a href='http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz' title='Download GeoIP database'>Download</a> and unzip file under the 'MAGETO_ROOT/lib/MaxMind/GeoIP/data' folder if you don't have it]]></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>2</sort_order>
+                            <depends>
+                                <country>1</country>
+                            </depends>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </country_file>
+                        <city translate="label">
+                            <label>Enable Country, City, Postcode detection</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </city>
+                        <city_file translate="label comment">
+                            <label>GeoCity filename</label>
+                            <comment><![CDATA[<a href='http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz' title='Download GeoCity database'>Download</a> and unzip file under the 'MAGETO_ROOT/lib/MaxMind/GeoIP/data' folder if you don't have it]]></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>21</sort_order>
+                            <depends>
+                                <city>1</city>
+                            </depends>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </city_file>
+                    </fields>
+                </geo_ip>
+                <address_form_status translate="label comment">
+                    <label>Address Form Fields</label>
+                    <comment>Before changing some of the fields, be sure that your payment/shipping provider does not require them</comment>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>30</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <company translate="label" module="checkout">
+                            <label>Company</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>firecheckout/system_config_source_formFieldOption</source_model>
+                            <backend_model>firecheckout/system_config_backend_address_form_status</backend_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </company>
+                        <street1 translate="label" module="checkout">
+                            <label>Address</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>firecheckout/system_config_source_formFieldOption</source_model>
+                            <backend_model>firecheckout/system_config_backend_address_form_status</backend_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </street1>
+                        <postcode translate="label comment" module="checkout">
+                            <label>Zip/Postal Code</label>
+                            <comment><![CDATA[See the Postal Code configuration at System > Configuration > General > Countries Options]]></comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>firecheckout/system_config_source_formFieldOption</source_model>
+                            <backend_model>firecheckout/system_config_backend_address_form_status</backend_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </postcode>
+                        <city translate="label" module="checkout">
+                            <label>City</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>firecheckout/system_config_source_formFieldOption</source_model>
+                            <backend_model>firecheckout/system_config_backend_address_form_status</backend_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </city>
+                        <country_id translate="label" module="checkout">
+                            <label>Country</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>firecheckout/system_config_source_formFieldOption</source_model>
+                            <backend_model>firecheckout/system_config_backend_address_form_status</backend_model>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </country_id>
+                        <region translate="label comment" module="checkout">
+                            <label>State/Province</label>
+                            <comment><![CDATA[See the Region configuration at System > Configuration > General > States Options]]></comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>firecheckout/system_config_source_formFieldOption</source_model>
+                            <backend_model>firecheckout/system_config_backend_address_form_status</backend_model>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </region>
+                        <telephone translate="label" module="checkout">
+                            <label>Telephone</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>firecheckout/system_config_source_formFieldOption</source_model>
+                            <backend_model>firecheckout/system_config_backend_address_form_status</backend_model>
+                            <sort_order>70</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </telephone>
+                        <fax translate="label" module="checkout">
+                            <label>Fax</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>firecheckout/system_config_source_formFieldOption</source_model>
+                            <backend_model>firecheckout/system_config_backend_address_form_status</backend_model>
+                            <sort_order>80</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </fax>
+                    </fields>
+                </address_form_status>
+                <address_form_order translate="label comment">
+                    <label>Address Form Fields Sort Order</label>
+                    <!-- <comment><![CDATA[To place the fields in one row, set their order values in continuous chain: 1,2 or 12,13 or 20,21</br>To place fields in separate rows break the order values chain: 1,3 or 12,18 or 20,30]]></comment> -->
+                    <frontend_type>text</frontend_type>
+                    <frontend_model>firecheckout/adminhtml_system_config_form_fieldset_AddressFormOrder</frontend_model>
+                    <sort_order>32</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <name translate="label" module="customer">
+                            <label>Name</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </name>
+                        <email translate="label" module="customer">
+                            <label>Email</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </email>
+                        <company translate="label" module="checkout">
+                            <label>Company</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </company>
+                        <street1 translate="label" module="checkout">
+                            <label>Address</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </street1>
+                        <vat_id translate="label" module="customer">
+                            <label>VAT Number</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>45</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </vat_id>
+                        <postcode translate="label" module="checkout">
+                            <label>Zip/Postal Code</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </postcode>
+                        <city translate="label" module="checkout">
+                            <label>City</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </city>
+                        <country_id translate="label" module="checkout">
+                            <label>Country</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>70</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </country_id>
+                        <region translate="label" module="checkout">
+                            <label>State/Province</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>80</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </region>
+                        <telephone translate="label" module="checkout">
+                            <label>Telephone</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>90</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </telephone>
+                        <fax translate="label" module="checkout">
+                            <label>Fax</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>100</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </fax>
+                        <dob translate="label" module="customer">
+                            <label>Date of Birth</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>110</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </dob>
+                        <gender translate="label" module="customer">
+                            <label>Gender</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>120</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </gender>
+                        <taxvat translate="label" module="customer">
+                            <label>Tax/VAT number</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>130</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </taxvat>
+                    </fields>
+                </address_form_order>
+                <address_verification translate="label">
+                    <label>Usps Address Verification (United States addresses only)</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>33</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <enabled translate="label" module="core">
+                            <label>Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </enabled>
+                    </fields>
+                </address_verification>
+                <ajax translate="label comment">
+                    <label>Ajax save and reload rules</label>
+                    <frontend_type>text</frontend_type>
+                    <frontend_class>complex</frontend_class>
+                    <sort_order>35</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <save type="group" translate="label comment">
+                            <label>Save rules</label>
+                            <comment><![CDATA[Select the fields which should cause the ajax request to save the section.<br/><span style='color: #f00'>Do not overuse this options:</span> the more fields you will select - the more ajax requests will be done during form filling.]]></comment>
+                            <frontend_type>text</frontend_type>
+                            <frontend_model>firecheckout/adminhtml_system_config_form_fieldset_expanded</frontend_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <sort_order>10</sort_order>
+                            <fields>
+                                <billing translate="label">
+                                    <label>Billing Address</label>
+                                    <config_path>firecheckout/ajax_save/billing</config_path>
+                                    <frontend_type>multiselect</frontend_type>
+                                    <source_model>firecheckout/system_config_source_ajax_fields_address_billing</source_model>
+                                    <sort_order>10</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <can_be_empty>1</can_be_empty>
+                                </billing>
+                                <shipping translate="label">
+                                    <label>Shipping Address</label>
+                                    <config_path>firecheckout/ajax_save/shipping</config_path>
+                                    <frontend_type>multiselect</frontend_type>
+                                    <source_model>firecheckout/system_config_source_ajax_fields_address_shipping</source_model>
+                                    <sort_order>20</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <can_be_empty>1</can_be_empty>
+                                </shipping>
+                            </fields>
+                        </save>
+                        <reload type="group" translate="label">
+                            <label>Section dependencies</label>
+                            <frontend_type>text</frontend_type>
+                            <frontend_model>firecheckout/adminhtml_system_config_form_fieldset_expanded</frontend_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <sort_order>20</sort_order>
+                            <fields>
+                                <payment-method translate="label comment tooltip">
+                                    <label>Payment methods depends on</label>
+                                    <comment><![CDATA[Default Values: None]]></comment>
+                                    <tooltip><![CDATA[1. Add order total, if you are using min/max order total option to filter available payment methods<br/>2. Add billing address if you are using allowed countries option]]></tooltip>
+                                    <config_path>firecheckout/ajax_reload/payment-method</config_path>
+                                    <frontend_type>multiselect</frontend_type>
+                                    <source_model>firecheckout/system_config_source_ajax_sections_payment</source_model>
+                                    <sort_order>10</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <can_be_empty>1</can_be_empty>
+                                </payment-method>
+                                <shipping-method translate="label comment tooltip">
+                                    <label>Shipping methods depends on</label>
+                                    <comment><![CDATA[Default Values: Cart contents, Shipping Address]]></comment>
+                                    <tooltip><![CDATA[1. Add order total, if you are using min/max order total option to filter available shipping methods<br/>2. Add coupon code, if you have coupons for shipping price]]></tooltip>
+                                    <config_path>firecheckout/ajax_reload/shipping-method</config_path>
+                                    <frontend_type>multiselect</frontend_type>
+                                    <source_model>firecheckout/system_config_source_ajax_sections_shipping</source_model>
+                                    <sort_order>20</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <can_be_empty>1</can_be_empty>
+                                </shipping-method>
+                                <review translate="label comment tooltip">
+                                    <label>Order total (Review) depends on</label>
+                                    <comment><![CDATA[Default Values: Shipping Method]]></comment>
+                                    <tooltip><![CDATA[1. Add the shipping address if you are using tax rate or discount for some addresses<br/>2. Add payment method, if you are using discount/fee for some of the payment methods]]></tooltip>
+                                    <config_path>firecheckout/ajax_reload/review</config_path>
+                                    <frontend_type>multiselect</frontend_type>
+                                    <source_model>firecheckout/system_config_source_ajax_sections_review</source_model>
+                                    <sort_order>30</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>1</show_in_store>
+                                    <can_be_empty>1</can_be_empty>
+                                </review>
+                            </fields>
+                        </reload>
+                    </fields>
+                </ajax>
+                <agreements translate="label" module="checkout">
+                    <label>Terms and Conditions</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>40</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <output translate="label" module="firecheckout">
+                            <label>Output Type</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>firecheckout/system_config_source_agreementOutput</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </output>
+                        <agree_text>
+                            <label>Agree text in popup window</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>30</sort_order>
+                            <depends>
+                                <output>minimal</output>
+                            </depends>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </agree_text>
+                    </fields>
+                </agreements>
+                <mobile translate="label" module="firecheckout">
+                    <label>Firecheckout on Mobile Devices</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>50</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <enabled translate="label" module="core">
+                            <label>Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </enabled>
+                    </fields>
+                </mobile>
+                <taxvat translate="label" module="customer">
+                    <label>Tax/VAT number</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>60</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <validate translate="label" module="firecheckout">
+                            <label>Validate taxvat number</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </validate>
+                        <vies translate="label" module="firecheckout">
+                            <label>Use online VIES validation</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </vies>
+                        <field_names translate="label" module="customer">
+                            <label>Fields to validate</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>firecheckout/system_config_source_vatNumber</source_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </field_names>
+                    </fields>
+                </taxvat>
+                <delivery_date translate="label" module="firecheckout">
+                    <label>Delivery Date and Time</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>70</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <enabled translate="label" module="core">
+                            <label>Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </enabled>
+                        <filter_per_shipping_method translate="label">
+                            <label>Display Mode</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>firecheckout/system_config_source_deliverydate_shippingmethod</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </filter_per_shipping_method>
+                        <shipping_methods translate="label" module="checkout">
+                            <label>Shipping Methods</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <depends><filter_per_shipping_method>1</filter_per_shipping_method></depends>
+                            <source_model>firecheckout/system_config_source_shipping_allmethods</source_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </shipping_methods>
+                        <use_calendar translate="label">
+                            <label>Use Calendar</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>35</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </use_calendar>
+                        <date_offset>
+                            <label>Delivery will be available since order day plus this value</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>37</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </date_offset>
+                        <delivery_processing_end_time translate="label comment">
+                            <label>Delivery processing day ends at</label>
+                            <comment>This option is used to detect first available delivery day</comment>
+                            <frontend_type>time</frontend_type>
+                            <sort_order>38</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </delivery_processing_end_time>
+                        <date_period>
+                            <label>Period in days when delivery will be avaialble, since first available day</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>39</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </date_period>
+                        <exclude_weekend translate="label">
+                            <label>Exclude the Weekend Days</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </exclude_weekend>
+                        <excluded_dates translate="label">
+                            <label>Dates to Exclude</label>
+                            <frontend_model>firecheckout/adminhtml_system_config_form_field_date</frontend_model>
+                            <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </excluded_dates>
+                        <use_time_range translate="label">
+                            <label>Use Time Range</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </use_time_range>
+                        <time_range translate="label">
+                            <label>Time Ranges</label>
+                            <frontend_model>firecheckout/adminhtml_system_config_form_field_timerange</frontend_model>
+                            <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+                            <sort_order>70</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </time_range>
+                    </fields>
+                </delivery_date>
+                <shopping_cart translate="label" module="checkout">
+                    <label>Shopping Cart</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>80</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <editable translate="label comment" module="firecheckout">
+                            <label>Allow to edit shopping cart contents</label>
+                            <comment>We recommend to use 2columns layout when using this option. See the General options section.</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </editable>
+                        <image translate="label comment" module="firecheckout">
+                            <label>Show product image</label>
+                            <comment>We recommend to use 2columns layout when using this option. See the General options section.</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </image>
+                        <image_width translate="label" module="sales">
+                            <label>Width</label>
+                            <depends><image>1</image></depends>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </image_width>
+                        <image_height translate="label" module="sales">
+                            <label>Height</label>
+                            <depends><image>1</image></depends>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>31</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </image_height>
+                        <name_as_link translate="label" module="firecheckout">
+                            <label>Show product name as link</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </name_as_link>
+                        <short_description translate="label" module="firecheckout">
+                            <label>Show product short description</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </short_description>
+                        <short_description_length translate="label" module="firecheckout">
+                            <label>Description Excerpt Length</label>
+                            <depends><short_description>1</short_description></depends>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>51</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </short_description_length>
+                    </fields>
+                </shopping_cart>
+            </groups>
+        </firecheckout>
+    </sections>
+</config>

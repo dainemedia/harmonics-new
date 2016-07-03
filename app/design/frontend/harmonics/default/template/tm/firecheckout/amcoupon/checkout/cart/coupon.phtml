@@ -1,0 +1,75 @@
+<div id="coupon-discount" class="firecheckout-section">
+    <div class="block-title"><span><?php echo $this->__('Discount Codes') ?></span></div>
+    <div class="discount-form" id="discount-code">
+        <?php
+            echo $this->getMessagesBlock()->getGroupedHtml();
+            $this->getMessagesBlock()->getMessageCollection()->clear();
+        ?>
+        <label for="coupon_code"><?php echo $this->__('Enter your coupon code if you have any.') ?></label>
+        <div class="input-box">
+            <div class="input-field-wrapper">
+                <input class="input-text" id="coupon-code" name="coupon[code]" value="" />
+            </div>
+            <button type="button" title="<?php echo $this->__('Apply Coupon') ?>" class="button" id="coupon-apply" value="<?php echo $this->__('Apply Coupon') ?>"><span><span><?php echo $this->__('Apply Coupon') ?></span></span></button>
+        </div>
+
+        <?php if ($this->getAppliedCoupons()): ?>
+            <strong><?php echo $this->__('Applied Coupons'); ?></strong>
+            <table border="0" width="100%" cellpadding="4" cellspacing="0" style="padding: 3px 5px 0 0;">
+            <?php $couponCnt = 0; ?>
+            <?php foreach ($this->getAppliedCoupons() as $coupon): ?>
+                <tr style="padding-bottom: 3px;">
+                    <td><?php echo $coupon; ?></td>
+                    <td style="text-align: right;">
+                        <a href="javascript:void(0);" title="<?php echo $coupon; ?>" class="coupon-cancel"><?php echo $this->__('Cancel'); ?></a>
+                    </td>
+                </tr>
+                <?php $couponCnt++; ?>
+            <?php endforeach; ?>
+            </table>
+        <?php endif; ?>
+    </div>
+    <script type="text/javascript">
+    //<![CDATA[
+    $('coupon-apply') && $('coupon-apply').observe('click', function(e) {
+        var code = $('coupon-code');
+        if (!code.value.length) {
+            code.addClassName('required-entry');
+            Validation.validate(code);
+            code.removeClassName('required-entry');
+            return;
+        }
+        //$('coupon-remove').value = "0";
+        checkout.update(checkout.urls.coupon, {
+            'review': 1
+        });
+    });
+    $$('.coupon-cancel').each(function(el) {
+        el.observe('click', function(e) {
+            //$('coupon-remove').value = "1";
+            var code = $(this).readAttribute('title');
+            checkout.update(checkout.urls.coupon, {
+                'amcoupon_code_cancel': code,
+                'review': 1
+            });
+        })
+    });
+    $('coupon-code').observe('keydown', function(e) {
+        if (e.keyCode != 13) {
+            return;
+        }
+        var code = $('coupon-code');
+        if (!code.value.length) {
+            code.addClassName('required-entry');
+            Validation.validate(code);
+            code.removeClassName('required-entry');
+            return;
+        }
+        //$('coupon-remove').value = "0";
+        checkout.update(checkout.urls.coupon, {
+            'review': 1
+        });
+    });
+    //]]>
+    </script>
+</div>

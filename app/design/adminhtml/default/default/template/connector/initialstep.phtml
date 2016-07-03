@@ -1,0 +1,59 @@
+<?php
+//version 100
+?>
+<?php
+$store = Mage::getModel('core/store')->load(Mage_Core_Model_App::DISTRO_STORE_ID);
+$rootId = $store->getRootCategoryId();
+
+?>
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td><h3 class="icon-head"><?php echo Mage::helper('microbiz_connector')->__('Microbiz POS Plugin Install') ?></h3></td>
+        </tr>
+    </table>
+</div>
+<div class="entry-edit">
+    <div class="entry-edit-head collapseable">
+        <a>Microbiz POS Plugin Install</a>
+    </div>
+    <fieldset id="connector_settings" class="config collapseable" style="">
+        <legend>Microbiz POS Plugin Install</legend>
+        <table cellspacing="50" cellpadding="50' class="form-list">
+        <colgroup class="label"></colgroup>
+        <colgroup class="value"></colgroup>
+        <colgroup class="scope-label"></colgroup>
+        <colgroup class=""></colgroup>
+        <tbody>
+        <tr>
+            <?php
+            // $signUpUrl = 'http://localhost/InstanceAutomation/index.php/NewInstance?id=RXCTY125RE54W&plan=yearly';
+            //$signUpUrl = 'http://ktc13.ktree.org/magento/index.php/microbiz-cloud-pos';
+            //$signUpUrl = 'http://162.243.82.240/microbiz/index.php/microbiz-cloud-pos';
+	      $signUpUrl = 'https://microbiz.com/microbiz-cloud-pos';
+            ?>
+            <div class="mbiz_signup" style="align:center;">
+                <button class="mbiz_pos_signup" action_url="<?php echo $signUpUrl ?>" value="Sign Up for Microbiz Cloud">Sign Up for Microbiz Cloud</button>
+            </div>
+        </tr>
+        <br />
+        <tr>
+            <div class="mbiz_signin" style="align:center;">
+                <button class="mbiz_pos_signin" action_url="<?php echo $this->getUrl('*/*/mbizinstallsignin') ?>" value="I already have a Microbiz Cloud Store">I already have a Microbiz Cloud Store</button>
+            </div>
+        </tr>
+        </tbody>
+        </table>
+    </fieldset>
+</div>
+<script>
+    jQuery('.mbiz_pos_signin').live('click',function(){
+        var actionUrl = jQuery('.mbiz_pos_signin').attr('action_url');
+        window.location.href = actionUrl;
+    });
+    jQuery('.mbiz_pos_signup').live('click',function(){
+        var actionUrl = jQuery('.mbiz_pos_signup').attr('action_url');
+        //window.location.href = actionUrl;
+        window.location.href= actionUrl;
+    });
+</script>

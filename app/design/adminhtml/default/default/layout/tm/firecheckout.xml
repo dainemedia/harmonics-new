@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+
+<layout>
+    <adminhtml_system_config_edit>
+        <reference name="head">
+            <action method="addJs"><file>tm/adminhtml/firecheckout/config.js</file></action>
+            <action method="addItem"><type>js_css</type><name>tm/adminhtml/firecheckout/styles.css</name></action>
+
+            <action method="addItem"><type>js_css</type><name>tm/adminhtml/firecheckout/chosen/chosen.css</name></action>
+            <action method="addJs"><script>tm/adminhtml/firecheckout/chosen/chosen.proto.js</script></action>
+            <action method="addJs"><script>tm/adminhtml/firecheckout/chosen.override.js</script></action>
+        </reference>
+    </adminhtml_system_config_edit>
+
+    <adminhtml_sales_order_view>
+        <reference name="content">
+            <block type="core/template" name="sales_order_deliverydate" template="tm/firecheckout/sales/order/view/deliverydate.phtml"/>
+            <block type="core/template" name="sales_order_firecheckout_comment" template="tm/firecheckout/sales/order/view/comment.phtml"/>
+        </reference>
+    </adminhtml_sales_order_view>
+
+    <adminhtml_sales_order_create_index>
+        <reference name="head">
+            <action method="addJs"><file>tm/adminhtml/firecheckout/delivery-date.js</file></action>
+        </reference>
+        <reference name="optional_zip_countries">
+            <action method="setTemplate"><template>tm/firecheckout/directory/js/optional_zip_countries.phtml</template></action>
+        </reference>
+
+        <update handle="firecheckout_additional_block"/>
+        <reference name="firecheckout_additional">
+            <block type="core/template" name="sales_order_deliverydate" template="tm/firecheckout/sales/order/edit/deliverydate.phtml"/>
+            <block type="core/template" name="sales_order_firecheckout_comment" template="tm/firecheckout/sales/order/edit/comment.phtml" after="-"/>
+        </reference>
+    </adminhtml_sales_order_create_index>
+
+    <adminhtml_sales_order_create_load_block_data>
+        <update handle="firecheckout_additional_block"/>
+        <reference name="firecheckout_additional">
+            <block type="core/template" name="sales_order_deliverydate" template="tm/firecheckout/sales/order/edit/deliverydate.phtml"/>
+            <block type="core/template" name="sales_order_firecheckout_comment" template="tm/firecheckout/sales/order/edit/comment.phtml" after="-"/>
+        </reference>
+    </adminhtml_sales_order_create_load_block_data>
+
+    <firecheckout_additional_block>
+        <reference name="data">
+            <action method="setTemplate"><template>tm/firecheckout/sales/order/create/data.phtml</template></action>
+            <block type="core/text_list" name="firecheckout_additional" as="firecheckout_additional"/>
+        </reference>
+    </firecheckout_additional_block>
+</layout>

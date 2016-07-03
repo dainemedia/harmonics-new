@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <update handle="irvine_seino_after_shipping_methods"/>
+    </firecheckout_index_index>
+    <firecheckout_index_updatecheckout>
+        <update handle="irvine_seino_after_shipping_methods"/>
+    </firecheckout_index_updatecheckout>
+    <irvine_seino_after_shipping_methods>
+        <reference name="shipping.methods.after">
+            <block type="core/template" name="irvine.seino" template="seino/seino.phtml">
+                <block type="seino/seino" name="seino.seino">
+                    <block type="seino/seino_form" name="seino.form"></block>
+                </block>
+            </block>
+        </reference>
+    </irvine_seino_after_shipping_methods>
+</layout>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+    <modules>
+        <TM_CheckoutFields>
+            <version>1.3.0</version>
+        </TM_CheckoutFields>
+    </modules>
+
+    <global>
+        <resources>
+            <tm_checkoutfields_setup>
+                <setup>
+                    <module>TM_CheckoutFields</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </tm_checkoutfields_setup>
+        </resources>
+        <blocks>
+            <checkoutfields>
+                <class>TM_CheckoutFields_Block</class>
+            </checkoutfields>
+        </blocks>
+        <models>
+            <checkoutfields>
+                <class>TM_CheckoutFields_Model</class>
+            </checkoutfields>
+            <sales>
+                <rewrite>
+                    <!-- <order_pdf_shipment>TM_CheckoutFields_Model_Order_Pdf_Shipment</order_pdf_shipment> -->
+                    <!-- <order_pdf_invoice>TM_CheckoutFields_Model_Order_Pdf_Invoice</order_pdf_invoice> -->
+                </rewrite>
+            </sales>
+        </models>
+        <helpers>
+            <checkoutfields>
+                <class>TM_CheckoutFields_Helper</class>
+            </checkoutfields>
+        </helpers>
+        <fieldsets>
+            <sales_convert_quote>
+                <tm_field1><to_order>*</to_order></tm_field1>
+                <tm_field2><to_order>*</to_order></tm_field2>
+                <tm_field3><to_order>*</to_order></tm_field3>
+                <tm_field4><to_order>*</to_order></tm_field4>
+                <tm_field5><to_order>*</to_order></tm_field5>
+            </sales_convert_quote>
+            <sales_copy_order>
+                <tm_field1><to_edit>*</to_edit></tm_field1>
+                <tm_field2><to_edit>*</to_edit></tm_field2>
+                <tm_field3><to_edit>*</to_edit></tm_field3>
+                <tm_field4><to_edit>*</to_edit></tm_field4>
+                <tm_field5><to_edit>*</to_edit></tm_field5>
+            </sales_copy_order>
+        </fieldsets>
+    </global>
+
+    <frontend>
+        <layout>
+            <updates>
+                <checkoutfields>
+                    <file>tm/checkoutfields.xml</file>
+                </checkoutfields>
+            </updates>
+        </layout>
+        <translate>
+            <modules>
+                <TM_CheckoutFields>
+                     <files>
+                          <default>TM_CheckoutFields.csv</default>
+                     </files>
+                </TM_CheckoutFields>
+            </modules>
+        </translate>
+        <events>
+            <controller_action_predispatch_firecheckout_index_saveOrder>
+                <observers>
+                    <checkoutfields_save_order_firecheckout>
+                        <class>checkoutfields/observer</class>
+                        <method>setCheckoutFields</method>
+                    </checkoutfields_save_order_firecheckout>
+                </observers>
+            </controller_action_predispatch_firecheckout_index_saveOrder>
+        </events>
+    </frontend>
+
+    <adminhtml>
+        <layout>
+            <updates>
+                <checkoutfields>
+                     <file>tm/checkoutfields.xml</file>
+                </checkoutfields>
+            </updates>
+        </layout>
+        <translate>
+            <modules>
+                <TM_CheckoutFields>
+                    <files>
+                        <default>TM_CheckoutFields.csv</default>
+                    </files>
+                </TM_CheckoutFields>
+            </modules>
+        </translate>
+        <events>
+            <adminhtml_sales_order_create_process_data>
+                <observers>
+                    <checkoutfields>
+                        <class>checkoutfields/observer</class>
+                        <method>adminhtmlAddCheckoutFields</method>
+                    </checkoutfields>
+                </observers>
+            </adminhtml_sales_order_create_process_data>
+        </events>
+    </adminhtml>
+
+    <default>
+        <checkoutfields>
+            <print>
+                <pdf_invoice>1</pdf_invoice>
+                <pdf_packingslip>1</pdf_packingslip>
+            </print>
+            <tm_field1>
+                <status>0</status>
+                <label>Field #1</label>
+                <type>text</type>
+            </tm_field1>
+            <tm_field2>
+                <status>0</status>
+                <label>Field #2</label>
+                <type>text</type>
+            </tm_field2>
+            <tm_field3>
+                <status>0</status>
+                <label>Field #3</label>
+                <type>text</type>
+            </tm_field3>
+            <tm_field4>
+                <status>0</status>
+                <label>Field #4</label>
+                <type>text</type>
+            </tm_field4>
+            <tm_field5>
+                <status>0</status>
+                <label>Field #5</label>
+                <type>text</type>
+            </tm_field5>
+        </checkoutfields>
+    </default>
+</config>

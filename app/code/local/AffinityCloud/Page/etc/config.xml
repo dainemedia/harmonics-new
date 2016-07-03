@@ -1,0 +1,11 @@
+<config>
+	<global>
+        <blocks>
+            <page>
+            	<rewrite>
+                	<html_topmenu>AffinityCloud_Page_Block_Html_Topmenu</html_topmenu>
+            	</rewrite>
+            </page>
+        </blocks>
+	</global>
+</config>

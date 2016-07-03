@@ -1,0 +1,70 @@
+<script type="text/javascript">
+//<![CDATA[
+var quoteBaseGrandTotal = <?php echo (float)$this->getQuoteBaseGrandTotal(); ?>;
+var checkQuoteBaseGrandTotal = quoteBaseGrandTotal;
+var lastPrice;
+//]]>
+</script>
+<div id="payment-method" class="firecheckout-section">
+    <div class="block-title"><span><?php echo $this->__('Payment Method') ?></span><span id="payment-method-reset"><?php echo $this->__('Reset') ?></span></div>
+    <div class="tool-tip" id="payment-tool-tip" style="display:none;">
+        <div class="btn-close"><a href="#" id="payment-tool-tip-close" title="<?php echo $this->__('Close') ?>"><?php echo $this->__('Close') ?></a></div>
+        <div class="tool-tip-content"><img src="<?php echo $this->getSkinUrl('images/cvv.gif') ?>" alt="<?php echo $this->__('Card Verification Number Visual Reference') ?>" title="<?php echo $this->__('Card Verification Number Visual Reference') ?>" /></div>
+    </div>
+    <script type="text/javascript">
+    //<![CDATA[
+        function toggleToolTip(event) {
+            Event.stop(event);
+
+            if(!$('payment-tool-tip')){
+                return;
+            }
+
+            var tooltip        = $('payment-tool-tip'),
+                parent         = tooltip.getOffsetParent(),
+                parentOffset   = parent.cumulativeOffset(),
+                viewportSize   = document.viewport.getDimensions(),
+                viewportOffset = document.viewport.getScrollOffsets(),
+                center         = {
+                    left: viewportSize.width / 2 + viewportOffset.left
+                };
+
+            if ('undefined' === typeof viewportSize.height) {
+                center.top = viewportOffset.top + 100;
+            } else {
+                center.top = viewportSize.height / 2 + viewportOffset.top;
+            }
+
+            var left = center.left - parentOffset.left - 250,
+                top = center.top - parentOffset.top - 150;
+
+            if ((left + 500) > (viewportOffset.left + viewportSize.width)) {
+                left = viewportOffset.left + viewportSize.width - 510;
+            }
+
+            if (top <= viewportOffset.top) {
+                top = viewportOffset.top + 10;
+            }
+
+            tooltip.setStyle({
+                top:  top + 'px',
+                left: left + 'px'
+            });
+            tooltip.toggle();
+        }
+        if($('payment-tool-tip-close')){
+            Event.observe($('payment-tool-tip-close'), 'click', toggleToolTip);
+        }
+        var payment = new Payment('payment-method');
+    //]]>
+    </script>
+    <?php echo $this->getChildChildHtml('methods_additional', '', true, true) ?>
+    <div id="checkout-payment-method-load">
+        <?php echo $this->getChildHtml('methods') ?>
+    </div>
+    <script type="text/javascript">
+    //<![CDATA[
+        payment.currentMethod = "<?php echo $this->getChild('methods')->getSelectedMethodCode() ?>";
+    //]]>
+    </script>
+</div>

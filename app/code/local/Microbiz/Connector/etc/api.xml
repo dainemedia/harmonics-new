@@ -1,0 +1,486 @@
+<config>
+    <api>
+        <resources>
+        	<microbiz_catalog_product>
+                <model>Microbiz_Connector_Model_Product_Api</model>
+                <methods>
+                	<listPartial translate="title" module="catalog">
+                        <title>Retrieve products list including price</title>
+                        <acl>catalog/product/info</acl>
+                	</listPartial>
+					<productsCount translate="title" module="catalog">
+                        <title>Retrieve products count based on filters</title>
+                        <acl>catalog/product/info</acl>
+                	</productsCount>
+					<create translate="title" module="catalog">
+                        <title>Create Product Including config</title>
+						<method>create</method>
+                        <acl>catalog/product/create</acl>
+                	</create>
+					<update translate="title" module="catalog">
+                        <title>Create Product Including config</title>
+						<method>update</method>
+                        <acl>catalog/product/update</acl>
+                	</update>
+                	<listFull translate="title" module="catalog">
+                        <title>Retrieve products list including all attributes (WARNING: VERY SLOW)</title>
+                        <acl>catalog/product/info</acl>
+                	</listFull>
+					<infoFull translate="title" module="catalog">
+                        <title>Retrieve product including all attributes (WARNING: VERY SLOW)</title>
+                        <acl>catalog/product/info</acl>
+                	</infoFull>
+                    <importAllProducts translate="title" module="catalog">
+                        <title>Retrieve product including all attributes (WARNING: VERY SLOW)</title>
+                        <acl>catalog/product/importAllProducts</acl>
+                        <method>importAllProducts</method>
+                	</importAllProducts>
+					<productCreate translate="title" module="catalog">
+                        <title>Create Product in Magento and Storeinventory</title>
+                        <acl>catalog/product/create</acl>
+						<method>productCreate</method>
+                	</productCreate>
+					<productUpdate translate="title" module="catalog">
+                        <title>Update Product in Magento and Storeinventory</title>
+                        <acl>catalog/product/update</acl>
+						<method>productUpdate</method>
+                	</productUpdate>
+                    <getMagProductInventory>
+                        <tile>Getting Magento Product Inventory and Association Ids</tile>
+                        <acl>catalog/product/info</acl>
+                        <method>getMagProductInventory</method>
+                    </getMagProductInventory>
+                    <deleteProduct>
+                        <tile>deleteProduct Magento Productand relations</tile>
+                        <acl>catalog/product/deleteProduct</acl>
+                        <method>deleteProduct</method>
+                    </deleteProduct>
+                    <!--<saveSyncRecords>
+                        <tile>Save Sync Records Magento Products and relations</tile>
+                        <acl>catalog/product/saveSyncRecords</acl>
+                        <method>saveSyncRecords</method>
+                    </saveSyncRecords>-->
+                </methods>
+			</microbiz_catalog_product>
+			<category_microbiz>
+                <model>Microbiz_Connector_Model_Category_Api</model>
+				<title>Category API</title>
+                <acl>catalog/category</acl>
+                <methods>
+                	<tree translate="title" module="catalog">
+                        <title>Retrieve hierarchical tree</title>
+                        <acl>catalog/category/tree</acl>
+                        </tree>
+                </methods>
+            </category_microbiz> 
+            <microbiz_catalog_product_attribute>
+                <model>Microbiz_Connector_Model_Product_Attribute_Api</model>
+                <methods>
+                    <create translate="title" module="catalog">
+						<title>Create new product attribute</title>
+					</create>
+					<update translate="title" module="catalog">
+						<title>Update product attribute</title>
+					</update>
+					<delete translate="title" module="catalog">
+						<title>Delete product attribute</title>
+					</delete>
+					<form translate="title" module="catalog">
+						<title>Form fields for new attribute</title>
+					</form>
+					<addToGroup translate="title" module="catalog">
+						<title>Add attribute to an attribute set/group</title>
+					</addToGroup>
+					<deleteFromGroup translate="title" module="catalog">
+						<title>Remove attribute from an attribute set/group</title>
+					</deleteFromGroup>
+                </methods>
+                <faults module="core">
+                    <attribute_code_already_exists>
+                        <code>102</code>
+                        <message>There already exists an attribute with the given attribute-code.</message>
+                    </attribute_code_already_exists>
+				</faults>
+            </microbiz_catalog_product_attribute>
+            <microbiz_catalog_product_attribute_media>
+                <model>Microbiz_Connector_Model_Product_Attribute_Media_Api</model>
+            </microbiz_catalog_product_attribute_media>
+            <microbiz_catalog_product_attribute_set>
+				<model>Microbiz_Connector_Model_Product_Attribute_Set_Api</model>
+				<methods>
+					<list translate="title" module="catalog">
+						<title>List Attribute Sets</title>
+						<method>items</method>
+					</list>
+				        <products translate="title" module="catalog">
+						<title>List Attribute Set Products</title>
+						<method>products</method>
+					</products>
+					<create translate="title" module="catalog">
+						<title>Create a new Attribute Set</title>
+					</create>
+					<update translate="title" module="catalog">
+						<title>Update an Attribute Set</title>
+					</update>
+					<delete translate="title" module="catalog">
+						<title>Delete an Attribute Set</title>
+					</delete>
+                </methods>
+                <faults module="core">
+                    <set_not_exists>
+                        <code>100</code>
+                        <message>The requested set doesn't exist.</message>
+                    </set_not_exists>
+				</faults>
+			</microbiz_catalog_product_attribute_set>
+			<microbiz_catalog_product_attribute_group translate="title" module="catalog">
+				<title>Attribute Group Functions</title>
+				<model>Microbiz_Connector_Model_Product_Attribute_Group_Api</model>
+				<acl>catalog/product</acl>
+				<methods>
+					<list translate="title" module="catalog">
+						<title>List Attribute Groups (in a certain Attribute Set)</title>
+						<method>items</method>
+					</list>
+					<create translate="title" module="catalog">
+						<title>Create a new Attribute Group</title>
+					</create>
+					<update translate="title" module="catalog">
+						<title>Update an Attribute Group</title>
+					</update>
+					<delete translate="title" module="catalog">
+						<title>Delete an Attribute Group</title>
+					</delete>
+                </methods>
+                <faults module="core">
+                    <group_already_exists>
+                        <code>100</code>
+                        <message>GroupName already exists.</message>
+                    </group_already_exists>
+                    <group_not_exists>
+                        <code>101</code>
+                        <message>Requested Group doesn't exist.</message>
+                    </group_not_exists>
+				</faults>
+			</microbiz_catalog_product_attribute_group>
+        	<customer_microbiz>
+                <model>Microbiz_Connector_Model_Customer_Api</model>
+                <title>Customer API</title>
+                <acl>customer</acl>
+                <methods>
+                    <info translate="title" module="customer">
+                        <title>Retrieve customer data</title>
+                        <acl>customer/info</acl>
+                    </info>
+					<create translate="title" module="customer">
+                        <title>Create Customer</title>
+                        <acl>customer/create</acl>
+                    </create>
+					<infoByEmail translate="title" module="customer">
+                        <title>Retrieve customer data by Email</title>
+                    </infoByEmail>
+                    <customersCount translate="title" module="customer">
+                        <title>Return  Customer Count based on filters</title>
+                        <acl>customer/customersCount</acl>
+                    </customersCount>
+                    <listPartial translate="title" module="customer">
+                        <title>Return  Customer Count based on filters</title>
+                        <acl>customer/customersCount</acl>
+                    </listPartial>
+                    <infoFull translate="title" module="customer">
+                        <title>Return  Customer information based on Array of Ids</title>
+                        <acl>customer/infoFull</acl>
+                    </infoFull>
+                </methods> 
+            </customer_microbiz>
+        	<extendedmbizconnector>
+                <model>extendedmbizconnector/api</model>
+                <title>Ktree ExtendedMbizConnector Api</title>
+                <methods>
+                    <storesList translate="title" module="microbiz_connector">
+                        <title>List of Stores Information</title>
+                        <method>storesList</method>
+                        <acl>extendedmbizconnector/storesList</acl>
+                    </storesList>
+					<extendedMbizApi translate="title" module="microbiz_connector">
+                        <title>create and Update records from Mbiz</title>
+                        <method>extendedMbizApi</method>
+                        <acl>extendedmbizconnector/extendedMbizApi</acl>
+                    </extendedMbizApi>
+					<extendedUpdateInventory translate="title" module="microbiz_connector">
+                        <title>create and Update Inventory records from Mbiz</title>
+                        <method>extendedUpdateInventory</method>
+                        <acl>extendedmbizconnector/extendedUpdateInventory</acl>
+                    </extendedUpdateInventory>
+                    <extendedgetSyncDetails translate="title" module="microbiz_connector">
+                        <title>Modified Fields Information</title>
+                        <method>extendedgetSyncDetails</method>
+                        <acl>extendedmbizconnector/extendedgetSyncDetails</acl>
+                    </extendedgetSyncDetails>
+					<extendedmbizupdateApi translate="title" module="microbiz_connector">
+                        <title>Modified Fields Information</title>
+                        <method>extendedmbizupdateApi</method>
+                        <acl>extendedmbizconnector/extendedmbizupdateApi</acl>
+                    </extendedmbizupdateApi>
+					<saveAttributesetRelation translate="title" module="microbiz_connector">
+                        <title>Attributeset relation</title>
+                        <method>saveAttributesetRelation</method>
+                        <acl>extendedmbizconnector/saveAttributesetRelation</acl>
+                    </saveAttributesetRelation>
+                    <saveAttributeRelation translate="title" module="microbiz_connector">
+                        <title>Attribute relation</title>
+                        <method>saveAttributeRelation</method>
+                        <acl>extendedmbizconnector/saveAttributeRelation</acl>
+                    </saveAttributeRelation>
+                    <updateAttributeSetOnImport translate="title" module="microbiz_connector">
+                        <title>Attributeset Update On Microbiz Import</title>
+                        <method>updateAttributeSetOnImport</method>
+                        <acl>extendedmbizconnector/updateAttributeSetOnImport</acl>
+                    </updateAttributeSetOnImport>
+                    <!-- This code is added by KT174 on 8 april 2014 -->
+                    <saveCategoryRelation translate="title" module="microbiz_connector">
+                        <title>Category relation</title>
+                        <method>mbizSaveCategoryRelation</method>
+                        <acl>extendedmbizconnector/saveCategoryRelation</acl>
+                    </saveCategoryRelation>
+                    <!-- This code is added by KT174 on 8 april 2014 -->
+                    <!-- This code is added by KT174 on 5 may 2014 -->
+                    <saveGiftCardRanges translate="title" module="microbiz_connector">
+                        <title>Gift Card Ranges</title>
+                        <method>mbizSaveGiftCardRanges</method>
+                        <acl>extendedmbizconnector/saveGiftCardRanges</acl>
+                    </saveGiftCardRanges>
+                    <!-- This code is added by KT174 on 5 may 2014 -->
+					<saveProductRelation translate="title" module="microbiz_connector">
+                        <title>Product relation</title>
+                        <method>saveProductRelation</method>
+                        <acl>extendedmbizconnector/saveProductRelation</acl>
+                    </saveProductRelation>
+					<saveCustomerRelation translate="title" module="microbiz_connector">
+                        <title>Customer relation</title>
+                        <method>saveCustomerRelation</method>
+                        <acl>extendedmbizconnector/saveCustomerRelation</acl>
+                    </saveCustomerRelation>
+					<saveCustomerAddressRelation translate="title" module="microbiz_connector">
+                        <title>Customer Address relation</title>
+                        <method>saveCustomerAddressRelation</method>
+                        <acl>extendedmbizconnector/saveCustomerAddressRelation</acl>
+                    </saveCustomerAddressRelation>
+					<setAppSyncStatus translate="title" module="microbiz_connector">
+                        <title>Set App sync Status</title>
+                        <method>setAppSyncStatus</method>
+                        <acl>extendedmbizconnector/setAppSyncStatus</acl>
+                    </setAppSyncStatus>
+					<getTaxClasses translate="title" module="microbiz_connector">
+                        <title>Get Tax Classes</title>
+                        <method>getTaxClasses</method>
+                        <acl>extendedmbizconnector/getTaxClasses</acl>
+                    </getTaxClasses>
+                    <getTaxRules translate="title" module="microbiz_connector">
+                        <title>Get Tax Rules</title>
+                        <method>getTaxRules</method>
+                        <acl>extendedmbizconnector/getTaxRules</acl>
+                    </getTaxRules>
+                    <getOrderDetails translate="title" module="microbiz_connector">
+                        <title>Get Orders Magento</title>
+                        <method>getOrderDetails</method>
+                        <acl>extendedmbizconnector/getOrderDetails</acl>
+                    </getOrderDetails>
+                    <updateAttributeOptions translate="title" module="microbiz_connector">
+                        <title>Update Attibute Options</title>
+                        <method>updateAttributeOptions</method>
+                        <acl>extendedmbizconnector/updateAttributeOptions</acl>
+                    </updateAttributeOptions>
+                    <getCustomerUrl translate="title" module="microbiz_connector">
+                        <title>Get Customer Url</title>
+                        <method>getCustomerUrl</method>
+                        <acl>extendedmbizconnector/getCustomerUrl</acl>
+                    </getCustomerUrl>
+                    <getProductUrl translate="title" module="microbiz_connector">
+                        <title>Get Product Edt/View Url</title>
+                        <method>getProductUrl</method>
+                        <acl>extendedmbizconnector/getProductUrl</acl>
+                    </getProductUrl>
+                    <getOrderUrl translate="title" module="microbiz_connector">
+                        <title>Get Order Edt/View Url</title>
+                        <method>getOrderUrl</method>
+                        <acl>extendedmbizconnector/getOrderUrl</acl>
+                    </getOrderUrl>
+                    <getAdminBaseUrl translate="title" module="microbiz_connector">
+                        <title>Get Admin Base Url</title>
+                        <method>getAdminBaseUrl</method>
+                        <acl>extendedmbizconnector/getAdminBaseUrl</acl>
+                    </getAdminBaseUrl>
+                    <getFrontendBaseUrl translate="title" module="microbiz_connector">
+                        <title>Get Frontend Base Url</title>
+                        <method>getFrontendBaseUrl</method>
+                        <acl>extendedmbizconnector/getFrontendBaseUrl</acl>
+                    </getFrontendBaseUrl>
+                    <updateCompanyCurrency translate="title" module="microbiz_connector">
+                        <title>Update Company Currency for all MicroBiz Stores</title>
+                        <method>updateCompanyCurrency</method>
+                        <acl>extendedmbizconnector/updateCompanyCurrency</acl>
+                    </updateCompanyCurrency>
+                    <getObjectVersionDetails translate="title" module="microbiz_connector">
+                        <title>Get Versions of MicroBiz and Magento based on Object Model</title>
+                        <method>getObjectVersionDetails</method>
+                        <acl>extendedmbizconnector/getObjectVersionDetails</acl>
+                    </getObjectVersionDetails>
+                    <getSkuById translate="title" module="microbiz_connector">
+                        <title>Get Sku of Product</title>
+                        <method>getSkuById</method>
+                        <acl>extendedmbizconnector/getSkuById</acl>
+                    </getSkuById>
+                    <getAttributeSetName translate="title" module="microbiz_connector">
+                        <title>Get AttributeSet name based on Id</title>
+                        <method>getAttributeSetName</method>
+                        <acl>extendedmbizconnector/getAttributeSetName</acl>
+                    </getAttributeSetName>
+                    <getAttributeInformation translate="title" module="microbiz_connector">
+                        <title>Get Attribute information based on Id</title>
+                        <method>getAttributeInformation</method>
+                        <acl>extendedmbizconnector/getAttributeInformation</acl>
+                    </getAttributeInformation>
+                    <updateAttributeData translate="title" module="microbiz_connector">
+                        <title>update Attribute information</title>
+                        <method>updateAttributeData</method>
+                        <acl>extendedmbizconnector/updateAttributeData</acl>
+                    </updateAttributeData>
+                    <getExtensionVersion translate="title" module="microbiz_connector">
+                        <title>get plugin Version information</title>
+                        <method>getExtensionVersion</method>
+                        <acl>extendedmbizconnector/getExtensionVersion</acl>
+                    </getExtensionVersion>
+                    <getAttributesList translate="title" module="microbiz_connector">
+                        <title>Get List of Attributes information</title>
+                        <method>getAttributesList</method>
+                        <acl>extendedmbizconnector/getAttributesList</acl>
+                    </getAttributesList>
+                    <createAttributeMapping translate="title" module="microbiz_connector">
+                        <title>Create New Attribute Mapping with MicroBiz</title>
+                        <method>createAttributeMapping</method>
+                        <acl>extendedmbizconnector/createAttributeMapping</acl>
+                    </createAttributeMapping>
+                    <deleteAttributeMapping translate="title" module="microbiz_connector">
+                        <title>Create New Attribute Mapping with MicroBiz</title>
+                        <method>deleteAttributeMapping</method>
+                        <acl>extendedmbizconnector/deleteAttributeMapping</acl>
+                    </deleteAttributeMapping>
+                    <updateAttributeMapping translate="title" module="microbiz_connector">
+                        <title>Update existing Attribute Mapping with MicroBiz</title>
+                        <method>updateAttributeMapping</method>
+                        <acl>extendedmbizconnector/updateAttributeMapping</acl>
+                    </updateAttributeMapping>
+                    <getMagentoMappings translate="title" module="microbiz_connector">
+                        <title>get list of all apis to MicroBiz</title>
+                        <method>getMagentoMappings</method>
+                        <acl>extendedmbizconnector/getMagentoMappings</acl>
+                    </getMagentoMappings>
+                    <!-- This code is added to check the triggering functionality for the initial load f(x)ns -->
+                    <mbizBeginInitialSync translate="title" module="microbiz_connector">
+                        <title>Create Initial Sync Records</title>
+                        <method>mbizBeginInitialSync</method>
+                        <acl>extendedmbizconnector/mbizBeginInitialSync</acl>
+                    </mbizBeginInitialSync>
+				</methods>
+				<faults>
+                    <store_not_exists>
+                        <code>100</code>
+                        <message>Requested store view not found.</message>
+                    </store_not_exists>
+                    <not_exists>
+                        <code>101</code>
+                        <message>Not exists.</message>
+                    </not_exists>
+					<customer_not_exists>
+                        <code>101</code>
+                        <message>Customer not exists.</message>
+                    </customer_not_exists>
+                    <data_invalid>
+                        <code>102</code>
+                        <message>Invalid data given. Details in error message.</message>
+                    </data_invalid>
+                    <not_deleted>
+                        <code>103</code>
+                        <message>Product not deleted. Details in error message.</message>
+                    </not_deleted>
+                    <product_type_not_exists>
+                        <code>104</code>
+                        <message>Product type is not in allowed types.</message>
+                    </product_type_not_exists>
+                    <product_attribute_set_not_exists>
+                        <code>105</code>
+                        <message>Product attribute set is not existed</message>
+                    </product_attribute_set_not_exists>
+                    <product_attribute_set_not_valid>
+                        <code>106</code>
+                        <message>Product attribute set is not belong catalog product entity type</message>
+                    </product_attribute_set_not_valid>
+                </faults> 
+            </extendedmbizconnector>
+			<storeinventory translate="title" module="microbiz_connector">
+                <title>storeinventory Resource</title>
+                <model>Microbiz_Connector_Model_Storeinventory_Api</model>
+                  <acl>storeinventory</acl>
+                <methods>
+                    
+                    <createMbizInventory translate="title" module="microbiz_connector">
+                        <title>Create storeinventory</title>
+                        <method>createMbizInventory</method>
+                        <acl>storeinventory/createMbizInventory</acl>
+                    </createMbizInventory>
+                    <createProductsInventory translate="title" module="microbiz_connector">
+                        <title>Create Multiple storeinventory</title>
+                        <method>createProductsInventory</method>
+                        <acl>storeinventory/createProductsInventory</acl>
+                    </createProductsInventory>
+                    <infoMbizInventory translate="title" module="microbiz_connector">
+                        <title>Retrieve storeinventory data</title>
+                         <method>infoMbizInventory</method>
+                        <acl>storeinventory/infoMbizInventory</acl>
+                    </infoMbizInventory>
+                    <updateMbizInventory translate="title" module="microbiz_connector">
+                        <title>Update storeinventory data</title>
+                        <method>updateMbizInventory</method>
+                        <acl>storeinventory/updateMbizInventory</acl>
+                    </updateMbizInventory>
+                    <deleteMbizInventory translate="title" module="microbiz_connector">
+                        <title>Delete storeinventory</title>
+                           <method>deleteMbizInventory</method>
+                         <acl>storeinventory/deleteMbizInventory</acl>
+                    </deleteMbizInventory>
+					<reduceMbizInventory translate="title" module="microbiz_connector">
+                        <title>reduce MicroBiz storeinventory</title>
+                           <method>reduceMbizInventory</method>
+                         <acl>storeinventory/reduceMbizInventory</acl>
+                    </reduceMbizInventory>
+					<raiseMbizInventory translate="title" module="microbiz_connector">
+                        <title>raise MicroBiz storeinventory</title>
+                           <method>raiseMbizInventory</method>
+                         <acl>storeinventory/raiseMbizInventory</acl>
+                    </raiseMbizInventory>
+                </methods>
+                <faults module="microbiz_connector">
+                  <!-- module="storeinventory" specifies the module which will be used for translation. -->
+                    <data_invalid> <!-- if we get invalid input data for customers -->
+                        <code>100</code >
+                        <!-- we cannot know all the errors that can appear, their details can be found in error message for call -->
+                        <message>Invalid storeinventory data. Details in error message.</message>
+                    </data_invalid>
+                    <filters_invalid>
+                        <code>101</code >
+                        <message>Invalid filters specified. Details in error message.</message>
+                    </filters_invalid>
+                    <not_exists>
+                        <code>102</code >
+                        <message>storeinventory doesn't exist.</message>
+                    </not_exists>
+                    <not_deleted>
+                        <code>103</code >
+                        <message>storeinventory was not deleted. Details in error message.</message>
+                    </not_deleted>
+                </faults>
+            </storeinventory>
+        </resources>
+    </api>
+</config>

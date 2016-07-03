@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<config>
+    <menu>
+        <system>
+            <children>
+                <iwdall>
+                    <children>
+                        <iwd_productvideo module="iwd_productvideo">
+                            <title>Product Videos</title>
+                            <sort_order>10</sort_order>
+                            <action>iwd_productvideo/video</action>
+                            <children>
+                                <videomanager module="iwd_productvideo">
+                                    <title>Video Manager</title>
+                                    <sort_order>10</sort_order>
+                                    <action>iwd_productvideo/video</action>
+                                </videomanager>
+                                <productmanager module="iwd_productvideo">
+                                    <title>Product Manager</title>
+                                    <sort_order>20</sort_order>
+                                    <action>iwd_productvideo/productvideo</action>
+                                </productmanager>
+                            </children>
+                        </iwd_productvideo>
+                    </children>
+                </iwdall>
+            </children>
+        </system>
+    </menu>
+    <acl>
+        <resources>
+            <all>Allow everything</all>
+            <admin>
+                <children>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <iwd_productvideo translate="title" module="iwd_productvideo">
+                                        <title>Product Video</title>
+                                    </iwd_productvideo>
+                                </children>
+                            </config>
+                            <iwdall>
+                                <children>
+                                    <iwd_productvideo translate="title">
+                                        <title>Product Video</title>
+                                        <children>
+                                            <videomanager>
+                                                <title>Video Manager</title>
+                                            </videomanager>
+                                            <productmanager>
+                                                <title>Product Manager</title>
+                                            </productmanager>
+                                        </children>
+                                    </iwd_productvideo>
+                                </children>
+                            </iwdall>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>

@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author    Marcin Frymark
+ * @email     contact@microbiz.com
+ * @company   Microbiz
+ * @website   www.microbiz.com
+ */
+-->
+<config>
+    <menu>
+        <microbiz_connector>
+            <children>
+
+                <modules_conflict_detector translate="title" module="microbiz_modulesConflictDetector">
+                    <title>Modules Conflict Detector</title>
+                    <sort_order>10</sort_order>
+                    <action>adminhtml/modulesConflictDetector</action>
+                </modules_conflict_detector>
+
+            </children>
+        </microbiz_connector>
+    </menu>
+   <acl>
+        <resources>
+            <admin>
+                <children>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <microbiz_adminNotification translate="title" module="microbiz_modulesConflictDetector">
+                                        <title>Microbiz Notifications</title>
+                                        <sort_order>10</sort_order>
+                                    </microbiz_adminNotification>
+                                </children>
+                            </config>
+                            <microbiz_tools translate="title" module="microbiz_modulesConflictDetector">
+                                <title>Microbiz Tools</title>
+                                <sort_order>89</sort_order>
+                                <children>
+                                    <modules_conflict_detector>
+                                        <title>Modules Conflict Detector</title>
+                                        <sort_order>10</sort_order>
+                                    </modules_conflict_detector>
+                                </children>
+                            </microbiz_tools>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>    
+</config>

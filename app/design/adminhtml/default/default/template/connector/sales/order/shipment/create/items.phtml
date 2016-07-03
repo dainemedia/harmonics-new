@@ -1,0 +1,299 @@
+<?php
+//version 100
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     default_default
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+
+<div class="grid np">
+  <div class="hor-scroll">
+    <table cellspacing="0" class="data order-tables">
+        <col />
+        <col width="1" />
+        <col width="1" />
+        <?php if (!$this->canShipPartiallyItem()): ?>
+        <col width="20" />
+        <?php endif; ?>
+        <thead>
+            <tr class="headings">
+                <th><?php echo $this->helper('sales')->__('Product') ?></th>
+                
+                <th class="a-center"><?php echo $this->helper('sales')->__('Qty') ?></th>
+                <th<?php if ($this->isShipmentRegular()): ?> class="last"<?php endif; ?> style="width:300px"><span class="nobr"><?php echo $this->helper('sales')->__('Qty to Ship') ?></span></th>
+<th style="width:100px"><?php echo $this->helper('sales')->__('Store') ?></th>
+                <th style="width:100px"><?php echo $this->helper('sales')->__('Qty to Ship(From Store)') ?></span></th>
+
+                <?php if (!$this->canShipPartiallyItem()): ?>
+                <th class="a-center last"><span class="nobr"><?php echo $this->helper('sales')->__('Ship') ?></span></th>
+                <?php endif; ?>
+
+            </tr>
+        </thead>
+        <?php $_items = $this->getShipment()->getAllItems() ?>
+        <?php $_i=0;foreach ($_items as $_item):  if ($_item->getOrderItem()->getIsVirtual() || $_item->getOrderItem()->getParentItem()): continue; endif; $_i++ ?>
+        <tbody class="<?php echo $_i%2?'odd':'even' ?>">
+            <?php echo $this->getItemHtml($_item) ?>
+            <?php echo $this->getItemExtraInfoHtml($_item->getOrderItem()) ?>
+        </tbody>
+        <?php endforeach; ?>
+    </table>
+  </div>
+</div>
+<br />
+<div class="box-left entry-edit">
+    <div class="entry-edit-head"><h4><?php echo $this->__('Shipment Comments') ?></h4></div>
+    <fieldset>
+        <div id="order-history_form">
+            <span class="field-row">
+                <label class="normal" for="shipment_comment_text"><?php echo Mage::helper('sales')->__('Shipment Comments') ?></label>
+                <textarea id="shipment_comment_text" name="shipment[comment_text]" rows="3" cols="5" style="height:6em; width:99%;"><?php echo $this->getShipment()->getCommentText(); ?></textarea>
+            </span>
+            <div class="clear"></div>
+        </div>
+    </fieldset>
+</div>
+
+<div class="box-right entry-edit">
+    <div class="order-totals">
+        <div class="order-totals-bottom">
+ 
+<?php $methods=get_class_methods(get_class($this)); 
+		if (in_array("canCreateShippingLabel", $methods)) {
+		
+		?> 
+          <?php if ($this->canCreateShippingLabel()): ?>
+          <p>
+              <label class="normal" for="create_shipping_label"><?php echo Mage::helper('sales')->__('Create Shipping Label') ?></label>
+              <input id="create_shipping_label" name="shipment[create_shipping_label]" value="1" type="checkbox"  onclick="toggleCreateLabelCheckbox();" />
+          </p>
+          <?php endif; } ?>
+          <p>
+              <label class="normal" for="notify_customer"><?php echo Mage::helper('sales')->__('Append Comments') ?></label>
+              <input id="notify_customer" name="shipment[comment_customer_notify]" value="1" type="checkbox" />
+          </p>
+          <?php if ($this->canSendShipmentEmail()): ?>
+          <p>
+              <label class="normal" for="send_email"><?php echo Mage::helper('sales')->__('Email Copy of Shipment') ?></label>
+              <input id="send_email" name="shipment[send_email]" value="1" type="checkbox" />
+          </p>
+          <?php endif; ?>
+          <div class="a-right">
+          <?php //echo $this->getChildHtml('submit_button') ?>
+		  <button id="id_3bc49046a8ce718ada3153e120ada010" class="scalable save submit-button" style="" onclick="submitShipment(this);" type="button">
+<span>Submit Shipment</span>
+</button>
+          </div>
+        </div>
+    </div>
+</div>
+<div class="clear"></div>
+<script type="text/javascript">
+//<![CDATA[
+var sendEmailCheckbox = $('send_email');
+if (sendEmailCheckbox) {
+    var notifyCustomerCheckbox = $('notify_customer');
+    var shipmentCommentText = $('shipment_comment_text');
+    Event.observe(sendEmailCheckbox, 'change', bindSendEmail);
+    bindSendEmail();
+}
+function bindSendEmail()
+{
+    if (sendEmailCheckbox.checked == true) {
+        notifyCustomerCheckbox.disabled = false;
+        //shipmentCommentText.disabled = false;
+    }
+    else {
+        notifyCustomerCheckbox.disabled = true;
+        //shipmentCommentText.disabled = true;
+    }
+}
+function toggleCreateLabelCheckbox(){
+    var checkbox = $('create_shipping_label');
+    var submitButton = checkbox.up('.order-totals').select('.submit-button span')[0];
+    if (checkbox.checked) {
+        submitButton.innerText += '...';
+    } else {
+        submitButton.innerText = submitButton.innerText.replace(/\.\.\.$/, '');
+    }
+}
+function submitShipment(btn){
+	var faultcount=0;
+	var countvalid=1;
+	var compareval=0;
+
+	jQuery('.validate-maxval-number').each(function(){
+		var thisinputval=jQuery(this).val();
+		var maxinputval=jQuery(this).attr('max');
+		var idmaxinputval=jQuery(this).attr('id');
+		maxerrorcount=0;
+		if(maxinputval < thisinputval) {
+			faultcount=faultcount+1;
+			maxerrorcount=1
+		}
+		if(maxerrorcount) {
+			jQuery("#maxinputval"+idmaxinputval).remove();
+			jQuery(this).closest('td').append('<div id="maxinputval'+idmaxinputval+'" class="validation-advice">Please Enter value lessthan or equal to '+ maxinputval +'( i.e., remaining Shipment Quantity)');
+		}
+		else {
+			jQuery("#maxinputval"+idmaxinputval).remove();
+		}
+	});
+	jQuery('.shipment-qty').each(function(e){
+  
+		var maxfiled = jQuery(this).attr('rel');
+		if(compareval!=maxfiled){
+			countvalid=1;
+			//alert(countvalid);
+		}
+		compareval=maxfiled;
+		  
+		var sumof = 0;
+  
+		//alert(maxfiled);
+		var qty = parseInt(jQuery(maxfiled).val());
+		//alert(qty);
+		var storeid = jQuery(this).attr('a');
+		//alert("Store Id" + storeid);
+		var qtyid=maxfiled+"" + countvalid;
+		//alert("Qty id" + qtyid);
+		//alert('countval'+ countvalid);
+		countvalid=countvalid + 1;
+		
+		//alert(qtyid);
+		var totalqty=parseInt(jQuery(qtyid).val());
+		var current=parseInt(jQuery(this).val());
+		var storespan=qtyid+storeid;
+		var storediv=maxfiled+"ship-result";
+		var inputid=maxfiled+"shipment-qty"+storeid;
+
+		if(current > totalqty )
+		{
+			var allownegativeinv=parseInt('<?php echo Mage::getStoreConfig('connector/settings/allownegativeinv') ?>');
+			//alert(allownegativeinv);
+			//alert(current); alert(totalqty);
+			if(!allownegativeinv) {
+				//alert(allownegativeinv);
+				//alert(storespan);
+				jQuery(storespan).show();
+				jQuery(storespan).text('quantity should be less than or equal to the total quantity of a store');
+
+				//alert(inputid);
+				setTimeout( function() { jQuery(window).focus(); jQuery(inputid).focus() }, 1 ); 
+				//jQuery(inputid).focus();
+				faultcount=faultcount+1;
+				//return false;
+			}
+			else {
+				jQuery(storespan).hide();
+				//jQuery('.submit-button').show();
+	 
+		
+				jQuery('input[rel='+maxfiled+']').each(function(){
+					var isDisabled = jQuery(this).prop('disabled');
+		   
+					if (isDisabled)
+					{
+						//jQuery(this).val(0);
+						sumof += 0;
+					}
+					else {
+						sumof += parseInt(jQuery(this).val());
+					}
+				});
+				// alert(sumof);
+				//alert(qty);
+				if( sumof==qty) { 
+					jQuery(storediv).hide();
+					//jQuery(".submit-button").removeAttr("disabled", "disabled");
+					//jQuery('.submit-button').show();
+				} 
+				else { 
+					//jQuery(".submit-button").attr("disabled", "disabled");
+					//jQuery('.submit-button').hide();
+					jQuery(storediv).html('Shipping quantity from stores should be equal to the Quantity to Ship'); 
+					jQuery(storediv).show();
+					faultcount=faultcount+1;
+					//e.preventDefault();
+					//return false;
+
+				}
+			}
+		}
+		else
+		{
+			jQuery(storespan).hide();
+			//jQuery('.submit-button').show();
+			jQuery('input[rel='+maxfiled+']').each(function(){
+				var isDisabled = jQuery(this).prop('disabled');
+				if (isDisabled)
+				{
+					//jQuery(this).val(0);
+					sumof += 0;
+				}
+				else {
+					sumof += parseInt(jQuery(this).val());
+				}
+			});
+			// alert(sumof);
+			//alert(qty);
+			if( sumof==qty) { 
+				jQuery(storediv).hide();
+				//jQuery(".submit-button").removeAttr("disabled", "disabled");
+				//jQuery('.submit-button').show();
+			} else { 
+				//jQuery(".submit-button").attr("disabled", "disabled");
+				//jQuery('.submit-button').hide();
+				jQuery(storediv).html('Shipping quantity from stores should be equal to the Quantity to Ship'); 
+				jQuery(storediv).show();
+				faultcount=faultcount+1;
+				//e.preventDefault();
+				//return false;
+
+			}
+		}
+	});
+	//alert(faultcount);
+	if(faultcount > 0) {
+		editForm.validate()	
+		return false;
+		//e.preventDefault();
+	}
+	var checkbox = $(btn).up('.order-totals').select('#create_shipping_label')[0];
+    if (checkbox && checkbox.checked) {
+        packaging.showWindow();
+    } else if(editForm.submit()) {
+		jQuery('input[type=text]').each(function(){
+			var isDisabled = jQuery(this).prop('disabled');
+	   
+			if (isDisabled)
+			{
+			jQuery(this).val(0);
+			   
+			}
+		});
+        disableElements('submit-button');
+    }
+}
+//]]>
+</script>

@@ -1,0 +1,64 @@
+<?php
+$useCalendar = Mage::getStoreConfig('firecheckout/delivery_date/use_calendar');
+$useRange    = Mage::getStoreConfig('firecheckout/delivery_date/use_time_range');
+
+if (!$useCalendar && !$useRange) :
+    return;
+endif;
+
+$helper = Mage::helper('firecheckout/deliverydate');
+?>
+
+<ul id="shipping_form_delivery_date" class="form-list">
+    <li class="<?php echo ($useRange && $useCalendar) ? 'fields' : 'wide' ?>">
+        <?php if ($useCalendar && $useRange): ?>
+            <label for="delivery_date"><?php echo $this->__('Delivery Date and Time') ?></label>
+        <?php elseif ($useCalendar): ?>
+            <label for="delivery_date"><?php echo $this->__('Delivery Date') ?></label>
+        <?php else: ?>
+            <label for="delivery_time"><?php echo $this->__('Delivery Time') ?></label>
+        <?php endif; ?>
+        <div class="input-box">
+            <?php if ($useCalendar) : ?>
+                <div class="v-fix delivery-date">
+                    <input type="text" class="input-text" value="" id="delivery_date" name="delivery_date[date]"/>
+                    <img title="Select Date" id="delivery_date_button" class="v-middle" alt="" src="<?php echo $this->getSkinUrl("images/calendar.gif");?> "/>
+                    <label for="delivery_date"><?php echo $this->__("Example: %s", '{{date}}') ?></label>
+                </div>
+            <?php endif; ?>
+            <?php if ($useRange) : ?>
+                <div class="v-fix delivery-time">
+                    <select name="delivery_date[time]" id="delivery_time">
+                        <option value=""></option>
+                        <?php
+                        foreach ($helper->getTimeRangeStrings() as $range):
+                            echo '<option value="'.$range.'">'.$range.'</option>';
+                        endforeach;
+                        ?>
+                    </select>
+                </div>
+            <?php endif; ?>
+        </div>
+    </li>
+</ul>
+
+<script type="text/javascript">
+<?php
+$shippingMethods = array();
+if (Mage::getStoreConfig('firecheckout/delivery_date/filter_per_shipping_method')):
+    $shippingMethods = explode(',', Mage::getStoreConfig('firecheckout/delivery_date/shipping_methods'));
+endif;
+?>
+
+var deliveryDate = new FireCheckout.DeliveryDate({
+    excludedDates     : <?php echo Zend_Json::encode($helper->getExcludedDateStrings()); ?>,
+    periodicalDates   : <?php echo Zend_Json::encode($helper->getExcludedPeriodicalDateStrings()); ?>,
+    nonPeriodicalDates: <?php echo Zend_Json::encode($helper->getExcludedNonPeriodicalDateStrings()); ?>,
+    excludeWeekend    : <?php echo (int)Mage::getStoreConfig('firecheckout/delivery_date/exclude_weekend'); ?>,
+    useCalendar       : <?php echo (int)$useCalendar ?>,
+    weekendDays       : Calendar._TT["WEEKEND"],
+    ifFormat          : <?php echo Mage::helper('core')->jsonEncode($helper->getCalendarDateFormat()) ?>,
+    shippingMethods   : <?php echo Zend_Json::encode($shippingMethods) ?>,
+    todayOffset       : <?php echo (int)Mage::getStoreConfig('firecheckout/delivery_date/date_offset') ?>
+});
+</script>

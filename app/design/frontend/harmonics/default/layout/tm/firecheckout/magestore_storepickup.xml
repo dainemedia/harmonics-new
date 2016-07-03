@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <reference name="head">
+            <action method="addJs"><script>calendar/calendar.js</script></action>
+            <action method="addJs"><script>calendar/calendar-setup.js</script></action>
+        </reference>
+        <reference name="checkout.onepage.shipping_method.available">
+            <block type="storepickup/checkout_store" name="storepickup" as="storepickup" >
+                <block type="storepickup/location" name="store_location" as="store_location" template="storepickup/store_location.phtml" />
+                <block type="storepickup/checkout_store" name="list_store" as="list_store" template="storepickup/store.phtml" />
+            </block>
+        </reference>
+    </firecheckout_index_index>
+    <firecheckout_index_updatecheckout>
+        <reference name="checkout.shipping.method">
+            <block type="storepickup/checkout_store" name="storepickup" as="storepickup" >
+                <block type="storepickup/location" name="store_location" as="store_location" template="storepickup/store_location.phtml" />
+                <block type="storepickup/checkout_store" name="list_store" as="list_store" template="storepickup/store.phtml" />
+            </block>
+        </reference>
+    </firecheckout_index_updatecheckout>
+</layout>

@@ -1,0 +1,62 @@
+<?php
+$_imageszoom = $this->helper('iwd_productvideo/zoom');
+$_helper = $this->helper('iwd_productvideo');
+$_product = $this->getProduct();
+$_media = $this->getGalleryMedia();
+$config = $_imageszoom->getTemplateConfig();
+$class = $_imageszoom->checkPositionThumbnails($config);
+$count = count($_media);
+?>
+
+<?php if ($count > 0): ?>
+    <?php if ($_imageszoom->getBlockTitle() != ""): ?>
+        <h2><?php echo $_imageszoom->getBlockTitle(); ?></h2>
+    <?php endif; ?>
+    <div class="thumbnails-container <?php echo $class; ?>">
+        <?php if ($config->getThumbnailSlider() == 1 && $count > 3): ?>
+            <a class="prev" title="<?php echo $_helper->__("Prev"); ?>"><span class="v-middle ico"></span></a>
+        <?php endif; ?>
+
+        <div <?php if ($config->getThumbnailSlider() == 1): ?>class="slider"<?php endif; ?>>
+            <ul <?php if ($_imageszoom->checkPositionThumbnails($config) == 'left' || $_imageszoom->checkPositionThumbnails($config) == 'right'): ?>style="width:<?php echo $config->getThumbnailWidth() ?>px; height:<?php echo $config->getImageHeight() ?>px"<?php endif; ?>>
+                <?php foreach ($_media as $_item): ?>
+                    <?php if ($_item->getMediaType() == "image"): ?>
+                        <li class="item">
+                            <a href="javascript:void(0);"
+                               data-image="<?php echo $this->helper('catalog/image')->init($this->getProduct(), 'thumbnail', $_item->getFile())->resize($config->getImageWidth(), $config->getImageHeight()); ?>"
+                               data-zoom-image="<?php echo $this->helper('catalog/image')->init($this->getProduct(), 'thumbnail', $_item->getFile())->keepAspectRatio($config->getKeepAspectRatio())->keepFrame($config->getKeepFrame())->resize($config->getImageWidth() * $config->getZoomRatio(), $config->getImageHeight() * $config->getZoomRatio()); ?>"
+                               title="<?php echo $this->htmlEscape($_item->getLabel()) ?>"
+                               class="iwd_product_image_thumbnail">
+                                <img
+                                    src="<?php echo $this->helper('catalog/image')->init($this->getProduct(), 'thumbnail', $_item->getFile())->resize($config->getThumbnailWidth(), $config->getThumbnailHeight()); ?>"
+                                    width="<?php echo $config->getThumbnailWidth() ?>"
+                                    height="<?php echo $config->getThumbnailHeight(); ?>"
+                                    alt="<?php echo $this->htmlEscape($_item->getLabel()) ?>"/>
+                            </a>
+                        </li>
+                    <?php elseif ($_item->getMediaType() == "video"): ?>
+                        <li class="item video-launcher">
+                            <a href="javascript:void(0);"
+                               data-video-id="<?php echo $_item->getVideoId(); ?>"
+                               data-image="<?php echo $_helper->GetImageUrl($_item->getImage(), $config->getImageWidth(), $config->getImageHeight()); ?>"
+                               title="<?php echo $this->htmlEscape($_item->getTitle()); ?>"
+                               style="height:<?php echo $config->getThumbnailHeight() - 4 ?>px; width:<?php echo $config->getThumbnailWidth() - 4 ?>px;"
+                               class="iwd_product_video_thumbnail">
+                                <span class="play-button"></span>
+                                <img alt="video"
+                                     src="<?php echo $_helper->GetImageUrl($_item->getImage(), $config->getThumbnailWidth(), $config->getThumbnailHeight()); ?>"
+                                     width="<?php echo $config->getThumbnailWidth() ?>"
+                                     height="<?php echo $config->getThumbnailHeight(); ?>"
+                                     title="<?php echo $this->htmlEscape($_item->getTitle()); ?>"/>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+
+        <?php if ($config->getThumbnailSlider() == 1 && $count > 3): ?>
+            <a class="next" title="<?php echo $_helper->__("Next"); ?>"><span class="v-middle ico"></span></a>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>

@@ -1,0 +1,62 @@
+/* Gift Card Sale
+version 102
+*/
+.clear{clear:both;}
+.buy-giftcards .sub-header {
+}
+.buy-giftcards .block-content {
+    display: block;
+    overflow: hidden;
+}
+.buy-giftcards .sub-header .giftcard-image {
+    float: left;
+    width: 75px;
+    text-align: center;
+    border: none;
+}
+.buy-giftcards .sub-header .giftcard-text {
+    margin-left: 80px;
+}
+.buy-giftcards .available-amounts ul, .buy-giftcards .available-amounts li {
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+}
+.buy-giftcards .available-amounts li a {
+    display: block;
+    padding: 10px 10px;
+    text-align: center;
+    background: #0A263D;
+    color: #FFFFFF !important;
+    text-decoration: none;
+    line-height: 19px;
+    min-height: 22px;
+    border-radius: 5px;
+}
+.buy-giftcards .available-amounts li a.anyamount {
+
+    max-width: 55px;
+}
+.buy-giftcards .available-amounts li {
+    float: left;
+    margin: 0 5px 5px 0;
+}
+.buy-giftcards .available-amounts li:first-child a {
+    line-height: 11px;
+}
+.buy-giftcards .sub-header, .buy-giftcards .available-amounts, .buy-giftcards .sub-header, .buy-giftcards .amount {
+    padding: 5px;
+}
+
+.buy-giftcards .available-amounts li a.active{background:#E26703;}
+.buy-giftcards .actions button.mbiz_giftcard_cancel{
+
+    margin-right: 5px;
+}
+.buy-giftcards .actions button.mbiz_giftcard_cancel span{
+    background:none repeat scroll 0 0 #618499;
+    border-color: #618499;
+}
+.buy-giftcards .mbizgiftcard_purchase_block .button-set img.load_giftcard_img {
+    float: right;
+}

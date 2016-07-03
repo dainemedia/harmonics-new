@@ -1,0 +1,399 @@
+<?php
+    $_layout = $this->getLayout();
+    $_dob    = $_layout->createBlock('customer/widget_dob');
+    $_gender = $_layout->createBlock('customer/widget_gender');
+    $_taxvat = $_layout->createBlock('customer/widget_taxvat');
+    $_isCustomerLoggedIn = $this->isCustomerLoggedIn();
+    $_address = $this->getAddress();
+    $_prefix  = 'billing';
+
+    $status = Mage::getStoreConfig('firecheckout/address_form_status');
+    if ('hidden' !== $status['postcode']) {
+        $status['postcode'] = 'required'; // used to render asterisk
+    }
+    if (Mage::getStoreConfig('general/region/state_required')) {
+        $status['region'] = 'required'; // used to render asterisk
+    }
+    $fields = array(
+        'name'  => array(),
+        'email' => array(
+            'class'  => 'input-text validate-email',
+            'label'  => 'Email Address',
+            'status' => $_isCustomerLoggedIn ? 'hidden' : 'required'
+        ),
+        'company' => array(
+            'class' => 'input-text',
+            'label' => 'Company'
+        ),
+        'fax' => array(
+            'class' => 'input-text',
+            'label' => 'Fax'
+        ),
+        'telephone' => array(
+            'class' => 'input-text',
+            'label' => 'Telephone'
+        ),
+//        'city' => array(
+//            'class' => 'input-text',
+//            'label' => 'City'
+//        ),
+        'postcode' => array(
+            'class' => 'input-text validate-zip-international',
+            'label' => 'Zip/Postal Code'
+        ),
+//        'street1' => array(
+//            'class' => 'input-text',
+//            'label' => 'Address',
+//            'title' => 'Street Address',
+//            'name'  => $_prefix . '[street][]',
+//            'value' => $_address->getStreet(1)
+//        ),
+        'country_id' => array(
+            'label' => 'Country',
+            'required_to_render' => 1
+        ),
+        'region' => array(
+            'label' => 'State/Province',
+            'required_to_render' => 1
+        ),
+        'dob' => array(
+            'status' => (!$_isCustomerLoggedIn && $_dob->isEnabled()) ? 'optional' : 'hidden'
+        ),
+        'gender' => array(
+            'status' => (!$_isCustomerLoggedIn && $_gender->isEnabled()) ? 'optional' : 'hidden'
+        ),
+        'taxvat' => array(
+            'status' => (!$_isCustomerLoggedIn && $_taxvat->isEnabled()) ? 'optional' : 'hidden'
+        )
+    );
+
+    $addressHelper = $this->helper('customer/address');
+    if (method_exists($addressHelper, 'isVatAttributeVisible')) {
+        $fields['vat_id'] = array(
+            'status' => $addressHelper->isVatAttributeVisible() ? 'optional' : 'hidden',
+            'class'  => 'input-text ' . $addressHelper->getAttributeValidationClass('vat_id'),
+            'label'  => 'VAT Number'
+        );
+    }
+?>
+
+<div id="billing-address" class="firecheckout-section">
+    <?php if (!$this->canShip() || !Mage::getStoreConfig('firecheckout/general/shipping_address')): ?>
+        <div class="block-title"><span><?php echo $this->helper('checkout')->__('Address'); ?></span></div>
+    <?php else: ?>
+        <div class="block-title"><span><?php echo $this->helper('checkout')->__('Billing Address'); ?></span></div>
+    <?php endif; ?>
+    <div class="block-content">
+        <ul class="form-list">
+        <?php if ($this->customerHasAddresses()): ?>
+            <li class="wide">
+                <label for="billing-address-select"><?php echo $this->helper('checkout')->__('Select a billing address from your address book or enter a new address.') ?></label>
+                <div class="input-box">
+                    <?php echo $this->getAddressesHtmlSelect('billing') ?>
+                </div>
+            </li>
+        <?php endif; ?>
+        <li id="billing-new-address-form"<?php if ($this->customerHasAddresses()): ?> style="display:none;"<?php endif; ?>>
+            <fieldset>
+                <input type="hidden" name="billing[address_id]" value="<?php echo $_address->getId() ?>" id="billing:address_id" />
+                <ul>
+                    <?php foreach (Mage::helper('firecheckout/address')->getSortedFields() as $row) : ?>
+                        <?php
+                            $countVisible          = 0;
+                            $countRequiredToRender = 0;
+
+                            foreach ($row as $key => $field) { // do not use break in this cycle to fill statuses for all fields
+                                if (!isset($fields[$field])) { // shipping address doesn't has all of the fields
+                                    unset($row[$key]);
+                                    continue;
+                                }
+
+                                if (empty($status[$field])) {
+                                    if (!empty($fields[$field]['status'])) {
+                                        $status[$field] = $fields[$field]['status'];
+                                    } else {
+                                        $status[$field] = 'required';
+                                    }
+                                }
+                                if (!empty($fields[$field]['required_to_render'])) {
+                                    $countRequiredToRender++;
+                                }
+                                if ('hidden' !== $status[$field]) {
+                                    $countVisible++;
+                                }
+                            }
+
+                            $isMulticolumn = ($countVisible > 1 || current($row) == 'name' || current($row) == 'postcode');
+                        ?>
+
+                        <?php if (!$countVisible && !$countRequiredToRender): continue; endif; ?>
+
+                        <li class="<?php echo $isMulticolumn ? 'fields' : 'wide' ?>"<?php echo $countVisible ? '' : ' style="display: none;"' ?>>
+                            <?php foreach ($row as $field) : ?>
+                                <?php $required = ('required' === $status[$field]); ?>
+
+                                <?php if ('name' === $field) : ?>
+                                    <?php echo $this->getLayout()->createBlock('customer/widget_name')->setObject($_address)->setFieldIdFormat($_prefix . ':%s')->setFieldNameFormat($_prefix . '[%s]')->toHtml() ?>
+                                <?php elseif ('postcode' === $field) : ?>
+                                    <div class="field">
+                                        <label for="billing:postcode" class="required"><em>*</em><?php echo Mage::helper('tig_postcode')->__('Zip/Postal Code') ?></label>
+                                        <img id="postcode-billing-please-wait" style="display:none;" src="<?php echo $this->getSkinUrl('images/opc-ajax-loader.gif') ?>" alt="<?php echo Mage::helper('tig_postcode')->__('Loading...') ?>" title="<?php echo Mage::helper('tig_postcode')->__('Loading...') ?>" />
+                                        <div class="input-box">
+                                            <input type="text" title="<?php echo Mage::helper('tig_postcode')->__('Zip/Postal Code') ?>" name="billing[postcode]" id="billing:postcode" value="<?php echo $this->htmlEscape($this->getAddress()->getPostcode()) ?>" class="input-text validate-zip-international required-entry" />
+                                            <div style="display: none;" id="advice-validate:billing:postcode" class="validation-advice"><?php echo Mage::helper('tig_postcode')->__('Check that the Zip/Postal Code and the House Number correctly entered!') ?></div>
+                                        </div>
+                                    </div>
+                                    <div class="field field-small">
+                                        <label for="billing:street2" class="required"><em>*</em><?php echo Mage::helper('tig_postcode')->__('House Number') ?></label>
+                                        <div class="input-box">
+                                            <input type="text" title="<?php echo Mage::helper('tig_postcode')->__('House Number') ?>" id="billing:virtual:street2" value="" class="input-text required-entry" />
+                                        </div>
+                                    </div>
+                                    <div class="field field-small">
+                                        <label for="billing:street3"><?php echo Mage::helper('tig_postcode')->__('Extension') ?></label>
+                                        <div class="input-box">
+                                            <input type="text" title="<?php echo Mage::helper('tig_postcode')->__('Extension') ?>" id="billing:virtual:street3" value="" class="input-text" />
+                                        </div>
+                                    </div>
+                                <?php else : ?>
+
+                                    <?php if ('hidden' === $status[$field]) :
+                                        if (empty($fields[$field]['required_to_render'])) :
+                                            continue;
+                                        endif; ?>
+
+                                        <div style="display: none;">
+                                    <?php endif; ?>
+
+                                    <?php if ($isMulticolumn) : ?>
+                                        <div class="field">
+                                    <?php endif; ?>
+
+                                    <?php if ('dob' === $field): ?>
+                                        <?php echo $_dob->setDate($this->getQuote()->getCustomerDob())->setFieldIdFormat($_prefix . ':%s')->setFieldNameFormat($_prefix . '[%s]')->toHtml() ?>
+                                    <?php elseif ('gender' === $field): ?>
+                                        <?php echo $_gender->setGender($this->getQuote()->getCustomerGender())->setFieldIdFormat($_prefix . ':%s')->setFieldNameFormat($_prefix . '[%s]')->toHtml() ?>
+                                    <?php elseif ('taxvat' === $field): ?>
+                                        <?php echo $_taxvat->setTaxvat($this->getQuote()->getCustomerTaxvat())->setFieldIdFormat($_prefix . ':%s')->setFieldNameFormat($_prefix . '[%s]')->toHtml() ?>
+                                    <?php else: ?>
+                                        <label for="<?php echo $_prefix ?>:<?php echo $field ?>"
+                                            class="<?php echo $required ? 'required' : '' ?>"
+                                            ><?php if ($required): ?><em>*</em><?php endif; ?><?php echo $this->__($fields[$field]['label']) ?></label>
+                                        <div class="input-box">
+                                            <?php if ('country_id' === $field) : ?>
+                                                <?php echo $this->getCountryHtmlSelect($_prefix) ?>
+                                            <?php elseif ('region' === $field): ?>
+                                                <select id="<?php echo $_prefix ?>:region_id" name="<?php echo $_prefix ?>[region_id]"
+                                                    title="<?php echo (empty($fields[$field]['title']) ? $this->__($fields[$field]['label']) : $this->__($fields[$field]['title'])) ?>"
+                                                    class="validate-select<?php echo $required ? ' required-entry' : '' ?>" style="display:none;"
+                                                >
+                                                    <option value=""><?php echo $this->__('Please select region, state or province') ?></option>
+                                                </select>
+                                                <script type="text/javascript">
+                                                //<![CDATA[
+                                                    $('<?php echo $_prefix ?>:region_id').setAttribute('defaultValue',  "<?php echo $_address->getRegionId() ?>");
+                                                //]]>
+                                                </script>
+                                                <input type="text" id="<?php echo $_prefix ?>:region" name="<?php echo $_prefix ?>[region]"
+                                                    value="<?php echo $this->htmlEscape($_address->getRegion()) ?>"
+                                                    title="<?php echo (empty($fields[$field]['title']) ? $this->__($fields[$field]['label']) : $this->__($fields[$field]['title'])) ?>"
+                                                    class="input-text<?php echo $required ? ' required-entry' : '' ?>" style="display:none;"
+                                                />
+                                            <?php else: ?>
+                                                <?php
+                                                    if (isset($fields[$field]['value'])):
+                                                        $value = $fields[$field]['value'];
+                                                    else:
+                                                        $method = 'get' . ucfirst($field);
+                                                        $value = $_address->{$method}();
+                                                    endif;
+                                                ?>
+                                                <input type="text"
+                                                    name="<?php echo (empty($fields[$field]['name']) ? $_prefix . '[' . $field . ']' : $fields[$field]['name']) ?>"
+                                                    id="<?php echo $_prefix ?>:<?php echo $field ?>"
+                                                    value="<?php echo $this->htmlEscape($value) ?>"
+                                                    title="<?php echo (empty($fields[$field]['title']) ? $this->__($fields[$field]['label']) : $this->__($fields[$field]['title'])) ?>"
+                                                    class="<?php echo $fields[$field]['class'] ?><?php echo $required ? ' required-entry' : '' ?>"
+                                                />
+                                            <?php endif ?>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <?php if ($isMulticolumn) : ?>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <?php if ('hidden' === $status[$field]) : ?>
+                                        </div>
+                                    <?php endif; ?>
+
+                                <?php endif; ?>
+
+                                <?php if ('postcode' === $field) : ?>
+                                    </li>
+                                    <?php if (Mage::getStoreConfig('tig_postcode/exclude_fields/field_extra_is_enabled')): ?>
+                                        <li class="wide">
+                                            <label class="required" for="billing:street4"><?php echo Mage::helper('tig_postcode')->__('Extra') ?></label>
+                                            <div class="input-box">
+                                                <input type="text" class="input-text" value="" id="billing:virtual:street4" title="<?php echo Mage::helper('tig_postcode')->__('Extra') ?>" />
+                                            </div>
+                                        </li>
+                                    <?php endif; ?>
+                                    <li class="fields">
+                                        <div class="field">
+                                            <label for="billing:street1" class="required"><em>*</em><?php echo Mage::helper('tig_postcode')->__('Street Address') ?></label>
+                                            <div class="input-box">
+                                                <input type="text" title="<?php echo Mage::helper('tig_postcode')->__('Street Address') ?>" id="billing:virtual:street1" value="" class="input-text required-entry" />
+                                            </div>
+                                        </div>
+                                        <div class="field">
+                                            <label for="billing:city" class="required"><em>*</em><?php echo Mage::helper('tig_postcode')->__('City') ?></label>
+                                            <div class="input-box">
+                                                <input type="text" title="<?php echo Mage::helper('tig_postcode')->__('City') ?>" name="billing[city]" value="<?php echo $this->htmlEscape($this->getAddress()->getCity()) ?>" class="input-text required-entry" id="billing:city" />
+                                            </div>
+                                        </div>
+                                <?php endif; ?>
+
+                                <?php if ('street1' === $field) : ?>
+                                    <?php for ($_i = 2, $_n = $this->helper('customer/address')->getStreetLines(); $_i <= $_n; $_i++): ?>
+                                        </li>
+                                        <li class="wide">
+                                            <div class="input-box">
+                                                <input type="text" title="<?php echo $this->__('Street Address %s', $_i) ?>" name="<?php echo $_prefix ?>[street][]" id="<?php echo $_prefix ?>:street<?php echo $_i?>" value="<?php echo $this->htmlEscape($_address->getStreet($_i)) ?>" class="input-text" />
+                                            </div>
+                                    <?php endfor ?>
+                                <?php endif; ?>
+
+                            <?php endforeach; ?>
+                        </li>
+                    <?php endforeach; ?>
+
+                    <?php $addressAttributes = $this->getChild('customer_form_' . $_prefix . '_address_user_defined_attributes');?>
+                    <?php if ($addressAttributes): ?>
+                        <?php $addressAttributes->setEntity($_address)->setEntityType('customer_address');?>
+                        <?php $addressAttributes->setFieldIdFormat($_prefix . ':%1$s')->setFieldNameFormat($_prefix . '[%1$s]');?>
+                        <?php echo $addressAttributes->setExcludeFileAttributes(true)->setShowContainer(false)->toHtml()?>
+                    <?php endif;?>
+
+                    <?php $customerAttributes = $this->getChild('customer_form_customer_user_defined_attributes');?>
+                    <?php if ($customerAttributes): ?>
+                        <?php $customerAttributes->setEntityModelClass('customer/customer')->setFieldIdFormat($_prefix . ':%1$s');?>
+                        <?php $customerAttributes->setFieldNameFormat($_prefix . '[%1$s]')->setShowContainer(false);?>
+                        <?php echo $customerAttributes->setExcludeFileAttributes(true)->toHtml()?>
+                    <?php endif;?>
+
+                    <?php if (!$this->isCustomerLoggedIn()) : ?>
+                        <?php
+                            $registrationMode = Mage::getStoreConfig('firecheckout/general/registration_mode');
+                            $register = $this->getRegisterAccount();
+                            $isAllowedGuest = Mage::helper('firecheckout')->isAllowedGuestCheckout();
+                        if ($isAllowedGuest || $register) : ?>
+                            <li class="control">
+                                <input type="checkbox" name="billing[register_account]" value="1" title="<?php echo $this->__('Create account for later use') ?>" id="billing:register_account" onclick="if(window.billing) billing.setCreateAccount(this.checked);"<?php if ($register || 'optional-checked' == $registrationMode) : ?> checked="checked"<?php endif;?> class="checkbox" /><label for="billing:register_account"><?php echo $this->__('Create account for later use') ?></label>
+                            </li>
+                        <?php else: ?>
+                            <li class="no-display">
+                                <input type="hidden" name="billing[register_account]" value="1"/>
+                            </li>
+                        <?php endif ?>
+                        <?php if ('hidden' !== $registrationMode || $register) : ?>
+                            <li class="fields" id="register-customer-password" <?php if ('optional' == $registrationMode && !$register) : ?>style="display: none;" <?php endif; ?>>
+                                <div class="field">
+                                    <label for="billing:customer_password" class="required"><em>*</em><?php echo $this->__('Password') ?></label>
+                                    <div class="input-box">
+                                        <input type="password" name="billing[customer_password]" id="billing:customer_password" title="<?php echo $this->__('Password') ?>" class="input-text required-entry validate-password" />
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label for="billing:confirm_password" class="required"><em>*</em><?php echo $this->__('Confirm Password') ?></label>
+                                    <div class="input-box">
+                                        <input type="password" name="billing[confirm_password]" title="<?php echo $this->__('Confirm Password') ?>" id="billing:confirm_password" class="input-text required-entry validate-cpassword" />
+                                    </div>
+                                </div>
+                            </li>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                    <?php if ($this->isCustomerLoggedIn() && $this->customerHasAddresses()):?>
+                        <li class="control">
+                            <input type="checkbox" name="billing[save_in_address_book]" value="1" title="<?php echo $this->__('Save in address book') ?>" id="billing:save_in_address_book" <?php if ($_address->getSaveInAddressBook()):?> checked="checked"<?php endif;?> class="checkbox" /><label for="billing:save_in_address_book"><?php echo $this->__('Save in address book') ?></label>
+                        </li>
+                    <?php else:?>
+                        <li class="no-display"><input type="hidden" name="billing[save_in_address_book]" value="1" /></li>
+                    <?php endif; ?>
+                    <?php echo $this->getChildHtml('form.additional.info'); ?>
+                </ul>
+            </fieldset>
+        </li>
+        <?php /* Extensions placeholder */ ?>
+        <?php echo $this->getChildHtml('checkout.onepage.billing.extra')?>
+        <?php if (Mage::helper('firecheckout')->canShowNewsletter()) : ?>
+            <li class="newsletter control">
+                <input type="checkbox" id="newsletter-signup" name="newsletter" value="1"<?php if (Mage::getStoreConfig('firecheckout/general/newsletter_checkbox_state')) : ?> checked="checked"<?php endif; ?> title="<?php echo Mage::helper('newsletter')->__('Sign up for our newsletter') ?>" class="checkbox" /><label for="newsletter-signup"><?php echo Mage::helper('newsletter')->__('Sign up for our newsletter') ?></label>
+            </li>
+        <?php endif; ?>
+        <?php $additional = $this->getChildHtml('billing.additional.container');
+        if (!empty($additional)) : ?>
+            <li class="billing-additional">
+                <?php echo $additional; ?>
+            </li>
+        <?php endif; ?>
+        </ul>
+
+    <?php for ($i=1;$i<5;$i++): ?>
+        <input type="hidden" name="billing[street][]" id="billing:street<?php echo $i ?>" value="<?php echo $this->htmlEscape($this->getAddress()->getStreet($i)) ?>" />
+    <?php endfor;?>
+
+    <?php if (!$this->canShip() || !Mage::getStoreConfig('firecheckout/general/shipping_address')): ?>
+        <input type="hidden" name="billing[use_for_shipping]" value="1" />
+    <?php else: ?>
+        <input type="hidden" name="billing[use_for_shipping]" id="billing:use_for_shipping" value="<?php if ($this->isUseBillingAddressForShipping()):?>1<?php else:?>0<?php endif; ?>" />
+    <?php endif; ?>
+    <script type="text/javascript">
+    //<![CDATA[
+        for (var i=1;i<5;i++) {
+            var _virtualField = 'billing:virtual:street'+i;
+            var _field = 'billing:street'+i;
+            if ($(_virtualField)) $(_virtualField).value = $(_field).value;
+        }
+
+        var billing = new Billing();
+        var billingRegionUpdater = new RegionUpdater('billing:country_id', 'billing:region', 'billing:region_id', <?php echo $this->helper('directory')->getRegionJson() ?>, undefined, 'billing:postcode');
+
+        var tigPostcodeUpdaterBilling = new TigPostcodeUpdater('<?php echo $this->getUrl('tig_postcode/onepage', array('_secure' => true)); ?>', 'billing:postcode', 'billing:virtual:street2', 'billing:virtual:street1', 'billing:city', 'billing:country_id', 'postcode-billing-region', 'postcode-billing-please-wait');
+        document.observe('dom:loaded', function() {
+            var btnCheckout = $('review-buttons-container').down('.btn-checkout');
+            $('postcode-billing-please-wait').observe('tigpostcodeupdater:start', function(e)    {
+                btnCheckout.setAttribute('disabled', 'disabled');
+            });
+            $('postcode-billing-please-wait').observe('tigpostcodeupdater:stop', function(e)    {
+                btnCheckout.removeAttribute('disabled');
+            });
+            btnCheckout.observe('mousedown', function(e)    {
+                for (var i=1;i<5;i++) {
+                    var _virtualField = 'billing:virtual:street'+i;
+                    var _field = 'billing:street'+i;
+                    if ($(_virtualField)) $(_field).value = $(_virtualField).value;
+                }
+            });
+            $('firecheckout-form').observe('submit', function(e)    {
+                for (var i=1;i<5;i++) {
+                    var _virtualField = 'billing:virtual:street'+i;
+                    var _field = 'billing:street'+i;
+                    if ($(_virtualField)) $(_field).value = $(_virtualField).value;
+                }
+            });
+            if ($('billing-address-select')) {
+                $('billing-address-select').observe('change', function(e)    {
+                    if ($('billing-address-select').value == '') {
+                        tigPostcodeUpdaterBilling.getData();
+                    }
+                });
+            }
+            else {
+                tigPostcodeUpdaterBilling.getData();
+            }
+        });
+    //]]>
+    </script>
+    </div>
+</div>

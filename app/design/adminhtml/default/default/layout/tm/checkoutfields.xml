@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<layout>
+    <adminhtml_sales_order_view>
+        <reference name="content">
+            <block type="core/template" name="sales_order_checkoutfields" template="tm/checkoutfields/sales/order/view/checkoutfields.phtml"/>
+        </reference>
+    </adminhtml_sales_order_view>
+
+    <adminhtml_sales_order_create_index>
+        <reference name="firecheckout_additional">
+            <block type="core/template" name="sales_order_checkoutfields" template="tm/checkoutfields/sales/order/edit/checkoutfields.phtml"/>
+        </reference>
+    </adminhtml_sales_order_create_index>
+
+    <adminhtml_sales_order_create_load_block_data>
+        <reference name="firecheckout_additional">
+            <block type="core/template" name="sales_order_checkoutfields" template="tm/checkoutfields/sales/order/edit/checkoutfields.phtml"/>
+        </reference>
+    </adminhtml_sales_order_create_load_block_data>
+</layout>

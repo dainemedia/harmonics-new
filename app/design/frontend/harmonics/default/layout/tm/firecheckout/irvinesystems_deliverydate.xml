@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <update handle="irvine_deliverydate_after_shipping_methods"/>
+    </firecheckout_index_index>
+    <firecheckout_index_updatecheckout>
+        <update handle="irvine_deliverydate_after_shipping_methods"/>
+    </firecheckout_index_updatecheckout>
+    <irvine_deliverydate_after_shipping_methods>
+        <reference name="shipping.methods.after">
+            <block type="core/template" name="irvine.delivery.date" template="deliverydate/additional.phtml">
+                <block type="core/template" name="deliverydate.additional"/>
+                <block type="deliverydate/deliverydate" name="deliverydate.deliverydate">
+                    <block type="deliverydate/deliverydate_form" name="deliverydate.form"></block>
+                </block>
+            </block>
+        </reference>
+    </irvine_deliverydate_after_shipping_methods>
+</layout>

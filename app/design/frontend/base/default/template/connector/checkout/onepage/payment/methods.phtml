@@ -1,0 +1,184 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+//version 102
+?>
+<?php
+/**
+ * One page checkout payment methods
+ *
+ * @var $this Mage_Checkout_Block_Onepage_Payment_Methods
+ */
+?>
+
+<?php
+if(Mage::getStoreConfig('connector/settings/giftcardpayment')) {
+?>
+<div class="mbizgiftcardpayment" >
+    <input type="checkbox" name="mbiz_gift_payment"  id="mbiz_gift_payment"/>Apply Gift Cards
+    <div class="mbizgiftcardblock">
+        <?php echo $this->getLayout()->createBlock('microbiz_connector/giftcardpayment')->setTemplate('connector/checkout/onepage/payment/giftcardpayment.phtml')->toHtml();?>
+    </div>
+</div>
+<?php
+}
+?>
+<?php
+    if(Mage::getSingleton('customer/session')->isLoggedIn()):
+        if(Mage::getStoreConfig('connector/settings/storecreditpayment')) {
+?>
+<div class="mbizstorecreditpayment" >
+    <input type="checkbox" name="mbiz_storecredit_payment"  id="mbiz_storecredit_payment"/>Apply Store Credits
+    <div class="mbizstorecreditblock">
+        <?php echo $this->getLayout()->createBlock('microbiz_connector/storecreditpayment')->setTemplate('connector/checkout/onepage/payment/storecreditpayment.phtml')->toHtml();?>
+    </div>
+</div>
+<?php
+}
+endif;
+?>
+<?php
+    $methods = $this->getMethods();
+    $oneMethod = count($methods) <= 1;
+?>
+<?php
+/**
+ * Get the selected shipping method from the session
+ *
+ * @var string
+ */
+$shippingMethod = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress()->getShippingMethod();
+/**
+ * Construct the $methods array depending on the shipping method.
+ * If it suits your needs better, you can loop through
+ * $originalMethods without the "switch" statement and add
+ * or leave out payment methods based on the shipping method
+ * inside the loop.
+ *
+ * Note: your codes for the shipping and payment methods may
+ * vary, please check them!
+ *
+ */
+ $customMethodsBasedOnShippingMethod = array();
+ //echo $shippingMethod;
+switch($shippingMethod) {
+    case 'instorepickup_instorepickup':
+        /**
+         * shipping method "store pickup": only cash payment
+         */
+        /*foreach ($originalMethods as $method) {
+            $methodCode = $method->getCode();
+            if ($methodCode == 'payinstore') {
+                $customMethodsBasedOnShippingMethod[] = $method;
+            }
+        }*/
+		$customMethodsBasedOnShippingMethod = $methods;
+        break;
+    default:
+        /**
+         * all other shipping methods: hide cash payment.
+         */
+        foreach ($methods as $method) {
+            $methodCode = $method->getCode();
+            if ($methodCode != 'payinstore') {
+                $customMethodsBasedOnShippingMethod[] = $method;
+            }
+        }
+}
+$methods = $customMethodsBasedOnShippingMethod;
+$oneMethod = count($methods) <= 1;
+?>
+<?php if (empty($methods)): ?>
+    <dt>
+        <?php echo $this->__('No Payment Methods') ?>
+    </dt>
+<?php else:
+    foreach ($methods as $_method):
+        $_code = $_method->getCode();
+?>
+    <dt>
+    <?php if(!$oneMethod): ?>
+        <input id="p_method_<?php echo $_code ?>" value="<?php echo $_code ?>" type="radio" name="payment[method]" title="<?php echo $this->escapeHtml($_method->getTitle()) ?>" onclick="payment.switchMethod('<?php echo $_code ?>')"<?php if($this->getSelectedMethodCode()==$_code): ?> checked="checked"<?php endif; ?> class="radio" />
+    <?php else: ?>
+        <span class="no-display"><input id="p_method_<?php echo $_code ?>" value="<?php echo $_code ?>" type="radio" name="payment[method]" checked="checked" class="radio" /></span>
+        <?php $oneMethod = $_code; ?>
+    <?php endif; ?>
+        <label for="p_method_<?php echo $_code ?>"><?php echo $this->escapeHtml($this->getMethodTitle($_method)) ?> <?php echo $this->getMethodLabelAfterHtml($_method) ?></label>
+    </dt>
+    <?php if ($html = $this->getPaymentMethodFormHtml($_method)): ?>
+    <dd>
+        <?php echo $html; ?>
+    </dd>
+    <?php endif; ?>
+<?php endforeach;
+    endif;
+?>
+<?php echo $this->getChildChildHtml('additional'); ?>
+<?php
+$quote = Mage::getSingleton('checkout/session')->getQuote();
+$quote->collectTotals();
+$quoteTotal = $quote->getGrandTotal();
+$arrQuoteCreditDiscountData = Mage::getSingleton('checkout/session')->getCreditDiscountData();
+$arrQuoteCreditDiscountData = unserialize($arrQuoteCreditDiscountData);
+$isDiscountApplied=0;
+if(count($arrQuoteCreditDiscountData)>0)
+{
+    foreach($arrQuoteCreditDiscountData as $data)
+    {
+        if(array_key_exists('credit_no',$data))
+        {
+            $isDiscountApplied=1;
+        }
+    }
+}
+if($quoteTotal==0 && $isDiscountApplied==1)
+{
+?>
+    <input type="hidden" class="mbiz_select_method" value="1" />
+<?php
+} else {
+?>
+    <input type="hidden" class="mbiz_select_method" value="0" />
+<?php
+}
+?>
+<script type="text/javascript">
+    //<![CDATA[
+    <?php echo $this->getChildChildHtml('scripts'); ?>
+    //payment.init();
+    <?php if (is_string($oneMethod)): ?>
+    payment.switchMethod('<?php echo $oneMethod ?>');
+        <?php endif; ?>
+    //]]>
+</script>
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+        var mbizSelectMethod = jQuery('.mbiz_select_method').val();
+        if(mbizSelectMethod==1)
+        {
+            jQuery('#p_method_free').attr("checked","checked");
+        }
+    });
+</script>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+    <modules>
+        <TM_CheckoutSuccess>
+            <version>1.0.0</version>
+        </TM_CheckoutSuccess>
+    </modules>
+
+    <global>
+        <models>
+            <checkoutsuccess>
+                <class>TM_CheckoutSuccess_Model</class>
+            </checkoutsuccess>
+        </models>
+        <helpers>
+            <checkoutsuccess>
+                <class>TM_CheckoutSuccess_Helper</class>
+            </checkoutsuccess>
+        </helpers>
+        <events>
+            <core_layout_update_updates_get_after>
+                <observers>
+                    <checkoutsuccess>
+                        <class>checkoutsuccess/observer</class>
+                        <method>addLayoutUpdate</method>
+                    </checkoutsuccess>
+                </observers>
+            </core_layout_update_updates_get_after>
+        </events>
+    </global>
+
+    <frontend>
+        <!-- @see checkoutsuccess/observer::addLayoutUpdate -->
+        <layout_checkoutsuccess>
+             <updates>
+                  <checkoutsuccess condition="checkoutsuccess/isEnabled">
+                        <file>tm/checkoutsuccess.xml</file>
+                  </checkoutsuccess>
+             </updates>
+        </layout_checkoutsuccess>
+        <events>
+            <controller_action_predispatch_checkout_onepage_success>
+                <observers>
+                    <captcha>
+                        <class>checkoutsuccess/observer</class>
+                        <method>registerCurrentOrder</method>
+                    </captcha>
+                </observers>
+            </controller_action_predispatch_checkout_onepage_success>
+        </events>
+    </frontend>
+
+    <adminhtml>
+        <translate>
+            <modules>
+                <TM_CheckoutSuccess>
+                    <files>
+                        <default>TM_CheckoutSuccess.csv</default>
+                    </files>
+                </TM_CheckoutSuccess>
+            </modules>
+        </translate>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <checkoutsuccess translate="title" module="checkoutsuccess">
+                                            <title>Checkout Success Page</title>
+                                        </checkoutsuccess>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+    </adminhtml>
+
+    <default>
+        <checkoutsuccess>
+            <general>
+                <enabled>0</enabled>
+                <detailed_info>1</detailed_info>
+                <block_top>0</block_top>
+                <block_bottom>0</block_bottom>
+            </general>
+        </checkoutsuccess>
+    </default>
+</config>

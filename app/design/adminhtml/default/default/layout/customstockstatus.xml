@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<layout version="1.0.0">
+	<adminhtml_system_config_edit>
+		<reference name="head">
+			<action method="addItem">
+				<type>skin_css</type>
+				<name>customstockstatus/css/customstockstatus.css</name>
+			</action>
+		</reference>
+	</adminhtml_system_config_edit>
+</layout>

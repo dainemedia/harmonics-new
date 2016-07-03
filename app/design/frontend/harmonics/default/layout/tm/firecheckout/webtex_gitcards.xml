@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <reference name="head">
+            <action method="addJs"><script>webtex/giftcards/onepagegiftcard.js</script></action>
+        </reference>
+        <reference name="checkout.onepage.payment.methods_additional">
+            <block type="giftcards/coupon" name="onepage.giftcard" as="onepagegiftcard" template="tm/firecheckout/webtex/giftcards/checkout/onepage/coupon.phtml" />
+            <block type="core/template" template="tm/firecheckout/webtex/giftcards/checkout/onepage/scripts.phtml" name="webtex_giftcards_scripts" />
+        </reference>
+    </firecheckout_index_index>
+    <giftcard_onepage_coupon>
+        <!-- need to comment this section in original giftcards file -->
+        <block type="giftcards/coupon" name="gc" output="toHtml" template="tm/firecheckout/webtex/giftcards/checkout/onepage/coupon.phtml" />
+        <block type="checkout/onepage_payment_methods" name="root" output="toHtml" template="tm/firecheckout/checkout/payment/methods.phtml">
+            <action method="setMethodFormTemplate"><method>purchaseorder</method><template>payment/form/purchaseorder.phtml</template></action>
+        </block>
+    </giftcard_onepage_coupon>
+</layout>

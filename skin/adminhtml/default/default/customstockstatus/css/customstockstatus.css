@@ -1,0 +1,9 @@
+h3.customstockstatus-header { background:url(../images/customstockstatus_section.png) no-repeat 0 0; height:0; overflow:hidden; padding:18px 0 0; width:180px; }
+ul.tabs a.customstockstatus-section,
+ul.tabs a.customstockstatus-section:hover { background:url(../../images/tabs_span_bg.gif) repeat-x 0 100%; border-bottom:none; padding:0.5em 0.5em 0.28em 1.4em; }
+ul.tabs a.customstockstatus-section:hover { background-color:#d8e6e6; }
+ul.tabs a.customstockstatus-section.active, ul.tabs a.customstockstatus-section.active:hover { background-color:#fff; }
+ul.tabs a.customstockstatus-section span,
+ul.tabs a.customstockstatus-section:hover span { background:url(../images/customstockstatus_section.png) no-repeat 0 0; height:0; overflow:hidden; padding:18px 0 0; width:180px; }
+
+ul.tabs li.cjm-section dl dt { background: #D1DEDF url(../images/cjm_section.png) no-repeat 5px 5px; height:0; overflow:hidden; padding:12px 0px 20px 12px; }

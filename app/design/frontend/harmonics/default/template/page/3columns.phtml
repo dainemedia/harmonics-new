@@ -1,0 +1,72 @@
+<?php
+/**
+ * HTML5 Template - 3 Columns
+ */
+?>
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+		<?php echo $this->getChildHtml('head') ?>
+	</head>
+	<body<?php echo $this->getBodyClass()?' class="'.$this->getBodyClass().'"':'' ?>>
+		<?php echo $this->getChildHtml('after_body_start') ?>
+		<div class="wrapper">
+		    <?php echo $this->getChildHtml('global_notices') ?>
+	        <?php echo $this->getChildHtml('header') ?>
+			<div class="inner-wrapper">
+				<div class="cms-nav-strip">
+					<p class="welcome-msg">
+						<?php
+								$welcome = Mage::getStoreConfig( 'design/header/welcome' );
+					            
+					            if ( Mage::getSingleton( 'customer/session' )->isLoggedIn() ) {
+					                echo $this->__( 'Welcome %s!', $this->htmlEscape( Mage::getSingleton( 'customer/session' )->getCustomer()->getFirstname() ) );
+					            } else {
+									echo $welcome;
+					            }
+						?>
+					</p>
+					
+					<!-- Render cms menu -->
+					<?php echo $this->getChildHtml( 'cmsMenu' ); ?>
+				</div>
+				<div class="middle-strip">
+					<!-- Render logo -->
+					<?php echo $this->getChildHtml( 'siteLogo' ); ?>
+	    
+				    <!-- Render search -->
+					<?php echo $this->getChildHtml('topSearch') ?>
+	    
+				    <!-- Render search -->
+					<?php echo $this->getChildHtml('headerBasket') ?>
+				</div>
+				
+				<!-- Render category menu -->
+				<?php echo $this->getLayout()->getBlock( 'catalog.topnav' )->toHtml(); ?>
+		        <div class="main-container col3-layout">
+					<?php echo $this->getChildHtml( 'global_messages' ) ?>
+					<?php echo $this->getChildHtml( 'breadcrumbs' ) ?>
+		            <div class="main">
+						<?php $moduleName = $this->getRequest()->getModuleName(); ?>
+		            	<?php if( $moduleName == 'cms' ) : ?>
+		            		<h1><?php echo $this->getLayout()->getBlock( 'head' )->getTitle(); ?></h1>
+		            	<?php endif; ?>
+		                <aside class="col-left sidebar"><?php echo $this->getChildHtml('left') ?></aside>
+						<div class="col-main">
+							<?php echo $this->getChildHtml( 'content' ) ?>
+						</div>
+		                <aside class="col-right sidebar"><?php echo $this->getChildHtml('right') ?></aside>
+	        			<?php echo $this->getLayout()->createBlock( 'newsletter/subscribe' )->setTemplate( 'newsletter/subscribe.phtml' )->toHtml(); ?>
+		            </div>
+		        </div>
+		        <?php echo $this->getChildHtml('footer') ?>
+		        <?php echo $this->getChildHtml('before_body_end') ?>
+			</div>
+		</div>
+		<script src="<?php echo $this->getSkinUrl(); ?>js/plugins.js"></script>
+		<script src="<?php echo $this->getSkinUrl(); ?>js/global.js"></script>
+	</body>
+	</html>

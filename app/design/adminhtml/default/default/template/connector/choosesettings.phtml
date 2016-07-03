@@ -1,0 +1,178 @@
+<?php
+//version 100
+$installationData = $this->getInstallationData();
+?>
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td><h3 class="icon-head"><?php echo Mage::helper('microbiz_connector')->__('Microbiz POS Plugin Install') ?></h3>
+
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="entry-edit">
+    <form id="mbiz_install_api_link_form" action="<?php echo Mage::helper("adminhtml")->getUrl("connector/adminhtml_connector/mbizsavedirection/"); ?>" method="post" enctype="multipart/form-data">
+        <?php echo $this->getBlockHtml('formkey')?>
+        <div class="entry-edit-head collapseable">
+            <a>Microbiz POS Plugin Install</a>
+        </div>
+        <fieldset id="connector_settings" class="config collapseable" style="background:none repeat scroll 0 0 #EEEEEE !important;">
+            <legend>Microbiz POS Plugin Install</legend>
+            <table cellspacing="0" class="form-list">
+                <colgroup class="label"></colgroup>
+                <colgroup class="value"></colgroup>
+                <colgroup class="scope-label"></colgroup>
+                <colgroup class=""></colgroup>
+                <tbody>
+                <tr>
+                    <td colspan="3">
+                        <div class="install_setup_img">
+                            <img src="<?php echo $this->getSkinUrl('images/connector/step3.png')?>" alt="No Image" />
+                        </div>
+                    </td>
+                </tr>
+                <tr id="row_connector_install_setting_direction">
+                    <td class="label">
+                        <label for="row_connector_install_setting_direction">Initial Data Sync</label>
+                    </td>
+                    <td class="value">
+                        <select id="connector_install_setting_direction" name="sync_direction" class="validate-select">
+                            <?php
+                            $syncDirStatus = Mage::getStoreConfig('connector/installation/sync_direction');
+                            ?>
+                            <option value="1" <?php if($syncDirStatus==1) { echo 'selected=selected'; }?>>Pull Data from MicroBiz Store</option>
+                            <option value="2" <?php if($syncDirStatus==2) { echo 'selected=selected'; }?>>Pull Data from Magento Site</option>
+                            <option value="0" <?php if($syncDirStatus==0) { echo 'selected=selected'; }?>>No Initial Sync</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr class="note_message">
+                    <td colspan="2">
+                        <p style="align-content: center;">You will be able to select data on the next step.</p>
+                    </td>
+                </tr>
+                <tr id="row_connector_settings_images">
+                    <td class="label">
+                        <img src="<?php echo $this->getSkinUrl('images/connector/magento.png')?>" />
+                        <?php
+                        $mage_url = Mage::getBaseUrl();
+                        $mage_api_url = explode("/index.php/",$mage_url);
+
+                        ?>
+                        <span class="microbiz_site_details"><?php echo $mage_api_url[0]; ?></span>
+                    </td>
+                    <td>
+                        <div class="pull_direction_mbiz_to_mag" style="<?php if($syncDirStatus==1) { echo 'display:block'; } else { echo 'display:none'; }?>">
+                            <img src="<?php echo $this->getSkinUrl('images/connector/mbiz_to_mag.png')?>" />
+                        </div>
+                        <div class="pull_direction_mag_to_mbiz" style="<?php if($syncDirStatus==2) { echo 'display:block'; } else { echo 'display:none'; }?>">
+                            <img src="<?php echo $this->getSkinUrl('images/connector/mag_to_mbiz.png')?>" />
+                        </div>
+                    </td>
+                    <td class="value">
+                        <img src="<?php echo $this->getSkinUrl('images/connector/microbiz.png')?>" /><br/>
+                        <span class="microbiz_site_details"><?php echo $sitename = Mage::getStoreConfig('connector/installation/mbiz_sitename').'.microbiz.com'?></span>
+                    </td>
+                </tr>
+                <?php
+                $formKey = Mage::getSingleton('core/session')->getFormKey();
+                $installation = Mage::getStoreConfig('connector/settings/installation');
+                ?>
+                <tr>
+                    <td colspan="3">
+                        <?php if(!$installation) { ?>
+                            <button class="scalable back" id="back_to" type="button" title="Back" ><span><span><span>Back</span></span></span></button>
+                        <?php } ?>
+                        <!--<button class="scalable mbizform-cancelinstallpos" type="button" title="Cancel" ><span><span><span>Cancel</span></span></span></button>-->
+                        <button class="scalable mbiz_set_sync_dirction" type="button" title="Save and Continue" ><span><span><span>Save and Continue</span></span></span></button>
+
+
+
+                    </td>
+                </tr>
+                <?php $mage_url = Mage::getBaseUrl();
+
+                $formKey = $this->getBlockHtml('formkey');
+                $mage_api_url = explode("/index.php/",$mage_url);
+                $siteType = Mage::getStoreConfig('connector/installation/mbiz_sitetype');
+                $sitename = Mage::getStoreConfig('connector/installation/mbiz_sitename');
+                $username = Mage::getStoreConfig('connector/installation/mbiz_username');
+                $password = Mage::getStoreConfig('connector/installation/mbiz_password');
+                $magApiUname = Mage::getStoreConfig('connector/installation/mag_api_username');
+                $magApiEmail = Mage::getStoreConfig('connector/installation/mag_api_email');
+                $mbizApiUserName = Mage::getStoreConfig('connector/settings/api_user');
+                $mbizApiUserPwd = Mage::getStoreConfig('connector/settings/api_key');
+                $magApiUserPwd = Mage::getStoreConfig('connector/settings/mag_api_key');
+                $syncDirection = Mage::getStoreConfig('connector/installation/sync_direction');
+                ?>
+                <?php
+                $isLinked = Mage::getStoreConfig('connector/installation/is_linked');
+                ?>
+                <input type="hidden" id="is_linked_status" value="<?php echo $isLinked; ?>" />
+                <input type="hidden" id="mage_url" name="mage_url" value="<?php echo $mage_api_url[0]; ?>">
+                <input type="hidden" id="mbiz_back_url" name="mbiz_back_url" value="<?php echo Mage::helper("adminhtml")->getUrl("connector/adminhtml_connector/mbizValidateApiUserDetails/"); ?>" />
+                <input type="hidden" id="mbiz_sitetype" name="mbiz_sitetype" value="<?php echo $siteType ?>" />
+                <input type="hidden" id="mbiz_sitename" name="mbiz_sitename" value="<?php echo $sitename; ?>" />
+                <input type="hidden" id="mbiz_username" name="mbiz_username" value="<?php echo $username; ?>" />
+                <input type="hidden" id="mbiz_password" name="mbiz_password" value="<?php echo $password; ?>" />
+                <input type="hidden" id="mag_api_username" name="mag_api_username" value="<?php echo $magApiUname; ?>" />
+                <input type="hidden" id="mag_api_email" name="mag_api_email" value="<?php echo $magApiEmail; ?>" />
+                <input type="hidden" id="mag_api_password" name="mag_api_password" value="<?php echo $magApiUserPwd; ?>" />
+                <input type="hidden" id="mbiz_api_username" name="mbiz_api_username" value="<?php echo $mbizApiUserName; ?>" />
+                <input type="hidden" id="mbiz_api_password" name="mbiz_api_password" value="<?php echo $mbizApiUserPwd; ?>" />
+
+
+                </tbody>
+            </table>
+        </fieldset>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var mbizSignInForm = new varienForm('mbiz_install_api_link_form');
+    jQuery('.mbiz_set_sync_dirction').live('click',function(){
+        var validated=mbizSignInForm.validate();
+        if(validated){
+            var syncDirection = jQuery('#connector_install_setting_direction').val();
+            if(syncDirection==0)
+            {
+                alert("Install Complete");
+                mbizSignInForm.submit();
+            }
+            else {
+                mbizSignInForm.submit();
+            }
+
+        }
+    });
+</script>
+
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+        jQuery('#connector_install_setting_direction').change(function($this){
+            var pullDataFrom = jQuery(this).val()
+            if(pullDataFrom==1)
+            {
+                jQuery('.pull_direction_mbiz_to_mag').show();
+                jQuery('.pull_direction_mag_to_mbiz').hide();
+            }
+            else if(pullDataFrom==2)
+            {
+                jQuery('.pull_direction_mbiz_to_mag').hide();
+                jQuery('.pull_direction_mag_to_mbiz').show();
+            }
+            else
+            {
+                jQuery('.pull_direction_mbiz_to_mag').hide();
+                jQuery('.pull_direction_mag_to_mbiz').hide();
+            }
+        });
+        jQuery('#back_to').click(function(){
+            //alert("came to f mbiz_back_url");
+            var $mbizBackUrl = jQuery('#mbiz_back_url').val();
+            jQuery("#mbiz_install_api_link_form").attr('action',$mbizBackUrl);
+            jQuery("#mbiz_install_api_link_form").submit();
+        });
+    });
+</script>

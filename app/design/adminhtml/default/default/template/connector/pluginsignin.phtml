@@ -1,0 +1,226 @@
+<?php
+//version 100
+?>
+<?php
+$postData = $this->getInstallSignInData();
+?>
+<?php $sitetype = Mage::getStoreConfig('connector/installation/mbiz_sitetype'); ?>
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td><h3 class="icon-head"><?php echo Mage::helper('microbiz_connector')->__('Microbiz POS Plugin Install') ?></h3>
+
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="entry-edit">
+    <form id="mbiz_install_singin_form" action="<?php echo Mage::helper("adminhtml")->getUrl("connector/adminhtml_connector/mbizvalidateinstallpos/"); ?>" method="post" enctype="multipart/form-data">
+        <?php echo $this->getBlockHtml('formkey')?>
+        <div class="entry-edit-head collapseable">
+            <a>Microbiz POS Plugin Install</a>
+        </div>
+        <fieldset id="connector_settings" class="config collapseable" style="background:none repeat scroll 0 0 #EEEEEE !important;">
+            <legend>Microbiz POS Plugin Install</legend>
+            <table cellspacing="0" class="form-list">
+                <colgroup class="label"></colgroup>
+                <colgroup class="value"></colgroup>
+                <colgroup class="scope-label"></colgroup>
+                <colgroup class=""></colgroup>
+                <tbody>
+                <tr>
+                    <div class="install_setup_img">
+                        <img src="<?php echo $this->getSkinUrl('images/connector/step1.png')?>" alt="Step1" />
+                    </div>
+                </tr>
+                <tr id="row_connector_install_mbiz_sitetype">
+                    <td class="label">
+                        <label for="connector_install_mbiz_sitetype"> MicroBiz Site Type<em style="color:red;">*</em></label>
+                    </td>
+                    <td class="value">
+
+                        <select class="input-text required-entry validate-select" value="<?php echo $sitetype ?>" name="mbiz_sitetype" id="connector_install_mbiz_sitetype">
+                            <option value="1" <?php if($sitetype==1) { echo 'selected=selected'; } ?>>Production</option>
+                            <option value="2" <?php if($sitetype==2) { echo 'selected=selected'; } ?>>Sandbox</option>
+                        </select>
+                        <input type='hidden' id='sitetype' value="<?php echo $sitetype ?>" />
+                    </td>
+
+                </tr>
+
+                <tr id="row_connector_install_mbiz_sitename">
+                    <td class="label">
+                        <label for="connector_install_mbiz_sitename"> MicroBiz Site<em style="color:red;">*</em></label>
+                    </td>
+                    <td class="value">
+                        <?php $sitename = Mage::getStoreConfig('connector/installation/mbiz_sitename'); ?>
+                        <input type="text" placeholder="Your Site Name"
+                               class="<?php if($sitetype==2){ echo 'input-text required-entry validate-url'; } else { echo 'input-text required-entry validate-alphanum';} ?>"
+                               value="<?php echo $sitename ?>" name="mbiz_sitename" id="connector_install_mbiz_sitename">
+                        <span class="production" style="<?php if($sitetype==2){ echo 'display:none'; } else { echo 'display:block;float:right';}?>">.microbiz.com</span>
+                        <input type='hidden' id='urlvalue' value='<?php echo Mage::helper("adminhtml")->getUrl("connector/index/mbizInstanceTestConnection"); ?>' />
+                    </td>
+                </tr>
+
+                <!--<tr id="row_connector_install_mbiz_sitename_sand" style="<?php if($sitetype==2){ echo 'display:block'; } else { echo 'display:none'; } ?>" class="sandbox">
+            <td class="label">
+                <label for="connector_install_mbiz_sitename_sand"> MicroBiz Site<em style="color:red;">*</em></label>
+            </td>
+            <td class="value">
+		<?php $sitename = Mage::getStoreConfig('connector/installation/mbiz_sitename'); ?>
+                <input type="text" placeholder="Your Site Complete Url" class="<?php if($sitetype==2){ echo 'input-text required-entry'; } ?>" value="<?php echo $sitename ?>" name="mbiz_sitename_sand" id="connector_install_mbiz_sitename_sand" />                
+            </td>
+            <input type='hidden' id='urlvalue' value='<?php echo Mage::helper("adminhtml")->getUrl("connector/index/mbizInstanceTestConnection"); ?>'>
+        </tr>-->
+                <tr id="row_connector_install_mbiz_username">
+                    <td class="label">
+                        <label for="connector_install_mbiz_username"> Admin User Name<em style="color:red;">*</em></label>
+                    </td>
+                    <td class="value">
+                        <?php $username = Mage::getStoreConfig('connector/installation/mbiz_username'); ?>
+                        <input type="text" placeholder="MicroBiz Admin User Login Name" class=" input-text required-entry" value="<?php echo $username ?>" name="mbiz_username" id="connector_install_mbiz_username">
+                    </td>
+                </tr>
+                <tr id="row_connector_install_mbiz_password">
+                    <td class="label">
+                        <label for="connector_install_mbiz_password"> Admin Password<em style="color:red;">*</em></label>
+                    </td>
+                    <td class="value">
+                        <?php $password = Mage::getStoreConfig('connector/installation/mbiz_password'); ?>
+                        <input type="password" placeholder="MicroBiz Admin User Login Password" class=" input-text required-entry" value="<?php echo $password; ?>" name="mbiz_password" id="connector_install_mbiz_password">
+                        <button type="button" id="mbizform-test-posconnection" value="Test Connection" >Test Connection</button>
+                    </td>
+                </tr>
+                <tr><div id='connection-result'></div></tr>
+                <?php
+                $formKey = Mage::getSingleton('core/session')->getFormKey();
+                ?>
+                <tr>
+                    <td colspan="2">
+                        <?php $secretKey = Mage::getSingleton('adminhtml/url')->getSecretKey();?>
+
+                        <button class="scalable back" id="back_to" type="button" title="Back" ><span><span><span>Back</span></span></span></button>
+                        <!--<button class="scalable mbizform-cancelinstallpos" type="button" title="Cancel" ><span><span><span>Cancel</span></span></span></button>-->
+                        <button class="scalable mbiz_install_save_signin_form" type="button" title="Save and Continue" ><span><span><span>Save and Continue</span></span></span></button>
+
+
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <?php
+            $isSecure = Mage::app()->getStore()->isCurrentlySecure();
+            $magentoBaseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, $isSecure);
+            $mage_url = $magentoBaseUrl;
+            //$mage_url_domain = explode('://',Mage::getBaseUrl());
+            //print_r($mage_url_domain[1]);
+            $formKey = $this->getBlockHtml('formkey');
+            $mage_api_url = explode("/index.php/",$mage_url);
+
+            ?>
+            <input type="hidden" id="mage_url" name="mage_url" value="<?php echo $mage_api_url[0]; ?>">
+            <input type="hidden" id="mbiz_back_url" name="mbiz_back_url" value="<?php echo Mage::helper("adminhtml")->getUrl("connector/adminhtml_connector/index/"); ?>" />
+
+            <input type="hidden" id="mbiz_post_signin" name="mbiz_post_signin" value="1" />
+        </fieldset>
+    </form>
+</div>
+<script type="text/javascript">
+    var mbizSignInForm = new varienForm('mbiz_install_singin_form');
+    jQuery('.mbiz_install_save_signin_form').live('click',function(){
+
+        var validated=mbizSignInForm.validate();
+        Validation.add('validate-strictalphanumericmustfill','Please use only letters (a-z or A-Z) or numbers (0-9) only in this field. No spaces or other characters are allowed.', function(v) {
+            return Validation.get('IsEmpty').test(v) ||  /^[a-zA-Z0-9\-_]+$/.test(v) /*!/\W/.test(v)*/
+        })
+        if(validated){
+
+            mbizSignInForm.submit();
+        }
+
+    });
+    jQuery('#back_to').click(function(){
+        //alert("came to f mbiz_back_url");
+        var $mbizBackUrl = jQuery('#mbiz_back_url').val();
+        //alert(mbizBackUrl);
+        jQuery("#mbiz_install_singin_form").attr('action',$mbizBackUrl);
+        jQuery("#mbiz_install_singin_form").submit();
+    });
+</script>
+<script>
+    jQuery('#mbizform-test-posconnection').live('click',function(){
+        var validated=mbizSignInForm.validate();
+
+        if(validated) {
+            var apitype = jQuery('#connector_install_mbiz_sitetype').val();
+            if(apitype==1)
+            {
+                var apiserver=jQuery('#connector_install_mbiz_sitename').val();
+//            apiserver = apiserver+'.microbiz.com';
+                apiserver = apiserver;
+            }
+            else {
+                apiserver=jQuery('#connector_install_mbiz_sitename').val();
+            }
+
+            var apipath=jQuery('#connector_install_mbiz_username').val();
+            var apipassword=jQuery('#connector_install_mbiz_password').val();
+            var mageurl=jQuery('#mage_url').val();
+            var url = jQuery('#urlvalue').val();
+            jQuery('#loading-mask').show();
+            jQuery.ajax({
+                url: url,
+                dataType: 'json',
+                type : 'post',
+                // datatype:"json",
+                data:{ mbiz_sitetype:apitype,mbiz_sitename: apiserver,mbiz_username: apipath,mbiz_password: apipassword,mage_url:mageurl},
+                success: function(data){
+                    alert(data.status+" : "+data.message);
+                    if(data.status=='SUCCESS') {
+                        jQuery('#connection-result').css('color','green');
+                        jQuery('#connection-result').css('font-weight','bold');
+                        jQuery('#connection-result').text(data.message);
+                        //jQuery('#connector_settings_syncstatus').val(data.syncstatus);
+                        jQuery('#mbiz_install_singin_form').show();
+                    }
+                    else {
+                        jQuery('#connection-result').css('color','red');
+                        jQuery('#connection-result').css('font-weight','bold');
+                        jQuery('#connection-result').text(data.message);
+                        //jQuery('#mbizform').hide();
+                    }
+                    jQuery('#loading-mask').hide();
+                    setInterval(function() {
+                        jQuery('#connection-result').hide();
+
+                    },  5000);
+                },
+                error: function(e)
+                {
+                    jQuery('#loading-mask').hide();
+                    alert('Error Occurred '+ e.message)
+                }
+            });
+        }
+    });
+    /*jQuery('.mbizform-backinstallpos').click(function(){
+     var backUrl = jQuery('#mbiz_back_url').val();
+     window.location.href = backUrl;
+     });*/
+    jQuery('#connector_install_mbiz_sitetype').change(function(){
+        var siteType = jQuery('#connector_install_mbiz_sitetype').val();
+        //alert(siteType);
+        if(siteType==1)
+        {
+            jQuery('.production').show();
+            jQuery('#connector_install_mbiz_sitename').removeClass('input-text required-entry validate-url')
+            jQuery('#connector_install_mbiz_sitename').addClass('input-text required-entry validate-alphanum');
+        }
+        else {
+            jQuery('.production').hide();
+            jQuery('#connector_install_mbiz_sitename').removeClass('input-text required-entry validate-alphanum')
+            jQuery('#connector_install_mbiz_sitename').addClass('input-text required-entry  validate-url');
+        }
+    });
+</script>

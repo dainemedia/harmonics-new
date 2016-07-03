@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<layout>
+    <adminhtml_sales_order_view>
+        <reference name="content">
+            <block type="core/template" name="sales_order_deliverydate" template="firecheckout/deliverydate.phtml"/>
+        </reference>
+    </adminhtml_sales_order_view>
+
+    <adminhtml_sales_order_create_index>
+        <reference name="optional_zip_countries">
+            <action method="setTemplate"><template>firecheckout/directory/js/optional_zip_countries.phtml</template></action>
+        </reference>
+    </adminhtml_sales_order_create_index>
+</layout>

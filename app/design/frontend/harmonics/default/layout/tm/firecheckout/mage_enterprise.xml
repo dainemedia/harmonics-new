@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <update handle="customer_form_template_handle"/>
+        <reference name="checkout.onepage.billing">
+            <block type="enterprise_customer/form" template="customer/form/userattributes.phtml" name="customer_form_customer_user_defined_attributes">
+                <action method="setFormCode"><code>checkout_register</code></action>
+            </block>
+            <block type="enterprise_customer/form" template="customer/form/userattributes.phtml" name="customer_form_billing_address_user_defined_attributes">
+                <action method="setFormCode"><code>customer_register_address</code></action>
+            </block>
+        </reference>
+        <reference name="checkout.onepage.shipping">
+            <block type="enterprise_customer/form" template="customer/form/userattributes.phtml" name="customer_form_shipping_address_user_defined_attributes">
+                <action method="setFormCode"><code>customer_register_address</code></action>
+            </block>
+        </reference>
+        <reference name="checkout.onepage.payment.methods.scripts">
+            <block type="enterprise_customerbalance/checkout_onepage_payment_additional" template="tm/firecheckout/customerbalance/checkout/onepage/payment/scripts.phtml" name="customerbalance_scripts" />
+        </reference>
+        <reference name="checkout.onepage.payment.methods_additional" as="methods_additional">
+            <block type="enterprise_customerbalance/checkout_onepage_payment_additional" template="tm/firecheckout/customerbalance/checkout/onepage/payment/additional.phtml" name="customerbalance" />
+            <block type="enterprise_reward/checkout_payment_additional" template="tm/firecheckout/reward/checkout/onepage/payment/additional.phtml" name="reward.points" before="-"/>
+        </reference>
+        <reference name="content">
+            <block type="enterprise_giftwrapping/checkout_options" name="checkout.options" template="giftwrapping/checkout/options.phtml" />
+        </reference>
+        <reference name="firecheckout">
+            <block type="enterprise_giftcardaccount/checkout_cart_giftcardaccount" name="checkout.giftcard" as="giftcard">
+                <action method="setTemplate" ifconfig="firecheckout/general/giftcard"><template>tm/firecheckout/giftcardaccount/cart/block.phtml</template></action>
+            </block>
+        </reference>
+        <reference name="info">
+            <action method="addItemRender">
+                <type>giftcard</type>
+                <block>enterprise_giftcard/checkout_cart_item_renderer</block>
+                <template>checkout/onepage/review/item.phtml</template>
+            </action>
+        </reference>
+    </firecheckout_index_index>
+    <firecheckout_index_updatecheckout>
+        <reference name="checkout.onepage.payment.methods.scripts">
+            <block type="enterprise_customerbalance/checkout_onepage_payment_additional" template="tm/firecheckout/customerbalance/checkout/onepage/payment/scripts.phtml" name="customerbalance_scripts" />
+            <block type="enterprise_reward/checkout_payment_additional" template="tm/firecheckout/reward/checkout/onepage/payment/scripts.phtml" name="reward.scripts" after="-" />
+        </reference>
+        <block type="enterprise_giftcardaccount/checkout_cart_giftcardaccount" name="checkout.giftcard" as="giftcard">
+            <action method="setTemplate" ifconfig="firecheckout/general/giftcard"><template>tm/firecheckout/giftcardaccount/cart/block.phtml</template></action>
+        </block>
+        <reference name="checkout.review">
+            <action method="addItemRender">
+                <type>giftcard</type>
+                <block>enterprise_giftcard/checkout_cart_item_renderer</block>
+                <template>checkout/onepage/review/item.phtml</template>
+            </action>
+        </reference>
+    </firecheckout_index_updatecheckout>
+</layout>

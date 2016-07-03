@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<layout>
+    <firecheckout_index_index>
+        <reference name="checkout.onepage.review.info.items.after">
+            <block name="iframe" type="bitcoins/iframe"/>
+        </reference>
+    </firecheckout_index_index>
+
+    <firecheckout_index_updatecheckout>
+        <reference name="checkout.onepage.review.info.items.after">
+            <block name="iframe" type="bitcoins/iframe"/>
+        </reference>
+    </firecheckout_index_updatecheckout>
+</layout>

@@ -1,0 +1,82 @@
+<?php
+$_product = $this->getProduct();
+$_helper = $this->helper('catalog/output');
+$_imageszoom = $this->helper('iwd_productvideo/zoom');
+$config = $_imageszoom->getTemplateConfig();
+?>
+<div class="colorswatch-images-zoom">
+    <?php if ($_product->getImage() != 'no_selection' && $_product->getImage()): ?>
+
+        <?php $class = $_imageszoom->checkPositionMainImage($config); ?>
+
+        <?php if ($_imageszoom->checkPositionThumbnails($config) == 'top'): ?>
+            <?php echo $this->getChildHtml('iwd.productvideo.media.thumbnails'); ?>
+        <?php endif; ?>
+
+        <div id="iwd_product_media_box">
+            <div id="iwd_media_pre_loader"><div class="ajax-loader-gif"></div></div>
+            <div id="iwd_product_video_box">
+                <div class="iwd-product-video-wrapper" style="width:100%; height:<?php echo $config->getImageHeight() ?>px;"></div>
+            </div>
+            <div id="iwd_product_image_box">
+                <div class="zoom-container <?php echo $class; ?>"
+                     style="width:<?php echo $config->getImageWidth() ?>px; height:<?php echo $config->getImageHeight() ?>px;">
+                    <div class="ajax-loader"></div>
+                    <?php
+                    $_img = '<img id="image" src="' . $this->helper('catalog/image')->init($_product, 'image')->resize($config->getImageWidth(), $config->getImageHeight()) . '" alt="' . $this->htmlEscape($this->getImageLabel()) . '" title="' . $this->htmlEscape($this->getImageLabel()) . '" />';
+                    echo $_helper->productAttribute($_product, $_img, 'image');
+                    ?>
+                </div>
+
+                <div class="colorswatch-zoom-box"
+                     style="width:<?php echo $config->getZoomBoxWidth() ?>px; height:<?php echo $config->getZoomBoxHeight() ?>px; display:none">
+                    <?php
+                    $_img = '<img id="image" src="' . $this->helper('catalog/image')->init($_product, 'image')->resize($config->getImageWidth() * $config->getZoomRatio(), $config->getImageHeight() * $config->getZoomRatio()) . '" alt="' . $this->htmlEscape($this->getImageLabel()) . '" title="' . $this->htmlEscape($this->getImageLabel()) . '" />';
+                    echo $_helper->productAttribute($_product, $_img, 'image');
+                    ?>
+                </div>
+            </div>
+        </div>
+        <?php if (($_imageszoom->checkPositionThumbnails($config) == 'bottom' || $_imageszoom->checkPositionThumbnails($config) == 'right' || $_imageszoom->checkPositionThumbnails($config) == 'left')): ?>
+            <?php echo $this->getChildHtml('iwd.productvideo.media.thumbnails'); ?>
+        <?php endif; ?>
+
+        <div id="iwd_product_video_popup_overlay">
+            <div class="video_popup">
+                <div id="iwd_video_popup_pre_loader"><div class="ajax-loader-gif"></div></div>
+                <a href="#" id="video_popup_close">X</a>
+                <div class="video-wrapper">
+                    <h4></h4>
+                    <div class="video-player"></div>
+                    <p></p>
+                </div>
+            </div>
+        </div>
+    <?php else: ?>
+        <?php $class = $_imageszoom->checkPositionMainImage($config); ?>
+
+        <div class="zoom-container <?php echo $class; ?>"
+             style="width:<?php echo $config->getImageWidth() ?>px; height:<?php echo $config->getImageHeight() ?>px;">
+            <?php
+            $_img = '<img id="image" src="' . $this->helper('catalog/image')->init($_product, 'image')->resize($config->getImageWidth(), $config->getImageHeight()) . '" alt="' . $this->htmlEscape($this->getImageLabel()) . '" title="' . $this->htmlEscape($this->getImageLabel()) . '" />';
+            echo $_helper->productAttribute($_product, $_img, 'image');
+            ?>
+        </div>
+    <?php endif; ?>
+
+
+
+    <script>
+        //<![CDATA[
+        var colorSwatchZoomSettings = '<?php echo $_imageszoom->getJsonConfig();?>';
+        jQuery(document).ready(function () {
+            IWD.Zoom.init('.zoom-container', '.thumbnails-container');
+
+            IWD.ProductVideoView.inPopup = <?php echo Mage::helper('iwd_productvideo')->inPopup(); ?>;
+            IWD.ProductVideoView.urlGetVideo = "<?php echo $this->getUrlController(); ?>?isAjax=true";
+            IWD.ProductVideoView.autoload = <?php echo Mage::helper("iwd_productvideo")->isAutoplayVideo() ?>;
+            IWD.ProductVideoView.init('.product-image-zoom', '.thumbnails-container');
+        });
+        //]]>
+    </script>
+</div>

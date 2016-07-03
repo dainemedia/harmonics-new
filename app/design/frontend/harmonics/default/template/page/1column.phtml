@@ -1,0 +1,231 @@
+<?php
+/**
+ * HTML5 Template - 1 Column
+ */
+?>
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js ie lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js ie lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js ie lt-ie9"> <![endif]-->
+<!--[if IE 9]>         <html class="no-js ie ie9"> <![endif]-->
+<!--[if gt IE 9]><!--> <html class="no-js"> <!--<![endif]-->
+	<?php
+		$products = Mage::getModel( 'catalog/category' )->getProductCollection()->setDisableFlat(true)
+			->addAttributeToSelect( '*' );
+		
+		$categories = Mage::helper( 'catalog/category' )->getStoreCategories();
+		
+		$new = new Mage_Page_Block_Html_Header();
+	?>
+    <head>
+		<?php echo $this->getChildHtml( 'head' ) ?>
+	</head>
+	<?php
+		function getCurrentPath( $url ) {
+			$path = parse_url( $url, PHP_URL_PATH );
+			$pathTrimmed = trim( $path, '/' );
+			$pathTokens = explode( '/', $pathTrimmed );
+			
+			if ( substr( $path, -1 ) !== '/' ) {
+		        array_pop( $pathTokens );
+		    }
+		    return end( $pathTokens );
+		}
+		
+		$isContacts = getCurrentPath( $_SERVER['REQUEST_URI'] );
+	?>
+	<body<?php echo $this->getBodyClass()?' class="' . $this->getBodyClass() . '"':'' ?>>
+		<?php echo $this->getChildHtml( 'after_body_start' ); ?>
+		<?php echo $this->getChildHtml( 'header' ); ?>
+		<div class="container-fluid">
+			<div class="inner-wrapper">
+			    <?php echo $this->getChildHtml( 'global_notices' ); ?>
+	            <?php echo $this->getChildHtml( 'breadcrumbs' ); ?>
+	            <?php echo $this->getChildHtml( 'global_messages' ); ?>
+				<?php if ( $new->getIsHomePage() ) { ?>
+					<div class="row subscribe">
+						<?php echo $this->getLayout()->createBlock( 'newsletter/subscribe' )->setTemplate( 'newsletter/subscribe.phtml' )->toHtml(); ?>
+					</div>
+					<div class="row">
+						<div class="features">
+							<div class="col-md-8">
+					            <div id="slider" class="flexslider">
+					            	<ul class="slides">
+							           	<?php foreach ( $products as $product ) : ?>
+							           		<?php if ( $product->getFeaturedImage() != "no_selection" && $product->getFeaturedImage() && $product->getShowFeaturedImage() == 1 ) { ?>
+							           			<li>
+							           				<a href="<?php echo $product->getProductUrl(); ?>" title="<?php echo $product->getName(); ?>"><img src="<?php echo $this->helper( 'catalog/image' )->init( $product, 'featured_image' ); ?>" alt="<?php echo $product->getName(); ?>" /></a>
+							           			</li>
+							           		<?php } ?>
+							           	<?php endforeach; ?>
+							           	<?php foreach ( $categories as $category ) : ?>
+						           			<?php
+						           				$catID = $category->getId();
+						           				$categoryURL = Mage::getModel('catalog/category')->load( $catID )->getUrl();
+						           				$catImageURL = Mage::getModel('catalog/category')->load( $catID )->getImageUrl();
+						           			?>
+							           		<?php if ( $catImageURL != "" && $catImageURL ) { ?>
+							           			<li>
+							           				<a href="<?php echo $categoryURL; ?>" title="<?php echo $category->getName(); ?>"><img src="<?php echo $catImageURL; ?>" alt="<?php echo $category->getName(); ?>" /></a>
+							           			</li>
+							           		<?php } ?>
+						           			<?php
+						           				$_category = Mage::getModel( 'catalog/category' )->load( $category->getId() );
+												$subCategories = $_category->getChildrenCategories();
+											?>
+						           			<?php foreach ( $subCategories as $subCategory ) : ?>
+						           				<?php
+							           				$subCatID = $subCategory->getId();
+							           				$subCategoryURL = Mage::getModel('catalog/category')->load( $subCatID )->getUrl();
+							           				$subCatImageURL = Mage::getModel('catalog/category')->load( $subCatID )->getImageUrl();
+							           			?>
+							           			<?php if ( $subCatImageURL != "" && $subCatImageURL ) { ?>
+							           				<li>
+								           				<a href="<?php echo $subCategoryURL; ?>" title="<?php echo $subCategory->getName(); ?>"><img src="<?php echo $subCatImageURL; ?>" alt="<?php echo $subCategory->getName(); ?>" /></a>
+								           			</li>
+								           		<?php } ?>
+						           			<?php endforeach; ?>
+							           	<?php endforeach; ?>
+						           	</ul>
+					            </div>
+					        </div>
+					        <div class="col-md-4">
+					            <div class="customBlock">
+					            	<?php echo $this->getLayout()->createBlock( 'cms/block' )->setBlockId( 'homepage_banners' )->toHTML(); ?>
+					            </div>
+					        </div>
+					    </div>
+					</div>
+		        	<div class="row">
+		        		<div class="banners">
+			        		<div class="col-md-4">
+			            		<a class="banner" href="<?php echo $this->getUrl( 'customer-service' ) ?>" title="Free Delivery and a Free Set of Headphones on All Orders Over £149">
+									<img src="<?php echo $this->getSkinUrl('images/fd-banner.png') ?>" alt="Free Delivery" />
+			            		</a>
+			            	</div>
+			        		<div class="col-md-4">
+			            		<a class="banner" href="<?php echo $this->getUrl( 'customer-service' ) ?>" title="Same Day Dispatch Available Before 2pm">
+									<img src="<?php echo $this->getSkinUrl('images/sdd-banner.png') ?>" alt="Same Day Dispatch Available Before 2pm" />
+			            		</a>
+			            	</div>
+			        		<div class="col-md-4">
+			            		<a class="banner" href="<?php echo $this->getUrl( 'customer-service' ) ?>" title="100% Guaranteed 14 Day Returns Policy">
+									<img src="<?php echo $this->getSkinUrl('images/grp-banner.png') ?>" alt="100% Guaranteed 14 Day Returns Policy" />
+			            		</a>
+			            	</div>
+			            </div>
+		            </div>
+		            <div class="row">
+			            <section id="featured" class="carousel slide" data-ride="carousel">
+			            	<?php $freeDelivery = $this->getSkinUrl( 'images/sprite-bg.png' ); ?>
+					            
+					        <div class="carousel-inner">
+					        
+						        <?php
+							        $i = 0;
+
+							        foreach ($products as $product)
+							        {
+								        if ( $product->getFeaturedProduct() == 1 )
+								        {
+								            if ($i % 3 == 0)
+								            {
+								                echo '<div class="item">';
+								            }
+								?>
+					            	<div class="col-md-4 product">
+					            
+				            			<a class="product-image" href="<?php echo $product->getProductUrl(); ?>" title="<?php echo $product->getName(); ?>">
+				            				<!--
+				            				<meta property="og:image" content="<?php // echo $image; ?>" />
+				            				-->
+				            				<?php if ( $product->getPrice() >= 149 ) { ?>
+				            					<div class="free-delivery">&nbsp;</div>
+				            					<div class="free-headphones">&nbsp;</div>
+				            				<?php } ?>
+				            				<img src="<?php echo $product->getMediaConfig()->getMediaUrl($product->getData('image')); ?>" alt="<?php echo $product->getName(); ?>"/>
+				            			</a>
+				            			<?php
+				            				$chars = array( '™' => '', '®' => '', ' ' => '%20' );
+											$titleReplace = array( '™' => '&trade;', '®' => '$reg;' );
+				            			?>
+				            			<h3><a href="<?php echo $product->getProductUrl(); ?>" title="<?php echo strtr( $product->getName(), $titleReplace ); ?>"><?php echo $product->getName(); ?></a></h3>
+				            			<?php
+				            				$price = $product->getPrice();
+				            				$price = $this->helper( 'checkout' )->formatPrice( $price );
+				            			?>
+				            			<span class="price-box">Only<?php echo $price; ?></span>
+				            			<?php $cartURL = Mage::helper( 'checkout/cart' )->getAddUrl( $product ); ?>
+				            			<div class="utility">
+					            			<a class="add-to-cart" href="<?php echo $cartURL; ?>" title="Add to Basket">Add to Basket</a>
+					            		</div>
+					            	</div>
+								<?php            
+								            $i++;
+
+								            if ($i % 3 == 0)
+								            {
+								                echo '</div>';
+								            }
+
+								        }
+							        }
+
+							        if ($i % 3 != 0)
+							        {
+							            echo '</div>';
+							        }
+							    ?>
+
+						    </div>
+						    <!-- <a class="left carousel-control" href="#featured" data-slide="prev"></a>
+						    <a class="right carousel-control" href="#featured" data-slide="next"></a> -->
+					        <ol class="carousel-indicators">
+								<?php
+							        $i = 0;
+							        $key = -1;
+
+							        foreach ($products as $product)
+							        {
+							        	if ( $product->getFeaturedProduct() == 1 )
+							        	{
+								            if ($i % 3 == 0)
+								            {
+								                $key++;
+								                echo '<li data-target="#featured" data-slide-to="' . $key . '"></li>';
+								            }
+							            
+							            	$i++;
+							        	}
+							        }
+						        ?>
+					        </ol>
+			            </section>
+			        </div>
+				<?php } else { ?>
+					<div class="page">
+						<div class="row">
+							<div class="col-md-12">
+								<?php $moduleName = $this->getRequest()->getModuleName(); ?>
+				            	<?php // if( $moduleName == 'cms' ) : ?>
+				            		<!-- <h1><?php // echo $this->getLayout()->getBlock( 'head' )->getTitle(); ?></h1> -->
+				            	<?php // endif; ?>
+				            </div>
+				        </div>
+				        <div class="row">
+				        	<div class="col-md-12">
+								<?php echo $this->getChildHtml( 'content' ) ?>
+							</div>
+						</div>
+					</div>
+					<div class="row subscribe">
+						<?php echo $this->getLayout()->createBlock( 'newsletter/subscribe' )->setTemplate( 'newsletter/subscribe.phtml' )->toHtml(); ?>
+					</div>
+				<?php } ?>
+			</div>
+		</div>
+        <?php echo $this->getChildHtml( 'footer' ) ?>
+        <?php echo $this->getChildHtml( 'before_body_end' ) ?>
+		<script src="<?php echo $this->getSkinUrl(); ?>js/compressed.js"></script>
+	</body>
+</html>

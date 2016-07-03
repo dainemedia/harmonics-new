@@ -1,0 +1,202 @@
+<?php
+//version 106
+    if(Mage::getStoreConfig('connector/settings/giftcard')) {
+        $cart_qty = (int) Mage::getModel('checkout/cart')->getQuote()->getItemsQty();
+        if($cart_qty==0 || $cart_qty=='')
+        {
+            Mage::getSingleton('checkout/session')->unsMultiData();
+            Mage::getSingleton('core/session')->unsCreditData();
+            Mage::getSingleton('checkout/session')->unsCreditData();
+            Mage::getSingleton('checkout/session')->unsCreditFinalData();
+            Mage::getSingleton('checkout/session')->unsCreditDiscountData();
+            Mage::getSingleton('checkout/session')->unsGiftBuyData();
+        }
+    ?>
+        <?php
+        //Mage::getSingleton('checkout/session')->unsCreditData();
+        //Mage::getSingleton('checkout/session')->unsCreditFinalData();
+        $creditData = Mage::getSingleton('checkout/session')->getCreditData();
+        $arrCreditData = unserialize($creditData);
+        $isCredit = 0;
+        $creditNo = 0;
+        $creditAmt = 0;
+        if(count($arrCreditData>0))
+        {
+            foreach($arrCreditData as $key=>$data)
+            {
+                if($data['credit_type']==2)
+                {
+                    $isCredit = 1;
+                    $creditNo = $data['credit_no'];
+                    $creditAmt = $data['credit_amt'];
+                    $creditPin = $data['credit_pin'];
+                }
+            }
+        }
+        ?>
+        <?php
+        if($isCredit==1)
+        {
+            $actionUrl = $this->getUrl('connector/index/mbizUpdateDiscountAmount',array('_secure'=>true));
+            $class1="none";
+            $class2="block";
+            $title = 'Apply Gift Card';
+
+        }
+        else
+        {
+            $actionUrl = $this->getUrl('connector/index/mbizValidateGiftCard',array('_secure'=>true));
+            $class1="block";
+            $class2="none";
+            $title = 'Pay with Gift Card';
+        }
+        ?>
+    <div class="cart">
+        <form id="discount-giftcard-form" action="<?php echo $actionUrl ?>" method="post" autocomplete="off">
+            <div class="discount have-giftcard-div" style="display: <?php echo $class1 ?>">
+                <div class="buttons-set">
+                    <button type="button" title="<?php echo $this->__('I have a Gift Card') ?>" class="button have-giftcard"
+                            value="<?php echo $this->__('I have a Gift Card') ?>">
+                        <span><span><?php echo $this->__('I have a Gift Card') ?></span></span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="discount" id="giftcard-redem-discount" style="display: <?php echo $class2 ?>">
+                <h2><?php echo $this->__($title) ?></h2>
+                <?php
+                if($isCredit==1)
+                {
+                    ?>
+                    <p style="font-size: 10px">****<?php echo substr($creditNo,-4) ?>&nbsp;Current Balance <?php echo $creditAmt; ?>&nbsp;&nbsp;
+                        <a class="btn-remove btn-remove2"href="<?php echo $this->getUrl('connector/index/mbizCancelCreditPost/id/'.$creditNo) ?>">Cancel</a><br/>
+                    </p>
+                <?php
+
+                }
+                ?>
+                <div class="discount-form">
+                    <?php
+                    if($isCredit==1)
+                    {
+                        $quote = Mage::getModel('checkout/cart')->getQuote();
+                        $cartTotal = $quote->getGrandTotal();
+                        if($cartTotal>=$creditAmt)
+                        {
+                            $amount = $creditAmt;
+                        }
+                        else
+                        {
+                            $amount = $cartTotal;
+                        }
+                        ?>
+                        <label for="credit_amt"><?php echo $this->__('Amount.') ?></label>
+                        <div class="input-box">
+                            <input class="input-text" id="credit_amt" name="credit_amt" value="<?php echo $amount ?>" class="required-entry validate-num"/>
+                            <input type="hidden" name="credit_no" value="<?php echo $creditNo ?>" />
+                            <input type="hidden" name="credit_type" value="2" />
+                            <input type="hidden" name="current_bal" value="<?php echo $creditAmt; ?>" />
+                            <input type="hidden" name="credit_pin" value="<?php echo $creditPin;?>" />
+                        </div>
+                    <?php
+                    }
+                    else{
+                        ?>
+                    <label for="gift_no"><?php echo $this->__('Enter your gift card no.') ?></label>
+                    <input type="hidden" name="remove" id="remove-coupone" value="0" />
+                    <div class="input-box">
+                        <input class="input-text" id="gift_no" name="gift_no" value="" placeholder="Enter Gift Card Number" autocomplete="off" class="required-entry validate-alphanum"/>
+                    </div>
+
+                        <label for="gift_pin"><?php echo $this->__('Enter your gift card pin.') ?></label>
+                        <div class="input-box">
+                            <input class="input-text" type="password" placeholder="Enter Pin" id="gift_pin" name="gift_pin" value="" autocomplete="off" class="validate-alphanum"/>
+                        </div>
+                    <?php }?>
+                    <div class="buttons-set">
+                        <button type="button" title="<?php echo $this->__('Apply Gift Card') ?>" class="button"
+                                value="<?php echo $this->__('Apply Gift Card') ?>" onclick="giftCardForm.submit(false)">
+                            <span><span><?php echo $this->__('Apply Gift Card') ?></span></span></button>
+
+
+                        <?php
+                        $quote = Mage::getModel('checkout/cart')->getQuote();
+                        $quoteCreditDiscountData = $quote->getCreditDiscountData();
+                        $quoteCreditDiscountData = unserialize($quoteCreditDiscountData);
+                        if(count($quoteCreditDiscountData)>0)
+                        {
+                            ?>
+                            <br/><div class="store-credits">
+                            <?php
+                            if(is_array($quoteCreditDiscountData))
+                            {
+
+                                foreach($quoteCreditDiscountData as $data)
+                                {
+                                    if($data['credit_type']==2){
+                                    ?>
+                                    Gift Card (<?php echo $data['credit_no']; ?>) - Amount <?php echo $this->helper('checkout')->formatPrice(-$data['credit_amt']); ?>
+                                     <a class="btn-remove btn-remove2" href="<?php echo $this->getUrl('connector/index/mbizRemoveCreditPost/id/'.$data['credit_no']) ?>">&nbsp;&nbsp; Remove</a><br/>
+                                <?php
+                                    }
+
+                                }
+
+                            }
+                            ?>
+
+                        </div>
+
+                        <?php
+                        }
+                        ?>
+
+                    </div>
+                </div>
+            </div> <!-- discount class end here-->
+            <input type="hidden" class="current_store_currency_symbol" value="<?php echo Mage::app()->getLocale()->currency(Mage::app()->getStore()->getCurrentCurrencyCode())->getSymbol(); ?> " />
+        </form>
+    </div>
+<?php } ?>
+
+<script type="text/javascript">
+    //<![CDATA[
+    <?php
+        if($isCredit==0)
+        {
+     ?>
+    var giftCardForm = new VarienForm('discount-giftcard-form');
+    giftCardForm.submit = function (isRemove) {
+        if (isRemove) {
+            $('gift_no').removeClassName('required-entry');
+            //$('gift_pin').removeClassName('required-entry');
+
+        } else {
+            $('gift_no').addClassName('required-entry');
+            //$('gift_pin').addClassName('required-entry');
+
+        }
+        return VarienForm.prototype.submit.bind(giftCardForm)();
+    }
+    <?php
+        }
+        else
+        {
+    ?>
+    var giftCardForm = new VarienForm('discount-giftcard-form');
+    giftCardForm.submit = function (isRemove) {
+        if (isRemove) {
+            $('credit_amt').removeClassName('required-entry');
+
+        } else {
+            $('credit_amt').addClassName('required-entry');
+
+        }
+        return VarienForm.prototype.submit.bind(giftCardForm)();
+    }
+    <?php
+        }
+     ?>
+
+    //]]>
+</script>

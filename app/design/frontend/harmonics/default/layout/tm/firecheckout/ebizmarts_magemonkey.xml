@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <reference name="billing.additional.container">
+            <block type="monkey/checkout_subscribe" name="magemonkey.subscribe" template="magemonkey/checkout/subscribe.phtml">
+                <block type="monkey/signup" name="left.monkeysignup" template="magemonkey/lists.phtml" />
+            </block>
+        </reference>
+    </firecheckout_index_index>
+</layout>

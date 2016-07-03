@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <reference name="head">
+            <action method="addCss"><stylesheet>css/buyerprotect.css</stylesheet></action>
+        </reference>
+        <reference name="checkout.payment.methods">
+            <block type="buyerprotect/checkout_form" name="buyerprotect.checkout.form" as="buyerprotect" template="buyerprotect/checkout/excellence.phtml"/>
+        </reference>
+    </firecheckout_index_index>
+    <firecheckout_index_updatecheckout>
+        <reference name="checkout.payment.method">
+            <block type="buyerprotect/checkout_form" name="buyerprotect.checkout.form" as="buyerprotect" template="buyerprotect/checkout/excellence.phtml"/>
+        </reference>
+    </firecheckout_index_updatecheckout>
+</layout>

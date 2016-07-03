@@ -1,0 +1,450 @@
+<?php
+//version 100
+//echo "Magento to Microbiz Sync Settings";
+$SyncDirectionData = $this->getSyncDirectionData();
+//echo "<pre>";print_r($SyncDirectionData);exit;
+?>
+<?php
+$isSecure = Mage::app()->getStore()->isCurrentlySecure();
+$magentoBaseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, $isSecure);
+$mage_url = $magentoBaseUrl;
+//$mage_url_domain = explode('://',Mage::getBaseUrl());
+//print_r($mage_url_domain[1]);
+Mage::helper('microbiz_connector')->RemoveCaching();
+$formKey = $this->getBlockHtml('formkey');
+$mage_api_url = explode("/index.php/",$mage_url);
+$siteType = Mage::getStoreConfig('connector/installation/mbiz_sitetype');
+$sitename = Mage::getStoreConfig('connector/installation/mbiz_sitename');
+$siteurl = Mage::getStoreConfig('connector/installation/mbiz_siteurl') ;
+$username = Mage::getStoreConfig('connector/installation/mbiz_username');
+$password = Mage::getStoreConfig('connector/installation/mbiz_password');
+$magApiUname = Mage::getStoreConfig('connector/installation/mag_api_username');
+$magApiEmail = Mage::getStoreConfig('connector/installation/mag_api_email');
+$mbizApiUserName = Mage::getStoreConfig('connector/settings/api_user');
+$mbizApiUserPwd = Mage::getStoreConfig('connector/settings/api_key');
+$magApiUserPwd = Mage::getStoreConfig('connector/settings/mag_api_key');
+$syncDirection = $SyncDirectionData['sync_direction'];
+Mage::helper('microbiz_connector')->RemoveCaching();
+if($syncDirection=='') {
+    Mage::helper('microbiz_connector')->RemoveCaching();
+    $syncDirection = Mage::getStoreConfig('connector/installation/sync_direction');
+}
+if($syncDirection==1) {
+    $syncName = 'mbiztomag';
+}
+else {
+    $syncName = 'magtombiz';
+}
+?>
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td><h3 class="icon-head"><?php echo Mage::helper('microbiz_connector')->__('Microbiz POS Plugin Install') ?></h3>
+
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="entry-edit">
+<form id="mbiztomag_install_save_settings" action="<?php echo Mage::helper("adminhtml")->getUrl("connector/adminhtml_connector/savembiztomagsettings/");?>" method="post" enctype="multipart/form-data">
+<?php echo $this->getBlockHtml('formkey')?>
+<div class="entry-edit-head collapseable">
+    <a>Microbiz POS Plugin Install</a>
+</div>
+<fieldset id="connector_settings" class="config collapseable" style="background:none repeat scroll 0 0 #EEEEEE !important;">
+<legend>Microbiz POS Plugin Install</legend>
+<table cellspacing="0" class="form-list">
+<colgroup class="label"></colgroup>
+<colgroup class="value"></colgroup>
+<colgroup class="scope-label"></colgroup>
+<colgroup class=""></colgroup>
+<tbody>
+<tr>
+    <td colspan="3">
+        <div class="install_setup_img">
+            <img src="<?php echo $this->getSkinUrl('images/connector/step4.png')?>" alt="No Image" />
+        </div>
+    </td>
+</tr>
+
+<tr id="row_connector_settings_images">
+    <td class="label">
+        <img src="<?php echo $this->getSkinUrl('images/connector/small-magento.png')?>" />
+        <?php
+        $mage_url = Mage::getBaseUrl();
+        $mage_api_url = explode("/index.php/",$mage_url);
+        ?>
+        <span class="microbiz_site_details"><?php echo $mage_api_url[0]; ?></span>
+    </td>
+    <td>
+        <div class="pull_direction_mag_to_mbiz">
+            <img src="<?php echo $this->getSkinUrl('images/connector/small-left.png')?>" />
+        </div>
+    </td>
+    <td class="value">
+        <img src="<?php echo $this->getSkinUrl('images/connector/small-microbiz.png')?>"  /><br/>
+        <span class="microbiz_site_details"><?php echo $siteurl ?></span>
+    </td>
+</tr>
+<tr id="row_connector_install_setting_products">
+    <td class="label">
+        <label for="row_connector_install_setting_product"><h3>Products</h3></label>
+    </td>
+    <td class="value">
+        <select id="connector_install_setting_product" name="product_sync_setting" class="validate-select">
+            <?php
+            $prdSyncSettings = Mage::getStoreConfig('connector/mbiztomag_settings/product_sync_setting');
+            ?>
+            <option value="1" <?php if($prdSyncSettings==1) { echo 'selected=selected'; } ?>>Sync All Products</option>
+            <option value="2" <?php if($prdSyncSettings==2) { echo 'selected=selected'; }?>">Sync Enabled Products</option>
+            <option value="0" <?php if($prdSyncSettings==0) { echo 'selected=selected'; }?>">Do Not Sync Products</option>
+        </select>
+    </td>
+</tr>
+<tr id="row_connector_install_setting_product_tax_class">
+    <td class="label">
+        <label for="row_connector_install_setting_product_tax_class">Magento Products Tax Class</label>
+    </td>
+    <?php
+    $productTaxClasses = Mage::getModel('tax/class')->getCollection()->addFieldToFilter('class_type','PRODUCT');
+    ?>
+    <td class="value">
+        <select id="connector_install_setting_product_tax_class" name="mage_product_tax_class" class="validate-select">
+            <?php
+            $prdTaxClass = Mage::getStoreConfig('connector/mbiztomag_settings/mage_product_tax_class');
+            ?>
+            <option value="">Select Product Tax Class</option>
+            <?php
+            foreach($productTaxClasses as $ptaxclass)
+            {
+                ?>
+                <option value="<?php echo $ptaxclass->getClassId()?>" <?php if($ptaxclass->getClassId()==$prdTaxClass) { echo 'selected=selected'; }?>><?php echo $ptaxclass->getClassName();?></option>
+            <?php
+
+            }
+            ?>
+        </select>
+    </td>
+</tr>
+<?php
+$categories = Mage::getModel('catalog/category')->getCollection()
+    ->addAttributeToSelect('*')
+    ->addAttributeToFilter('parent_id',1)
+    ->addAttributeToFilter('is_active',1)
+    ->setOrder('name','ASC');
+
+?>
+<tr id="row_connector_install_setting_root_category">
+    <td class="label">
+        <label for="row_connector_install_setting_root_category">Root Category</label>
+    </td>
+    <td class="value">
+        <select id="connector_install_setting_root_category" name="root_category" class="validate-select">
+            <?php
+            $rootCategorySel = Mage::getStoreConfig('connector/mbiztomag_settings/root_category');
+            ?>
+            <option value="">Select Root Category</option>
+            <?php
+            foreach($categories as $category)
+            {
+                ?>
+                <option value="<?php echo $category->getId()?>" <?php if($category->getId()==$rootCategorySel) { echo 'selected=selected'; }?>><?php echo $category->getName()?></option>
+            <?php
+
+            }
+            ?>
+        </select>
+    </td>
+</tr>
+<tr></tr>
+<tr></tr>
+<!--<tr>
+                    <td colspan="2">
+                        <p>Optional Product Attribute Mapping</p>
+                    </td>
+                </tr>
+                <?php
+/*                    $attributes = Mage::getSingleton('eav/config')
+                                    ->getEntityType(Mage_Catalog_Model_Product::ENTITY)->getAttributeCollection();
+                    $attributes->addStoreLabel(Mage::app()->getStore()->getId());
+                $attrSupplManf = Mage::getStoreConfig('connector/'.$syncName.'_settings/attr_supp_manuf');
+                */?>
+                <tr id="row_connector_install_setting_supp_manuf">
+                    <td class="label">
+                        <label for="row_connector_install_setting_root_category">Supplier/Manufacturer</label>
+                    </td>
+                    <td class="value">
+                        <select id="connector_install_setting_root_category" name="attr_supp_manuf" class="validate-select">
+                            <option value="0,null">Select Attribute</option>
+                            <?php
+/*                            foreach ($attributes as $attr) {
+                                if($attr->getFrontendLabel()!='') {
+                            */?>
+                              <option value="<?php /*echo $attr->getId().','.$attr->getAttributeCode()*/?>" <?php /*if($attrSupplManf==$attr->getId()) { echo "selected=selected"; }*/?> ><?php /*echo $attr->getFrontendLabel()*/?></option>
+                            <?php
+/*                                }
+                            }
+                            */?>
+                        </select>
+                    </td>
+                </tr>
+                <tr id="row_connector_install_setting_brand">
+                    <td class="label">
+                        <label for="row_connector_install_setting_brand">Brand</label>
+                    </td>
+                    <td class="value">
+                        <select id="connector_install_setting_brand" name="attr_brand" class="validate-select">
+                            <option value="0,null">Select Attribute</option>
+                            <?php
+/*                            $attrBrand = Mage::getStoreConfig('connector/'.$syncName.'_settings/attr_brand');
+                            foreach ($attributes as $attr) {
+                                if($attr->getFrontendLabel()!='') {
+                                    */?>
+                                    <option value="<?php /*echo $attr->getId().','.$attr->getAttributeCode()*/?>" <?php /*if($attrBrand==$attr->getId()) { echo "selected=selected"; }*/?> ><?php /*echo $attr->getFrontendLabel()*/?></option>
+                                <?php
+/*                                }
+                            }
+                            */?>
+                        </select>
+                    </td>
+                </tr>
+                <tr id="row_connector_install_setting_manuf_upc">
+                    <td class="label">
+                        <label for="row_connector_install_setting_manuf_upc">Manufacturer UPC</label>
+                    </td>
+                    <td class="value">
+                        <select id="connector_install_setting_manuf_upc" name="attr_manuf_upc" class="validate-select">
+                            <option value="0,null">Select Attribute</option>
+                            <?php
+/*                            $attrManufUpc = Mage::getStoreConfig('connector/'.$syncName.'_settings/attr_manuf_upc');
+                            foreach ($attributes as $attr) {
+                                if($attr->getFrontendLabel()!='') {
+                                    */?>
+                                    <option value="<?php /*echo $attr->getId().','.$attr->getAttributeCode()*/?>" <?php /*if($attrManufUpc==$attr->getId()) { echo "selected=selected"; }*/?> ><?php /*echo $attr->getFrontendLabel()*/?></option>
+                                <?php
+/*                                }
+                            }
+                            */?>
+                        </select>
+                    </td>
+                </tr>
+                <tr id="row_connector_install_setting_cost">
+                    <td class="label">
+                        <label for="row_connector_install_setting_cost">Cost</label>
+                    </td>
+                    <td class="value">
+                        <select id="connector_install_setting_cost" name="attr_cost" class="validate-select">
+                            <option value="0,null">Select Attribute</option>
+                            <?php
+/*                            $attrCost = Mage::getStoreConfig('connector/'.$syncName.'_settings/attr_cost');
+                            foreach ($attributes as $attr) {
+                                if($attr->getFrontendLabel()!='') {
+                                    */?>
+                                    <option value="<?php /*echo $attr->getId().','.$attr->getAttributeCode()*/?>" <?php /*if($attrCost==$attr->getId()) { echo "selected=selected"; }*/?> ><?php /*echo $attr->getFrontendLabel()*/?></option>
+                                <?php
+/*                                }
+                            }
+                            */?>
+                        </select>
+                    </td>
+                </tr>-->
+
+<tr id="row_connector_install_setting_customers">
+    <td class="label">
+        <label for="row_connector_install_setting_customers"><h3>Customers</h3></label>
+    </td>
+    <td class="value">
+        <select id="connector_install_setting_customers" name="customers" class="validate-select">
+            <?php
+            $custSyncStatus = Mage::getStoreConfig('connector/mbiztomag_settings/customers');
+            ?>
+            <option value="1" <?php if($custSyncStatus==1) { echo 'selected=selected'; }?>>Sync All Customers</option>
+            <option value="0" <?php if($custSyncStatus==0) { echo 'selected=selected'; }?>>Do Not Sync Customers</option>
+        </select>
+    </td>
+</tr>
+<tr id="row_connector_install_setting_customer_tax_class">
+    <td class="label">
+        <label for="row_connector_install_setting_customer_tax_class">Magento Customer Tax Class</label>
+    </td>
+    <?php
+    $customerTaxClasses = Mage::getModel('tax/class')->getCollection()->addFieldToFilter('class_type','CUSTOMER');
+    ?>
+    <td class="value">
+        <select id="connector_install_setting_customer_tax_class" name="mage_customer_tax_class" class="validate-select">
+            <?php
+            $custTaxClassSel = Mage::getStoreConfig('connector/mbiztomag_settings/mage_customer_tax_class');
+            ?>
+            <option value="">Select Customer Tax Class</option>
+            <?php
+            foreach($customerTaxClasses as $custTaxclass)
+            {
+                ?>
+                <option value="<?php echo $custTaxclass->getClassId()?>" <?php if($custTaxclass->getClassId()==$custTaxClassSel) { echo 'selected=selected'; }?>><?php echo $custTaxclass->getClassName()?></option>
+            <?php
+
+            }
+            ?>
+        </select>
+    </td>
+</tr>
+
+<tr id="row_connector_install_setting_inventory">
+    <td class="label">
+        <label for="row_connector_install_setting_inventory"><h3>Inventory</h3></label>
+    </td>
+    <td class="value">
+        <select id="connector_install_setting_inventory" name="inventory" class="validate-select">
+            <?php
+            $inventoryStatus = Mage::getStoreConfig('connector/mbiztomag_settings/inventory');
+            ?>
+            <option value="0" <?php if($inventoryStatus==0) { echo 'selected=selected'; }?>>Do Not Sync Inventory</option>
+            <option value="1" <?php if($inventoryStatus==1) { echo 'selected=selected'; }?>>Import Magento Inventory</option>
+        </select>
+    </td>
+</tr>
+<tr id="row_connector_install_setting_stock_balance_to">
+    <td class="label">
+        <label for="row_connector_install_setting_stock_balance_to">Import Stock Balance To</label>
+    </td>
+    <?php
+    $stores = Mage::app()->getStores();
+    $response = array();
+
+    // $siteName = $SyncDirectionData['mbiz_sitename'];
+    // $apiUsername = $SyncDirectionData['mbiz_api_username'];
+    // $apiPassword = $SyncDirectionData['mbiz_api_password'];
+    //echo $sitename.'-'.$mbizApiUserName.'=='.$mbizApiUserPwd;
+    Mage::log("came to magtombiz",null,'settings.log');
+    Mage::log($siteurl,null,'settings.log');
+    Mage::log($mbizApiUserName,null,'settings.log');
+    Mage::log($mbizApiUserPwd,null,'settings.log');
+    $response = Mage::helper('microbiz_connector')->mbizGetInitialSyncData($siteurl,$mbizApiUserName,$mbizApiUserPwd);
+    $response = json_decode($response,true);
+    Mage::log($response,null,'settings.log');
+    //echo "<pre>";print_r($response);exit;
+
+    ?>
+    <td class="value">
+        <select id="connector_install_setting_stock_balance_to" name="stock_balance_to" class="validate-select">
+            <?php
+            $storeStatus = Mage::getStoreConfig('connector/mbiztomag_settings/stock_balance_to');
+            ?>
+            <option value="">Select Store</option>
+            <?php
+            foreach($response['stores'] as $key=>$value)
+            {
+                //$_storeName = Mage::app()->getStore($_eachStoreId)->getName();
+                //$_storeId = Mage::app()->getStore($_eachStoreId)->getId();
+                ?>
+                <option value="<?php echo $key?>" <?php if($key==$storeStatus) { echo 'selected=selected';} ?>><?php echo $value; ?></option>
+            <?php
+            }
+            ?>
+        </select>
+    </td>
+</tr>
+
+<tr id="row_connector_install_setting_stock_balance_from">
+    <td class="label">
+        <label for="row_connector_install_setting_stock_balance_from">Import Stock Balance From</label>
+    </td>
+    <?php
+    $stores = Mage::app()->getStores();
+    $response = array();
+
+    $response = Mage::helper('microbiz_connector')->mbizGetInitialSyncData($sitename,$mbizApiUserName,$mbizApiUserPwd);
+    $response = json_decode($response,true);
+    //echo "<pre>";print_r($response);exit;
+
+    ?>
+    <td class="value">
+        <select id="connector_install_setting_stock_balance_from" name="stock_balance_from" class="validate-select">
+            <?php
+            $storeStatus = Mage::getStoreConfig('connector/mbiztomag_settings/stock_balance_from');
+            ?>
+            <option value="">Select Store</option>
+            <option value="9999" <?php if($storeStatus==9999) { echo 'selected=selected';} ?>>All Stores</option>
+            <?php
+            foreach($response['stores'] as $key=>$value)
+            {
+                ?>
+                <option value="<?php echo $key?>" <?php if($key==$storeStatus) { echo 'selected=selected';} ?>><?php echo $value; ?></option>
+            <?php
+            }
+            ?>
+        </select>
+    </td>
+</tr>
+<?php
+$formKey = Mage::getSingleton('core/session')->getFormKey();
+?>
+<tr>
+    <td colspan="3">
+        <?php $secretKey = Mage::getSingleton('adminhtml/url')->getSecretKey();?>
+        <button class="scalable back" id="back_to" type="submit" title="Back" ><span><span><span>Back</span></span></span></button>
+
+
+        <!--<button class="scalable mbizform-cancelinstallpos" type="button" title="Cancel" ><span><span><span>Cancel</span></span></span></button>-->
+        <button class="scalable mbiztomag_save_settings" type="button" title="Save and Continue" ><span><span><span>Save and Continue</span></span></span></button>
+    </td>
+</tr>
+
+<?php
+$isLinked = Mage::getStoreConfig('connector/installation/is_linked');
+?>
+<input type="hidden" id="is_linked_status" value="<?php echo $isLinked; ?>" />
+<input type="hidden" id="mage_url" name="mage_url" value="<?php echo $mage_api_url[0]; ?>">
+<input type="hidden" id="mbiz_back_url" name="mbiz_back_url" value="<?php echo Mage::helper("adminhtml")->getUrl("connector/adminhtml_connector/mbizsettingwizard/"); ?>" />
+<input type="hidden" id="mbiz_sitetype" name="mbiz_sitetype" value="<?php echo $siteType ?>" />
+<input type="hidden" id="mbiz_sitename" name="mbiz_sitename" value="<?php echo $sitename; ?>" />
+<input type="hidden" id="mbiz_username" name="mbiz_username" value="<?php echo $username; ?>" />
+<input type="hidden" id="mbiz_password" name="mbiz_password" value="<?php echo $password; ?>" />
+<input type="hidden" id="mag_api_username" name="mag_api_username" value="<?php echo $magApiUname; ?>" />
+<input type="hidden" id="mag_api_email" name="mag_api_email" value="<?php echo $magApiEmail; ?>" />
+<input type="hidden" id="mag_api_password" name="mag_api_password" value="<?php echo $magApiUserPwd; ?>" />
+<input type="hidden" id="mbiz_api_username" name="mbiz_api_username" value="<?php echo $mbizApiUserName; ?>" />
+<input type="hidden" id="mbiz_api_password" name="mbiz_api_password" value="<?php echo $mbizApiUserPwd; ?>" />
+<input type="hidden" id="sync_direction" name="sync_direction" value="<?php echo $syncDirection; ?>" />
+
+<!--need to remove after adding attributes mapping code -->
+<input type="hidden" id="attr_supp_manuf" name="attr_supp_manuf" value="<?php echo "0,null"; ?>" />
+<input type="hidden" id="attr_brand" name="attr_brand" value="<?php echo "0,null"; ?>" />
+<input type="hidden" id="attr_manuf_upc" name="attr_manuf_upc" value="<?php echo "0,null"; ?>" />
+<input type="hidden" id="attr_cost" name="attr_cost" value="<?php echo "0,null"; ?>" />
+
+</tbody>
+</table>
+</fieldset>
+</form>
+</div>
+<script type="text/javascript">
+
+    jQuery('.mbiztomag_save_settings').live('click',function(){
+            var mbizSignInForm = new varienForm('mbiztomag_install_save_settings');
+            var inventory = jQuery('#connector_install_setting_inventory').val();
+
+            if(inventory==1) {
+                jQuery( "#connector_install_setting_stock_balance_to" ).addClass( "validate-select" );
+                jQuery( "#connector_install_setting_stock_balance_from" ).addClass( "validate-select" );
+            }
+            else {
+                jQuery( "#connector_install_setting_stock_balance_to" ).removeClass( "validate-select" );
+                jQuery( "#advice-validate-select-connector_install_setting_stock_balance_to" ).hide();
+                jQuery( "#connector_install_setting_stock_balance_from" ).removeClass( "validate-select" );
+                jQuery( "#advice-validate-select-connector_install_setting_stock_balance_from" ).hide();
+            }
+            var validated=mbizSignInForm.validate();
+            if(validated){
+                mbizSignInForm.submit();
+            }
+
+        }
+    );
+    jQuery('#back_to').click(function(){
+        //alert("came to f mbiz_back_url");
+        var $mbizBackUrl = jQuery('#mbiz_back_url').val();
+        jQuery("#mbiztomag_install_save_settings").attr('action',$mbizBackUrl);
+        jQuery("#mbiztomag_install_save_settings").submit();
+    });
+</script>

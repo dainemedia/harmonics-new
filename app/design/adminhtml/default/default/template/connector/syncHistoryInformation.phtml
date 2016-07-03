@@ -1,0 +1,40 @@
+<?php // Version 100 ?>
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td><h3 class="icon-head"><?php echo Mage::helper('microbiz_connector')->__('Sync Inforamtion') ?></h3>
+                <button style="float:right;" class="scalable" type="button" title="Back" onclick="javascript:history.go(-1);"><span><span><span>Back</span></span></span></button>	</td>
+        </tr>
+    </table>
+</div>
+<div class="grid entry-edit">
+    <?php
+    $id = $this->getRequest()->getParam('id');
+    $headerdatacollection = Mage::getModel('syncheaderhistory/syncheaderhistory')->getCollection()->addFieldToFilter('header_id', $id)->getFirstItem()->getData();
+    //echo "<pre>";
+    //print_r($headerdatacollection);
+    echo "<h2>Header Information</h2>";
+    echo "<table border=1>";
+    foreach($headerdatacollection as $key => $value) {
+        echo "<tr><td>".$key."</td><td>".$value."</td></tr>";
+    }
+    echo "</table>";
+    echo "<h2>Items Information</h2>";
+    if($headerdatacollection['model_name'] == 'SaleOrder') {
+        $itemdatacollection = Mage::getModel('Microbiz_Connector_Model_Api')->getOrderinformation($headerdatacollection['obj_id']);
+        echo "<pre>";
+        print_r($itemdatacollection);
+    }
+    else {
+        $itemdatacollection = Mage::getModel('syncitemhistory/syncitemhistory')->getCollection()->addFieldToFilter('header_id', $headerdatacollection['header_id'])->getData();
+        echo "<table><tr><th>Attribute Name</th><th>Value</th></tr>";
+        foreach($itemdatacollection as $itemdata) {
+            echo "<tr><td>".$itemdata['attribute_name']."</td><td>".$itemdata['attribute_value']."</td></tr>";
+        }
+        echo "</table>";
+    }
+
+    ?>
+
+
+</div>

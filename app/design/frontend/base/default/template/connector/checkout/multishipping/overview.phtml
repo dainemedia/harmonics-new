@@ -1,0 +1,456 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+
+ */
+//version 102
+?>
+
+<?php /** @var $this Mage_Checkout_Block_Multishipping_Overview */
+$isSecure = Mage::app()->getStore()->isCurrentlySecure();
+$magentoBaseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, $isSecure);
+?>
+<div class="multiple-checkout">
+    <div class="page-title">
+        <h1><?php echo $this->__('Review Order') ?></h1>
+    </div>
+    <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+    <form id="connector_multishipping_overview" action="<?php echo $this->getPostActionUrl() ?>" method="post" onsubmit="return showLoader();">
+        <?php echo $this->getBlockHtml('formkey'); ?>
+        <div class="col2-set">
+            <h2 class="legend"><?php echo $this->__('Billing Information') ?></h2>
+            <div class="col-1">
+                <div class="box">
+                    <?php $_address=$this->getBillingAddress() ?>
+                    <div class="box-title">
+                        <h3><?php echo $this->__('Billing Address') ?> <span class="separator">|</span> <a href="<?php echo $this->getEditBillingAddressUrl($_address) ?>"><?php echo $this->__('Change') ?></a></h3>
+                    </div>
+                    <div class="box-content">
+                        <address>
+                            <?php echo $_address->format('html') ?>
+                        </address>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="box">
+                    <div class="box-title">
+                        <h3><?php echo $this->__('Payment Method') ?> <span class="separator">|</span> <a id="edit_payment_methods" href="<?php echo $this->getEditBillingUrl() ?>"><?php echo $this->__('Change') ?></a></h3>
+                    </div>
+                    <div class="box-content">
+					<input type="hidden" id="paymentname" name="paymentname" value="<?php echo $this->getPayment()->getMethod();?>" />
+					<input type="hidden" id="processstorecredit" value="<?php echo $magentoBaseUrl?>connector/index/processStoreCredit" />
+					<input type="hidden" id="processgiftcard" value="<?php echo $magentoBaseUrl?>connector/index/processGiftCard" />
+                        <input type="hidden" name="payment[cc_number]" value="<?php echo $this->escapeHtml($this->getPayment()->getCcNumber())?>" />
+                        <input type="hidden" name="payment[cc_cid]" value="<?php echo $this->escapeHtml($this->getPayment()->getCcCid())?>" />
+                        <?php echo $this->getPaymentHtml() ?>
+                    </div>
+                </div>
+            </div>
+         </div>
+        <?php $mergedCells = ($this->helper('tax')->displayCartBothPrices() ? 2 : 1); ?>
+        <div class="col2-set">
+        <h2 class="legend"><?php echo $this->__('Shipping Information') ?></h2>
+        <?php foreach ($this->getShippingAddresses() as $_index => $_address): ?>
+            <h3 class="legend"><?php echo $this->__('Address %s of %s', ($_index+1), $this->getShippingAddressCount()) ?></h3>
+                <div class="col-1 col-narrow">
+                    <div class="box">
+                        <div class="box-title">
+                            <h4><?php echo $this->__('Shipping To') ?> <span class="separator">|</span> <a href="<?php echo $this->getEditShippingAddressUrl($_address) ?>"><?php echo $this->__('Change') ?></a></h4>
+                        </div>
+                        <div class="box-content">
+                            <address>
+                                <?php echo $_address->format('html') ?>
+                            </address>
+                        </div>
+                    </div>
+                    <div class="box">
+                        <div class="box-title">
+                            <h4><?php echo $this->__('Shipping Method') ?> <span class="separator">|</span> <a href="<?php echo $this->getEditShippingUrl() ?>"><?php echo $this->__('Change') ?></a></h4>
+                        </div>
+                        <div class="box-content">
+                            <?php if($_rate=$this->getShippingAddressRate($_address)): ?>
+                            <p>
+                            <?php echo $this->escapeHtml($_rate->getCarrierTitle()) ?> - <?php echo $this->escapeHtml($_rate->getMethodTitle()) ?>
+                            <?php $_excl = $this->getShippingPriceExclTax($_address); ?>
+                            <?php $_incl = $this->getShippingPriceInclTax($_address); ?>
+                            <?php echo $_excl; ?>
+                            <?php if ($this->helper('tax')->displayShippingBothPrices() && $_incl != $_excl): ?>
+                                (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
+                            <?php endif; ?>
+                            </p>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2 col-wide">
+                    <h4><?php echo $this->__('Items') ?> <span class="separator">|</span> <a href="<?php echo $this->getAddressesEditUrl() ?>"><?php echo $this->__('Tab Items') ?></a></h4>
+                    <table class="data-table" id="overview-table-<?php echo $_address->getId() ?>">
+                        <col />
+                        <col width="1" />
+                        <?php if ($this->helper('tax')->displayCartBothPrices()): ?>
+                        <col width="1" />
+                        <?php endif; ?>
+                        <col width="1" />
+                        <col width="1" />
+                        <?php if ($this->helper('tax')->displayCartBothPrices()): ?>
+                        <col width="1" />
+                        <?php endif; ?>
+                        <thead>
+                            <tr>
+                                <th rowspan="<?php echo $mergedCells; ?>"><?php echo $this->__('Product Name') ?></th>
+                                <th colspan="<?php echo $mergedCells; ?>" class="a-center"><?php echo $this->__('Price') ?></th>
+                                <th rowspan="<?php echo $mergedCells; ?>"><?php echo $this->__('Qty') ?></th>
+                                <th colspan="<?php echo $mergedCells; ?>" class="a-center"><?php echo $this->__('Subtotal') ?></th>
+                            </tr>
+                            <?php if ($this->helper('tax')->displayCartBothPrices()): ?>
+                            <tr>
+                                <th class="a-right"><?php echo $this->helper('tax')->getIncExcTaxLabel(false) ?></th>
+                                <th><?php echo $this->helper('tax')->getIncExcTaxLabel(true) ?></th>
+                                <th class="a-right"><?php echo $this->helper('tax')->getIncExcTaxLabel(false) ?></th>
+                                <th><?php echo $this->helper('tax')->getIncExcTaxLabel(true) ?></th>
+                            </tr>
+                            <?php endif; ?>
+                        </thead>
+                        <tfoot>
+                        <?php //echo $this->renderTotals($this->getShippingAddressTotals($_address)); ?>
+                        <?php //Mage::getSingleton('core/session')->unsMultiData3();?>
+                        <?php
+                        $quoteModel = Mage::getModel('checkout/cart')->getQuote();
+                        //$arrQuoteCreditDiscountData = $quoteModel->getCreditDiscountData();
+                        $arrQuoteCreditDiscountData = Mage::getSingleton('checkout/session')->getCreditDiscountData();
+                        $arrQuoteCreditDiscountData = unserialize($arrQuoteCreditDiscountData);
+
+                        if(count($arrQuoteCreditDiscountData)>0)
+                        {
+                            foreach($arrQuoteCreditDiscountData as $data)
+                            {
+                                //echo $data['credit_no']."===".$data['credit_amt']."<br>";
+                            }
+                        }
+                        ?>
+                        <?php echo $this->renderTotals($this->getShippingAddressTotals($_address),null,$_address->getId()); ?>
+                        </tfoot>
+                        <tbody>
+                        <?php foreach ($this->getShippingAddressItems($_address) as $_item): ?>
+                            <?php echo $this->getRowItemHtml($_item); ?>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                    <script type="text/javascript">decorateTable('overview-table-<?php echo $_address->getId() ?>')</script>
+                </div>
+            <?php if($this->getShippingAddressCount()!=$_index+1): ?>
+                <div class="divider"></div>
+            <?php endif; ?>
+        <?php endforeach; ?>
+        </div>
+        <?php if ($this->getQuote()->hasVirtualItems()): ?>
+
+        <div class="col2-set">
+            <h2 class="legend"><?php echo $this->__('Other Items in Your Order') ?></h2>
+            <div class="col-1 col-narrow"></div>
+            <div class="col-2 col-wide">
+                <h3><?php echo $this->__('Items') ?> <span class="separator">|</span> <a href="<?php echo $this->getVirtualProductEditUrl() ?>"><?php echo $this->__('Tab Items') ?></a></h3>
+                <?php $mergedCells = ($this->helper('tax')->displayCartBothPrices() ? 2 : 1); ?>
+                <table class="data-table" id="virtual-overview-table">
+                    <col />
+                    <col width="1" />
+                    <?php if ($this->helper('tax')->displayCartBothPrices()): ?>
+                    <col width="1" />
+                    <?php endif; ?>
+                    <col width="1" />
+                    <col width="1" />
+                    <?php if ($this->helper('tax')->displayCartBothPrices()): ?>
+                    <col width="70" />
+                    <?php endif; ?>
+                    <thead>
+                        <tr>
+                            <th rowspan="<?php echo $mergedCells; ?>"><?php echo $this->__('Product Name') ?></th>
+                            <th colspan="<?php echo $mergedCells; ?>" class="a-center"><?php echo $this->__('Price') ?></th>
+                            <th rowspan="<?php echo $mergedCells; ?>"><?php echo $this->__('Qty') ?></th>
+                            <th colspan="<?php echo $mergedCells; ?>" class="a-center"><?php echo $this->__('Subtotal') ?></th>
+                        </tr>
+                        <?php if ($this->helper('tax')->displayCartBothPrices()): ?>
+                        <tr>
+                            <th class="a-right"><?php echo $this->helper('tax')->getIncExcTaxLabel(false) ?></th>
+                            <th><?php echo $this->helper('tax')->getIncExcTaxLabel(true) ?></th>
+                            <th class="a-right"><?php echo $this->helper('tax')->getIncExcTaxLabel(false) ?></th>
+                            <th><?php echo $this->helper('tax')->getIncExcTaxLabel(true) ?></th>
+                        </tr>
+                        <?php endif; ?>
+                    </thead>
+                    <tfoot>
+                    <?php
+                    $billingAddressId = Mage::getSingleton('checkout/session')->getQuote()->getBillingAddress()->getId();
+                    ?>
+                        <?php echo $this->renderTotals($this->getBillinAddressTotals(),null,$billingAddressId); ?>
+                    </tfoot>
+                    <tbody>
+                    <?php
+                   /* $arrGiftBuyData = Mage::getSingleton('checkout/session')->getGiftBuyData();
+                    $arrGiftBuyData = unserialize($arrGiftBuyData);
+                    //print_r($arrGiftBuyData);
+                    if(count($arrGiftBuyData)>0)
+                    {
+                        $customPrice =0;
+                        foreach($arrGiftBuyData as $data)
+                        {
+                            if($data['gcd_type']==2)
+                            {
+                                $customPrice = $customPrice + $data['gcd_amt'];
+                            }
+                        }
+
+                    }*/
+                    ?>
+                    <?php foreach ($this->getVirtualItems() as $_item): ?>
+
+                        <?php
+
+                       /* $productOptions = $_item->getProduct()->getTypeInstance(true)->getOrderOptions($_item->getProduct());
+                        $arrAppliedOptions = $productOptions['options'];
+
+                        if(count($arrAppliedOptions)>0)
+                        {
+                            Mage::log($productOptions,null,'giftcards.log');
+                            foreach($arrAppliedOptions as $option)
+                            {
+                                Mage::log($_item->getId(),null,'giftcards.log');
+                                Mage::log($option['label'],null,'giftcards.log');
+                                Mage::log($option['value'],null,'giftcards.log');
+                                Mage::log($_item->getPrice(),null,'giftcards.log');
+                                if($option['label']=='Gift Card' && $option['value']=='Any Amount' && $_item->getPrice()==0)
+                                {
+
+                                    $_item->setPrice($customPrice);
+                                    $_item->setBasePrice($customPrice);
+                                    $_item->setPriceInclTax($customPrice);
+                                    $_item->setBasePriceInclTax($customPrice);
+
+                                    $_item->calcRowTotal();
+                                    $_item->save();
+                                }
+                            }
+
+                        }*/
+                        ?>
+                        <?php echo $this->getRowItemHtml($_item); ?>
+                    <?php endforeach; ?>
+                    </tbody>
+                    </table>
+                    <script type="text/javascript">decorateTable('virtual-overview-table')</script>
+                </div>
+        </div>
+        <?php endif; ?>
+
+           <?php echo $this->getChildHtml('items_after'); ?>
+
+            <div id="checkout-review-submit">
+                <?php echo $this->getChildHtml('agreements') ?>
+                <div class="place-order">
+                    <div class="grand-total">
+                        <div class="inner">
+                            <big><?php echo $this->__('Grand Total:') ?> <?php echo $this->helper('checkout')->formatPrice($this->getTotal()) ?></big>
+                            <div id="review-buttons-container">
+                                <button type="button" id="checkout_submit" title="<?php echo $this->__('Place Order') ?>" class="button btn-checkout" id="review-button"><span><span><?php echo $this->__('Place Order') ?></span></span></button>
+                                <img src="<?php echo Mage::getBaseUrl('skin').'adminhtml/default/default/images/ajax-loader-tr.gif'?>"
+                                     alt="NOT FOUND" style="display:none;" width="20px" id="load-img"/>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="please-wait" id="review-please-wait" style="display:none;">
+                        <img src="<?php echo $this->getSkinUrl('images/opc-ajax-loader.gif') ?>" alt="<?php echo $this->__('Submitting order information...') ?>" title="<?php echo $this->__('Submitting order information...') ?>" class="v-middle" /> <?php echo $this->__('Submitting order information...') ?>
+                    </span>
+                </div>
+            </div>
+            <div class="buttons-set">
+                <p class="back-link"><a href="<?php echo $this->getBackUrl() ?>"><small>&laquo; </small><?php echo $this->__('Back to Billing Information') ?></a></p>
+            </div>
+        </form>
+        <script type="text/javascript">
+        //<![CDATA[
+            var submitted = false;
+
+            function showLoader()
+            {
+                if (submitted) {
+                    return false;
+                }
+                if ($('checkout-agreements')) {
+                    var checkboxes = $$('#checkout-agreements input');
+                    for (var i=0, l=checkboxes.length; i<l; i++) {
+                        if (!checkboxes[i].checked) {
+                            alert("<?php echo $this->__('Please agree to all Terms and Conditions before placing the orders.')?>");
+                            return false;
+                        }
+                    }
+                }
+
+                submitted = true;
+                var step='review';
+                Element.show(step+'-please-wait');
+                $(step+'-buttons-container').setStyle({opacity:.5});
+                $(step+'-buttons-container').descendants().each(function(s) {
+                      s.disabled = true;
+                });
+                return true;
+            }
+        //]]>
+        </script>
+
+    <script>
+        jQuery('#checkout_submit').click(function(){
+
+            <?php
+                    $arrQuoteCreditDiscountData = Mage::getSingleton('checkout/session')->getCreditDiscountData();
+                    $arrQuoteCreditDiscountData = unserialize($arrQuoteCreditDiscountData);
+
+                    $checkout = Mage::getSingleton('checkout/session')->getQuote()->getData();
+                    $relationData = Mage::getModel('mbizcustomer/mbizcustomer')
+                        ->getCollection()
+                        ->addFieldToFilter('magento_id', $checkout['customer_id'])
+                        ->setOrder('id', 'asc')
+                        ->getFirstItem();
+
+                    $isDiscountApplied=0;
+                    if(count($arrQuoteCreditDiscountData)>0)
+                    {
+                        foreach($arrQuoteCreditDiscountData as $data)
+                        {
+                            if(array_key_exists('credit_no',$data))
+                            {
+                                $isDiscountApplied=1;
+                            }
+                        }
+                    }
+
+                    $x=0;
+                    $y=0;
+                    foreach($arrQuoteCreditDiscountData as $data)
+                    {
+                        if($data['credit_type']==1)
+                        {
+                            $arrProcessPayment['storecredits'][$x]['scr_unique_num'] = $data['credit_no'];
+                            $arrProcessPayment['storecredits'][$x]['customer_id'] =  $relationData['mbiz_id'];
+                            $arrProcessPayment['storecredits'][$x]['applied_amount'] = $data['credit_amt'];
+                            $arrProcessPayment['storecredits'][$x]['movement_indigator'] = '-';
+                            $x++;
+                        }
+                        else
+                        {
+                            $arrProcessPayment['giftcards'][$y]['gcd_unique_num'] = $data['credit_no'];
+                            $arrProcessPayment['giftcards'][$y]['applied_amount'] = $data['credit_amt'];
+                            $arrProcessPayment['giftcards'][$y]['gcd_pin'] = $data['credit_pin'];
+                            $arrProcessPayment['giftcards'][$y]['movement_indigator'] = '-';
+                            $y++;
+
+                        }
+                    }
+
+            $arrGiftBuyData = Mage::getSingleton('checkout/session')->getGiftBuyData();
+            $arrGiftBuyData = unserialize($arrGiftBuyData);
+            $isGiftCardSaleExists = 0;
+            if(count($arrGiftBuyData)>0)
+            {
+                foreach($arrGiftBuyData as $data)
+                {
+                    if(array_key_exists('gcd_type',$data))
+                    {
+                        $isGiftCardSaleExists = 1;
+                    }
+                }
+            }
+            Mage::log("ProcessPayment using multishipping",null,'giftcards.log');
+            Mage::log($arrProcessPayment,null,'giftcards.log');
+
+?>
+            <?php if($isDiscountApplied==1 || $isGiftCardSaleExists==1)  {?>
+
+            <?php if(count($arrProcessPayment)>0) {?>
+            jQuery("#load-img").show();
+            jQuery("#checkout_submit").hide();
+            var processData = {};
+            processData = <?php echo json_encode($arrProcessPayment)?>;
+
+            var url = '<?php echo $magentoBaseUrl ?>'+'connector/index/mbizProcessPayment';
+
+            jQuery.ajax({
+                url: url,
+                dataType:'json',
+                type: 'post',
+                data: { 'payment_data':processData },
+                success: function(data){
+                    if(data.status=='SUCCESS') {
+                        jQuery("#load-img").hide();
+                        jQuery('#connector_multishipping_overview').submit();
+
+                    }
+                    else {
+                        alert(data.status_msg);
+                        jQuery("#checkout_submit").show();
+                        //window.location.href = jQuery('#edit_payment_methods').attr('href');
+                    }
+                }
+            });
+            //return false;
+            <?php } ?>
+
+            <?php if($isGiftCardSaleExists==1)  {?>
+            jQuery("#load-img").show();
+            jQuery("#checkout_submit").hide();
+            var validateGiftCardRangeUrl = '<?php echo $magentoBaseUrl?>'+'connector/index/mbizValidateGiftCardRange';
+            var   GiftCardRanges = {};
+            GiftCardRanges = <?php echo json_encode($arrGiftBuyData);?>;
+
+            jQuery.ajax({
+                url: validateGiftCardRangeUrl,
+                dataType: 'json',
+                type: 'post',
+                data: { gift_ranges: GiftCardRanges},
+                success: function(result){
+                    if(result.status=='SUCCESS') {
+
+                        jQuery("#load-img").hide();
+                        //jQuery("#checkout_submit").show();
+                        //review.save();
+                       jQuery('#connector_multishipping_overview').submit();
+                    }
+                    else {
+
+                        jQuery("#load-img").hide();
+                        jQuery("#checkout_submit").show();
+                        alert(result.status_msg);
+                       // jQuery('#connector_multishipping_overview').submit();
+
+                    }
+                }
+            });
+            <?php } ?>
+            <?php } else {?>
+            jQuery('#connector_multishipping_overview').submit();
+            <?php }?>
+
+        });
+    </script>
+</div>

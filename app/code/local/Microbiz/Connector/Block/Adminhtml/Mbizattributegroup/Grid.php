@@ -1,0 +1,50 @@
+<?php
+// Version 100
+class Microbiz_Connector_Block_Adminhtml_Mbizattributegroup_Grid extends Mage_Adminhtml_Block_Widget_Grid
+{
+	public function __construct()
+	{
+		
+		parent::__construct();
+		$this->setId('connectorGrid');
+		$this->setDefaultSort('id');
+		$this->setDefaultDir('ASC');
+		$this->setSaveParametersInSession(true);
+	}
+	protected function _prepareCollection()
+	{
+		
+		$collection = Mage::getModel('mbizattributegroup/mbizattributegroup')->getCollection();
+		$this->setCollection($collection);
+		
+		return parent::_prepareCollection();
+	}
+	protected function _prepareColumns()
+	{
+		$this->addColumn('id', array(
+    'header' => Mage::helper('microbiz_connector')->__('ID'),
+    'align' =>'right',
+    'width' => '50px',
+    'index' => 'id',
+    ));
+
+	$this->addColumn('magento_id', array(
+    'header' => Mage::helper('microbiz_connector')->__('Magento Id'),
+    'align' =>'left',
+    'index' => 'magento_id',
+    ));
+	$this->addColumn('mbiz_id', array(
+    'header'    => Mage::helper('microbiz_connector')->__('MicroBiz ID'),
+    'align' =>'left',
+    'index'     => 'mbiz_id',
+	));
+
+    
+    
+		return parent::_prepareColumns();
+	}
+	public function getRowUrl($row)
+	{
+		//return $this->getUrl('*/*/edit', array('id' => $row->getId()));
+	}
+}

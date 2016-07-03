@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+    <modules>
+        <TM_CheckoutSuccess>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Mage_Checkout/>
+                <Mage_Sales/>
+            </depends>
+        </TM_CheckoutSuccess>
+    </modules>
+</config>

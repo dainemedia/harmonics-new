@@ -1,0 +1,104 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php echo $this->getChildHtml('breadcrumbs') ?>
+<div id="messages_product_view"><?php echo $this->getMessagesBlock()->getGroupedHtml() ?></div>
+<!-- <h1><?php // echo $this->getLayout()->getBlock( 'head' )->getTitle(); ?></h1> -->
+<div id="map"></div>
+<div class="row">
+    <section class="col-md-4" itemscope itemtype="http://schema.org/LocalBusines">
+        <div class="business-details">
+        	<h2><span itemprop="name">Harmonics Music</span></h2>
+        	<section class="address" itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+        		<h3>Address:</h3>
+        		<span itemprop="streetAddress">51-53 Crosby Road North</span>,<br />
+        		<span itemprop="streetAddress">Waterloo</span>,<br />
+        		<span itemprop="streetLocality">Liverpool</span>,<br />
+        		<span itemprop="streetRegion">Merseyside</span>,<br />
+        		<span itemprop="postalCode">L22 4QR</span>
+        	</section>
+        	<section class="contact-details">
+        		<h3>Contact Details:</h3>
+        		<span itemprop="telephone">Telephone: <a class="push" href="tel:0844-318-8999" title="Call Harmonics Music">0844 318 8999</a></span><br />
+        		<span class="email">Email: <a class="push" href="mailto:info@harmonics.co.uk" itemprop="email">info@harmonics.co.uk</a></span>
+        	</section>
+        	<section class="opening-hours">
+        		<h2>Opening Hours:</h2>
+        		<span class="opening-hours"><meta itemprop="openingHours" content="Mo-Fr 09:30-19:30">Monday to Friday <span class="push">09.30 - 19.30</span></span><br />
+        		<span class="opening-hours"><meta itemprop="openingHours" content="Sa 09:00-17:30">Saturday <span class="push">09:00 - 17:30</span></span><br />
+        		<span class="opening-hours"><meta itemprop="openingHours" content="Sa 09:00-17:30">Sunday <span class="push">09:00 - 17:30</span></span>
+        	</section>
+        </div>
+    </section>
+    <div class="col-md-4">
+        <form action="https://harmonics.co.uk/contacts/index/post" id="contactForm" method="post">
+            <h2 class="legend"><?php echo Mage::helper('contacts')->__('Send Us a Message') ?></h2>
+            <div class="fieldset">
+                <ul class="form-list">
+                    <li class="fields">
+                        <div class="field">
+                            <label for="name" class="required"><em>*</em><?php echo Mage::helper('contacts')->__('Name') ?></label>
+                            <div class="input-box">
+                                <input name="name" id="name" title="<?php echo Mage::helper('contacts')->__('Name') ?>" value="<?php echo $this->htmlEscape($this->helper('contacts')->getUserName()) ?>" class="input-text required-entry" type="text" />
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="email" class="required"><em>*</em><?php echo Mage::helper('contacts')->__('Email') ?></label>
+                            <div class="input-box">
+                                <input name="email" id="email" title="<?php echo Mage::helper('contacts')->__('Email') ?>" value="<?php echo $this->htmlEscape($this->helper('contacts')->getUserEmail()) ?>" class="input-text required-entry validate-email" type="text" />
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <label for="telephone"><?php echo Mage::helper('contacts')->__('Telephone') ?></label>
+                        <div class="input-box">
+                            <input name="telephone" id="telephone" title="<?php echo Mage::helper('contacts')->__('Telephone') ?>" value="" class="input-text" type="text" />
+                        </div>
+                    </li>
+                    <li class="wide">
+                        <label for="comment" class="required"><em>*</em><?php echo Mage::helper('contacts')->__('Comment') ?></label>
+                        <div class="input-box">
+                            <textarea name="comment" id="comment" title="<?php echo Mage::helper('contacts')->__('Comment') ?>" class="required-entry input-text" cols="5" rows="3"></textarea>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="buttons-set">
+                <p class="required"><?php echo Mage::helper('contacts')->__('* Required Fields') ?></p>
+                <input type="text" name="hideit" id="hideit" value="" style="display:none !important;" />
+                <button type="submit" title="<?php echo Mage::helper('contacts')->__('Submit') ?>" class="button"><span><span><?php echo Mage::helper('contacts')->__('Submit') ?></span></span></button>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4 g-page">
+        <div style="margin-left: 5px" class="g-page" data-width="281" data-href="https://plus.google.com/104011816149172734894" data-rel="publisher"></div>
+    </div>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+    var contactForm = new VarienForm('contactForm', true);
+//]]>
+</script>

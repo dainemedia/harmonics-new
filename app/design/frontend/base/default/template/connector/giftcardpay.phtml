@@ -1,0 +1,59 @@
+<?php $_code=$this->getMethodCode() ?>
+<ul class="form-list" id="payment_form_<?php echo $_code ?>" style="display:none;">
+    <li>
+        <label for="<?php echo $_code ?>_giftcard_no" class="required"><em>*</em><?php echo $this->__('Gift Card Number') ?></label>
+        <span class="input-box">
+            <input type="text" title="<?php echo $this->__('Gift Card Number') ?>" class="input-text required-entry" id="<?php echo $_code ?>_giftcard_no" name="payment[giftcard_no]" value="<?php echo $this->htmlEscape($this->getInfoData('giftcard_no')) ?>" />
+        </span>
+    </li>
+    <li>
+        <label for="<?php echo $_code ?>_password" class="required"><em>*</em><?php echo $this->__('Password') ?></label>
+        <span class="input-box">
+            <input type="password" title="<?php echo $this->__('Password') ?>" class="input-text required-entry" id="<?php echo $_code ?>_password" name="payment[password]" value="<?php echo $this->htmlEscape($this->getInfoData('password')) ?>" />
+        </span>
+    </li>
+</ul>
+<input type="hidden" id="giftcardpay" value="<?php echo $this->getBaseUrl()?>connector/index/validateGiftCard">
+<input type="hidden" id="processgiftcard" value="<?php echo $this->getBaseUrl()?>connector/index/processGiftCard">
+<div>
+    <?php echo $this->getMethod()->getConfigData('message');?>
+</div>
+<script>
+jQuery(document).ready(function(){
+	
+	jQuery('#payment-buttons-container > button').click(function(){
+		if(jQuery('#p_method_giftcardpay').is(':checked')) 
+		{ 
+			var gifCardForm = new VarienForm('co-payment-form', true);
+			if(gifCardForm.validator.validate()) {
+				var url = jQuery('#giftcardpay').val();
+				var gcd_unique_num = jQuery('#giftcardpay_giftcard_no').val();
+				var password = jQuery('#giftcardpay_password').val();
+				jQuery.ajax({
+					url: url,
+					dataType: 'json',
+					type : 'post',
+					data:{ gcd_unique_num: gcd_unique_num,password: password},
+					success: function(data){
+							
+							if(data.status=='SUCCESS') {
+								if(data.gcd_status) {
+									payment.save();
+								}
+								else {
+									alert(data.status_msg);
+								}
+							}
+							else {
+								alert(data.status_msg);
+							}
+					}
+				});
+				
+			}
+		
+		}
+	});
+	
+});
+</script>

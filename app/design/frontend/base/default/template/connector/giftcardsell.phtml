@@ -1,0 +1,183 @@
+<!-- version 105-->
+<?php
+$isSecure = Mage::app()->getStore()->isCurrentlySecure();
+$magentoBaseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, $isSecure);
+$magentoCurrencyCode = Mage::app()->getStore()->getCurrentCurrencyCode();
+$magentoCurrentStoreId = Mage::app()->getStore()->getStoreId();
+$mbizStoreId = Mage::getModel('Microbiz_Connector_Model_Observer')->getDefaulrStoreIdFromMbiz($magentoCurrentStoreId);
+$mbizStoreCurrencyCode = Mage::helper('microbiz_connector')->getMbizStoreCurrency($mbizStoreId);
+$sellGiftCard = Mage::getStoreConfig('connector/settings/sellgiftcard');
+if($sellGiftCard && $magentoCurrencyCode == $mbizStoreCurrencyCode) {
+
+    ?>
+<div class="buy-giftcards">
+    <div class="block">
+        <div class="block-title">
+            <strong>
+                <span>
+                    <?php $giftCardHeader = Mage::getStoreConfig('connector/settings/giftcardheader');
+                        if($giftCardHeader!=0 || $giftCardHeader!='')
+                        {
+                            echo $giftCardHeader;
+                        }
+                        else
+                        {
+                            echo "Gift Card Header";
+                        }
+                    ?>
+                </span>
+            </strong>
+        </div>
+
+        <div class="block-content" style="">
+            <div class="sub-header">
+                <div class="giftcard-image">
+                    <?php $giftCardImage = Mage::getStoreConfig('connector/settings/giftcardimage');
+                            if($giftCardImage!=0 || $giftCardImage!='')
+                            {
+                    ?>
+                      <img src="<?php echo Mage::getBaseUrl('media').'configuration/'.$giftCardImage ?>" width="50" height="50" alt="Gift Card Image" />
+                    <?php
+                            }
+                            else
+                            {
+                                echo "Gift Card Image Not Available";
+                            }
+                    ?>
+                     </div>
+                    <div class="giftcard-text">
+                    <p>
+                        <?php
+                        $giftCardText = Mage::getStoreConfig('connector/settings/giftcardtext');
+                        if($giftCardText!=0 || $giftCardText!='')
+                        {
+                            echo $giftCardText;
+                        }
+                        else
+                        {
+                            echo "Gift Card Snippet Text";
+                        }
+                        ?>
+                    </p>
+
+            </div>
+                <div class="clear"></div>
+            </div>
+
+            <div class="available-amounts">
+                <?php echo $this->mbizGetGiftCardSaleInfo(); ?>
+                <input type="hidden" class="mbiz_post_url" value="'<?php echo $magentoBaseUrl.'connector/index/mbizBuyGiftCard'; ?>'" />
+
+            </div>
+        </div>
+        <div class="mbizgiftcard_purchase_block" style="display: none;margin-top:20px;">
+            <div class="block-title"><strong>Purchase Gift Card</strong></div>
+            <div class="block-content" style="">
+                 <div class="amount">
+                Amount: <input type="text" name="amount" class="mbiz_sel_amt" value="" size="10"/>
+                <span class="fixed_amount_price" style="display: none;"></span>
+                <span class="mbiz_giftcard_error_msg" style="color: red;display: none;">please enter a valid amount or select already existing amounts.</span>
+                <input type="hidden" name="card_type" class="mbiz_sel_type" value="" />
+                 </div>
+            <div class="button-set actions">
+
+                <button class="add_mbiz_giftcard_to_cart button" name="add_mbiz_giftcard_to_cart"><span><span>Add To Cart</span></span></button>
+                     <img src="<?php echo Mage::getBaseUrl('skin').'adminhtml/default/default/images/ajax-loader-tr.gif'?>"
+                     alt="NOT FOUND" style="display:none;" width="20px" class="load_giftcard_img"/>
+                <button class="button mbiz_giftcard_cancel" name="cancel"><span><span>Cancel</span></span></button>
+
+
+                 </div>
+            <input type="hidden" class="mbiz_post_url" value="<?php echo $magentoBaseUrl.'connector/index/mbizBuyGiftCard'; ?>" />
+            <input type="hidden" class="mbiz_post_success_url" value="<?php echo $magentoBaseUrl.'checkout/cart'; ?>" />
+            <input type="hidden" class="current_store_currency_symbol" value="<?php echo Mage::app()->getLocale()->currency(Mage::app()->getStore()->getCurrentCurrencyCode())->getSymbol(); ?> " />
+             </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+   /* function ShowGiftInfo(amt,type)
+    {
+        jQuery("#temp").show(function($this){
+            if(amt!='' || amt!=0)
+            {
+                jQuery('#amount').val(amt);
+                jQuery('#amount').attr('disabled','disabled');
+                jQuery('#card_type').val(type);
+            }
+            else
+            {
+                jQuery('#amount').val('');
+                jQuery('#amount').removeAttr('disabled');
+                jQuery('#amount').focus();
+                jQuery('#card_type').val(type);
+            }
+
+            jQuery(this).fadeIn(3000);
+        });
+
+    }
+    jQuery('#cancel').click(function(){
+
+        jQuery('#amount').val('');
+        jQuery('#amount').removeAttr('disabled');
+        jQuery('#card_type').val('');
+        jQuery('#temp').hide(function(){
+
+            jQuery(this).fadeOut(3000);
+        });
+    });
+
+    jQuery('.add-mbiz-giftcard-to-cart').unbind('click');
+
+    jQuery('.add-mbiz-giftcard-to-cart').click(function() {
+        var giftAmount = jQuery('#amount').val();
+        var cardType = jQuery('#card_type').val();
+        if(giftAmount>0)
+        {
+            var Url = '<?php echo Mage::getBaseUrl().'connector/index/mbizBuyGiftCard'; ?>';
+            var giftData = "gift_amount="+giftAmount+"&card_type="+cardType;
+            jQuery('#add-to-cart').hide();
+            jQuery("#load-img").show();
+
+            jQuery.ajax({
+                type : "POST",
+                url : Url,
+                data : giftData,
+                dataType : "json",
+                success : function(data){
+                    var status = data.status;
+                    if(status=='SUCCESS')
+                    {
+                        var successUrl = '<?php echo Mage::getBaseUrl()."checkout/cart"; ?>';
+                        window.location.href = successUrl;
+                        jQuery('#add-to-cart').show();
+                        jQuery("#load-img").hide();
+                    }
+                    else
+                    {
+                        alert(data.status_msg);
+                        jQuery('#add-to-cart').show();
+                        jQuery("#load-img").hide();
+                    }
+
+
+                },
+                error : function(e)
+                {
+                    alert("error occurred"+e)
+                    jQuery('#add-to-cart').show();
+                    jQuery("#load-img").hide();
+                }
+            });
+
+        }
+        else
+        {
+            alert("please enter a valid amount or select already existing amounts.")
+        }
+    });
+*/
+</script>
+<?php } ?>

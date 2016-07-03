@@ -1,0 +1,22 @@
+How to add checkout fields to the transactional emails:
+
+    Go to Sytem > Transactional emails and create new template
+    In the Template dropdown select New Order Guest
+    Press Load template button
+    Fill the template name field with My New Order Guest
+    In the Template Content field add the following code in the desired position.
+
+        {{depend order.getData('tm_field1')}} <p style="font-size:12px; line-height:16px; margin:0;">Field #1: {{htmlescape var=$order.getData('tm_field1')}}</p> {{/depend}}
+        {{depend order.getData('tm_field2')}} <p style="font-size:12px; line-height:16px; margin:0;">Field #2: {{htmlescape var=$order.getData('tm_field2')}}</p> {{/depend}}
+        {{depend order.getData('tm_field3')}} <p style="font-size:12px; line-height:16px; margin:0;">Field #3: {{htmlescape var=$order.getData('tm_field3')}}</p> {{/depend}}
+        {{depend order.getData('tm_field4')}} <p style="font-size:12px; line-height:16px; margin:0;">Field #4: {{htmlescape var=$order.getData('tm_field4')}}</p> {{/depend}}
+        {{depend order.getData('tm_field5')}} <p style="font-size:12px; line-height:16px; margin:0;">Field #5: {{htmlescape var=$order.getData('tm_field5')}}</p> {{/depend}}
+
+    Press Save Template button
+    Do the same operations to create template for registered customers
+    Navigate to System > Configuration > Sales Email > Order
+    Set the New Order New Order Confirmation Template and New Order Confirmation Template for Guest dropdowns to newly created templates
+    Save the configuration
+
+    Repeat this operation for other order email templates if you wish (invoice, shipment, etc).
+

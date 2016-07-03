@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <reference name="head">
+            <action method="addCss"><stylesheet>klarna/checkout/style.css</stylesheet></action>
+            <action method="addCss"><stylesheet>klarna/overrides.css</stylesheet></action>
+            <action method="addJs"><script>klarnavalidate.js</script></action>
+            <action method="addJs"><script>klarnaselection.js</script></action>
+            <!--
+            <action method="addJs"><script>klarna.min.js</script></action>
+            <action method="addJs"><script>klarna.lib.js</script></action>
+            <action method="addJs"><script>checkout/all.js</script></action>
+            -->
+            <block type="page/html_head" name="klarna_head" as="klarna_head" template="klarna/checkout/scripts.phtml" />
+        </reference>
+    </firecheckout_index_index>
+</layout>

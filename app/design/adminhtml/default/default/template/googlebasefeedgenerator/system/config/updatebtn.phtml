@@ -1,0 +1,55 @@
+<?php
+
+/**
+ * RocketWeb
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * @category   RocketWeb
+ * @package    default_default
+ * @copyright  Copyright (c) 2012 RocketWeb (http://rocketweb.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @author     RocketWeb
+ */
+
+?>
+<?php
+/**
+ * @see RocketWeb_GoogleBaseFeedGenerator_Block_Adminhtml_System_Config_Updatebtn
+ */
+?>
+<table>
+    <tr>
+        <td>
+            <button type="button" id="<?php echo $this->getHtmlId() ?>">
+                <span><?php echo $this->escapeHtml($this->getButtonLabel()); ?></span>
+            </button>
+        </td>
+    </tr>
+</table>
+<script type="text/javascript">
+//<![CDATA[
+$('<?php echo $this->getHtmlId() ?>').observe('click', function (e) {
+	<?php if (!$this->isButtonAllowed()):?>
+		alert("<?php echo $this->__("Feed generation not allowed in global scope or website scope. Please change to store view scope.");?>");
+		Event.stop(e);
+		return;
+	<?php endif;?>
+	<?php if (!$this->isButtonAllowedProducts()):?>
+		alert("<?php echo $this->__("Feed generation not allowed, too many products. Magento Cron will create the feed on a nightly basis. For testing purpose please use test button bellow.");?>");
+		Event.stop(e);
+		return;
+	<?php endif;?>
+	var url = "<?php echo $this->getButtonUrl()?>";
+	url+="?uniqueid="+"<?php echo urlencode(uniqid(rand(), true))?>";
+	
+	popWin(url, 'generategbasefeed','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, left=200, top=100, width=1000, height=900');
+	Event.stop(e);
+})
+//]]>
+</script>

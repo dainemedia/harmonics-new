@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <reference name="firecheckout.top.container">
+            <block type="inchoo_socialconnect/checkout" name="inchoo_socialconnect_checkout">
+                <block type="inchoo_socialconnect/google_button" name="inchoo_socialconnect_checkout_google_button" />
+                <block type="inchoo_socialconnect/facebook_button" name="inchoo_socialconnect_checkout_facebook_button" />
+                <block type="inchoo_socialconnect/twitter_button" name="inchoo_socialconnect_checkout_twitter_button" />
+            </block>
+        </reference>
+    </firecheckout_index_index>
+</layout>

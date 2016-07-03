@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <firecheckout_index_index translate="label">
+        <reference name="head">
+            <action method="addItem"><type>skin_js</type><name>js/bpost/shippingmanager/bpost_shippingmanager_base.js</name><params/></action>
+            <action method="addItem"><type>skin_js</type><name>js/bpost/shippingmanager/onepage_checkout.js</name><params/></action>
+            <block type="shippingmanager/javascript" name="shippingmanager.jsforgreybox" template="bpost/shippingmanager/dynamic/jsforgreybox.phtml"/>
+            <block type="shippingmanager/javascript" name="shippingmanager.jsforonepagecheckout" template="bpost/shippingmanager/dynamic/jsforonepagecheckout.phtml"/>
+            <action method="addCss"><stylesheet>greybox/gb_styles.css</stylesheet></action>
+            <action method="addCss"><stylesheet>css/bpost/bpost.css</stylesheet></action>
+        </reference>
+    </firecheckout_index_index>
+</layout>

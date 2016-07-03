@@ -1,0 +1,28 @@
+# OS Generated Files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# App Specific Files #
+######################
+app/etc/local.xml
+app/etc/live.xml
+app/etc/staging.xml
+var/.DS_Store
+var/backups
+var/cache
+var/locks
+var/log
+var/report
+var/rw_google_base
+var/tmp
+includes/*
+*.sql
+magmi/
+.htpasswd
+.htaccess

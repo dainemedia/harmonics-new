@@ -1,0 +1,14 @@
+<?php
+
+//Remove Caching
+Mage::helper('microbiz_core')->RemoveCaching();
+$isUpgradeAvailable = Mage::getStoreConfig('mbizcoreplugininstall/upgrade_available/status');
+$upgradeUrl = Mage::helper("adminhtml")->getUrl("mbizcore/adminhtml_mbizcore/index");
+?>
+
+<?php if($isUpgradeAvailable) : ?>
+<div class="notification-global">
+    <p><strong class="label">Latest Message:</strong>
+    Reminder: MicroBiz Connector Plugin Upgrade is Available. Please <a href="<?php echo $upgradeUrl; ?>">click</a> here to Upgrade your MicroBiz Connector Plugin.</p>
+</div>
+<?php endif; ?>

@@ -1,0 +1,14 @@
+<?php $_code=$this->getMethodCode() ?>
+<ul class="form-list" id="payment_form_<?php echo $_code ?>" style="display:none;">
+    <li>
+        <label for="<?php echo $_code ?>_giftcard_no" class="required"><em>*</em><?php echo $this->__('Store Credit Number') ?></label>
+        <span class="input-box">
+            <input type="text" title="<?php echo $this->__('Store Credit Number') ?>" class="input-text required-entry" id="<?php echo $_code ?>_storecredit_no" name="payment[storecredit_no]" value="<?php echo $this->htmlEscape($this->getInfoData('storecredit_no')) ?>" />
+        </span>
+    </li>
+</ul>
+<input type="hidden" id="storecreditpay" value="<?php echo $this->getBaseUrl()?>connector/index/validateStoreCredit">
+<input type="hidden" id="processstorecredit" value="<?php echo $this->getBaseUrl()?>connector/index/processStoreCredit">
+<div>
+    <?php echo $this->getMethod()->getConfigData('message');?>
+</div>

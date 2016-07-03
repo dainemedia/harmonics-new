@@ -1,0 +1,56 @@
+<div id="emailexists-window" style="display: none;">
+    <div class="page-title">
+        <span><?php echo Mage::helper('firecheckout')->__('This email is already in use') ?></span>
+    </div>
+    <div class="content">
+        <p><?php
+            echo Mage::helper('firecheckout')->__(
+                "Please %slogin%s using this email address or %senter a different email address%s to register your account.",
+                "<a href='javascript:void(0)' class='firecheckout-login'>",
+                "</a>",
+                "<a href='javascript:void(0)' class='firecheckout-different-email'>",
+                "</a>"
+            );
+        ?></p>
+    </div>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+var emailexists = $('emailexists-window');
+emailexists.down('.firecheckout-login').observe('click', function(e) {
+    firecheckoutWindow.activate('login');
+
+    // login form
+    $('email').value = $('billing:email').value;
+    $('pass').focus();
+
+    // forgot form
+    $('email_address').value = $('billing:email').value;
+});
+emailexists.down('.firecheckout-different-email').observe('click', function(e) {
+    emailExistsWindow.setModal(0).hide();
+
+    var email = $('billing:email');
+    Effect.ScrollTo(email, {
+        duration: 0.5,
+        offset: -20,
+        afterFinish: function() {
+            email.focus();
+            email.select();
+        }
+    });
+});
+
+emailExistsWindow = new FireCheckout.Window({
+    triggers: {},
+    destroy: 1,
+    size: {
+        maxWidth: 400
+    }
+});
+emailExistsWindow.update($('emailexists-window'))
+    .setModal(1)
+    .show();
+//]]>
+</script>

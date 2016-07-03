@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <!-- Overriding Template File -->
+    <connector_adminhtml_connector_index>
+        <reference name="head">
+            <action method="addJs"><file>jquerylib/jquery-1.7.2.min.js</file></action>
+            <action method="addJs"><file>jquerylib/noconflict.js</file></action>
+        </reference>
+    </connector_adminhtml_connector_index>
+    <adminhtml_sales_order_shipment_new>
+        <reference name="head">
+            <action method="addJs"><file>mage/adminhtml/sales/packaging.js</file></action>
+            <action method="addJs"><file>jquerylib/jquery-1.7.2.min.js</file></action>
+            <action method="addJs"><file>jquerylib/noconflict.js</file></action>
+        </reference>
+        <reference name="sales_shipment_create">
+            <reference name="sales_shipment_create">
+                <reference name="form">
+                    <reference  name="order_items">
+                        <action method="setTemplate" ifconfig="connector/settings/allowstoreselection"><template>connector/sales/order/shipment/create/items.phtml</template></action>
+                        <action method="addItemRender" ifconfig="connector/settings/allowstoreselection"><type>default</type><block>adminhtml/sales_items_renderer_default</block><template>connector/sales/order/shipment/create/items/renderer/default.phtml</template></action>
+
+                    </reference>
+
+                </reference>
+            </reference>
+        </reference>
+    </adminhtml_sales_order_shipment_new>
+    <connector_adminhtml_connectordebug_index>
+        <reference name="content">
+            <block type="microbiz_connector/adminhtml_connectordebug" name="connector" />
+        </reference>
+    </connector_adminhtml_connectordebug_index>
+    <connector_adminhtml_connectordebug_product>
+        <reference name="content">
+            <block type="microbiz_connector/adminhtml_mbizproduct" name="connector" />
+        </reference>
+    </connector_adminhtml_connectordebug_product>
+    <connector_adminhtml_connectordebug_customerSync>
+        <reference name="head">
+            <action method="addJs"><file>jquerylib/jquery-1.7.2.min.js</file></action>
+            <action method="addJs"><file>jquerylib/noconflict.js</file></action>
+        </reference>
+    </connector_adminhtml_connectordebug_customerSync>
+    <connector_adminhtml_connectordebug_productSync>
+        <reference name="head">
+            <action method="addJs"><file>jquerylib/jquery-1.7.2.min.js</file></action>
+            <action method="addJs"><file>jquerylib/noconflict.js</file></action>
+
+        </reference>
+    </connector_adminhtml_connectordebug_productSync>
+    <connector_adminhtml_connectordebug_customer>
+        <reference name="content">
+            <block type="microbiz_connector/adminhtml_mbizcustomer" name="connector" />
+        </reference>
+    </connector_adminhtml_connectordebug_customer>
+    <connector_adminhtml_connectordebug_customeraddress>
+        <reference name="content">
+            <block type="microbiz_connector/adminhtml_mbizcustomeraddr" name="connector" />
+        </reference>
+    </connector_adminhtml_connectordebug_customeraddress>
+    <connector_adminhtml_connectordebug_attributeset>
+        <reference name="content">
+            <block type="microbiz_connector/adminhtml_mbizattributeset" name="connector" />
+        </reference>
+    </connector_adminhtml_connectordebug_attributeset>
+    <connector_adminhtml_connectordebug_attribute>
+        <reference name="content">
+            <block type="microbiz_connector/adminhtml_mbizattribute" name="connector" />
+        </reference>
+    </connector_adminhtml_connectordebug_attribute>
+    <connector_adminhtml_connectordebug_attributegroup>
+        <reference name="content">
+            <block type="microbiz_connector/adminhtml_mbizattributegroup" name="connector" />
+        </reference>
+    </connector_adminhtml_connectordebug_attributegroup>
+    <connector_adminhtml_connectordebug_attributeoption>
+        <reference name="content">
+            <block type="microbiz_connector/adminhtml_mbizattributeoption" name="connector" />
+        </reference>
+    </connector_adminhtml_connectordebug_attributeoption>
+    <connector_adminhtml_connectordebug_syncheader>
+        <reference name="content">
+            <block type="microbiz_connector/adminhtml_syncheader" name="connector" />
+        </reference>
+    </connector_adminhtml_connectordebug_syncheader>
+    <connector_adminhtml_connectordebug_synchistory>
+        <reference name="content">
+            <block type="microbiz_connector/adminhtml_synchistory" name="connector" />
+        </reference>
+    </connector_adminhtml_connectordebug_synchistory>
+    <connector_adminhtml_connectordebug_storeinventory>
+        <reference name="content">
+            <block type="microbiz_connector/adminhtml_storeinventory" name="connector" />
+        </reference>
+    </connector_adminhtml_connectordebug_storeinventory>
+    <connector_adminhtml_connectordebug_connectorcataloginventory>
+        <reference name="content">
+            <block type="microbiz_connector/adminhtml_connectorcataloginventory" name="connector" />
+        </reference>
+    </connector_adminhtml_connectordebug_connectorcataloginventory>
+
+    <!-- Initial load -->
+    <connector_adminhtml_connector_mbizinstallsignin>
+        <reference name="head">
+            <action method="addJs"><file>jquerylib/jquery-1.7.2.min.js</file></action>
+            <action method="addJs"><file>jquerylib/noconflict.js</file></action>
+        </reference>
+    </connector_adminhtml_connector_mbizinstallsignin>
+    <connector_adminhtml_connector_mbizinstallsignup>
+        <reference name="head">
+            <action method="addJs"><file>jquerylib/jquery-1.7.2.min.js</file></action>
+            <action method="addJs"><file>jquerylib/noconflict.js</file></action>
+        </reference>
+    </connector_adminhtml_connector_mbizinstallsignup>
+    <connector_adminhtml_connector_mbizvalidateinstallpos>
+        <reference name="head">
+            <action method="addJs"><file>jquerylib/jquery-1.7.2.min.js</file></action>
+            <action method="addJs"><file>jquerylib/noconflict.js</file></action>
+        </reference>
+    </connector_adminhtml_connector_mbizvalidateinstallpos>
+    <connector_adminhtml_connector_mbizvalidateapiuserdetails>
+        <reference name="head">
+            <action method="addJs"><file>jquerylib/jquery-1.7.2.min.js</file></action>
+            <action method="addJs"><file>jquerylib/noconflict.js</file></action>
+        </reference>
+    </connector_adminhtml_connector_mbizvalidateapiuserdetails>
+    <connector_adminhtml_connector_mbizsettingwizard>
+        <reference name="head">
+            <action method="addJs"><file>jquerylib/jquery-1.7.2.min.js</file></action>
+            <action method="addJs"><file>jquerylib/noconflict.js</file></action>
+        </reference>
+    </connector_adminhtml_connector_mbizsettingwizard>
+    <connector_adminhtml_connector_mbizsavedirection>
+        <reference name="head">
+            <action method="addJs"><file>jquerylib/jquery-1.7.2.min.js</file></action>
+            <action method="addJs"><file>jquerylib/noconflict.js</file></action>
+        </reference>
+    </connector_adminhtml_connector_mbizsavedirection>
+    <connector_adminhtml_connector_savemagtombizsettings>
+        <reference name="head">
+            <action method="addJs"><file>jquerylib/jquery-1.7.2.min.js</file></action>
+            <action method="addJs"><file>jquerylib/noconflict.js</file></action>
+        </reference>
+    </connector_adminhtml_connector_savemagtombizsettings>
+    <connector_adminhtml_connector_savembiztomagsettings>
+        <reference name="head">
+            <action method="addJs"><file>jquerylib/jquery-1.7.2.min.js</file></action>
+            <action method="addJs"><file>jquerylib/noconflict.js</file></action>
+        </reference>
+    </connector_adminhtml_connector_savembiztomagsettings>
+    <connector_adminhtml_connector_mbizbegininitialsync>
+        <reference name="head">
+            <action method="addJs"><file>jquerylib/jquery-1.7.2.min.js</file></action>
+            <action method="addJs"><file>jquerylib/noconflict.js</file></action>
+        </reference>
+    </connector_adminhtml_connector_mbizbegininitialsync>
+    <connector_adminhtml_connector_cancelintialsync>
+        <reference name="head">
+            <action method="addJs"><file>jquerylib/jquery-1.7.2.min.js</file></action>
+            <action method="addJs"><file>jquerylib/noconflict.js</file></action>
+        </reference>
+    </connector_adminhtml_connector_cancelintialsync>
+    <connector_adminhtml_connector_startinitialsync>
+        <reference name="head">
+            <action method="addJs"><file>jquerylib/jquery-1.7.2.min.js</file></action>
+            <action method="addJs"><file>jquerylib/noconflict.js</file></action>
+        </reference>
+    </connector_adminhtml_connector_startinitialsync>
+    <!-- Initial load end -->
+</layout>

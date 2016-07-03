@@ -1,0 +1,71 @@
+<?php
+//Version 101
+//echo "came to options .phtml";
+$isSecure = Mage::app()->getStore()->isCurrentlySecure();
+$magentoBaseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, $isSecure);
+?>
+<?php
+$sellGiftCard = Mage::getStoreConfig('connector/settings/sellgiftcard');
+if($sellGiftCard){
+    ?>
+    <input type="hidden" id="is_mbiz_cart" value="1" />
+    <div class="buy-giftcards">
+        <div class="block">
+            <div class="block-title">
+                <strong>
+                <span>
+                    <?php $giftCardHeader = Mage::getStoreConfig('connector/settings/giftcardheader');
+                    if($giftCardHeader!=0 || $giftCardHeader!='')
+                    {
+                        echo $giftCardHeader;
+                    }
+                    else
+                    {
+                        echo "Gift Card Header";
+                    }
+                    ?>
+                </span>
+                </strong>
+            </div>
+            <div class="block-content" style="">
+                <div class="available-amounts">
+                    <?php //echo $this->mbizGetGiftCardSaleInfo(); ?>
+                    <?php echo$_blockData = $this->getLayout()->getBlockSingleton('microbiz_connector/giftcardsell')->mbizGetGiftCardSaleInfo();?>
+                    <input type="hidden" class="mbiz_post_url" value="'<?php echo $magentoBaseUrl.'connector/index/mbizBuyGiftCard'; ?>'" />
+
+                </div>
+            </div>
+            <div class="mbizgiftcard_purchase_block" style="display: none;margin-top:20px;">
+                <div class="block-title"><strong>Purchase Gift Card</strong></div>
+                <div class="block-content" style="">
+                    <div class="amount">
+                        Amount: <input type="text" name="amount" class="mbiz_sel_amt" value="" size="10"/>
+                        <span class="fixed_amount_price" style="display: none;"></span>
+                        <span class="mbiz_giftcard_error_msg" style="color: red;display: none;">please enter a valid amount or select already existing amounts.</span>
+                        <input type="hidden" name="card_type" class="mbiz_sel_type" value="" />
+                    </div>
+                    <div class="button-set actions">
+
+                        <button class="add_mbiz_giftcard_to_cart button" name="add_mbiz_giftcard_to_cart"><span><span>Add To Cart</span></span></button>
+                        <img src="<?php echo Mage::getBaseUrl('skin').'adminhtml/default/default/images/ajax-loader-tr.gif'?>"
+                             alt="NOT FOUND" style="display:none;" width="20px" class="load_giftcard_img"/>
+                        <button class="button mbiz_giftcard_cancel" name="cancel"><span><span>Cancel</span></span></button>
+
+
+                    </div>
+                    <input type="hidden" class="mbiz_post_url" value="<?php echo $magentoBaseUrl.'connector/index/mbizBuyGiftCard'; ?>" />
+                    <input type="hidden" class="mbiz_post_success_url" value="<?php echo $magentoBaseUrl.'checkout/cart'; ?>" />
+                    <input type="hidden" class="current_store_currency_symbol" value="<?php echo Mage::app()->getLocale()->currency(Mage::app()->getStore()->getCurrentCurrencyCode())->getSymbol(); ?> " />
+                </div>
+            </div>
+        </div>
+    </div>
+
+<?php } ?>
+<?php //echo $this->getLayout()->createBlock('microbiz_connector/giftcardsell')->setTemplate('connector/giftcardsell.phtml')->toHtml();?>
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+        jQuery('.product-options-bottom').hide();
+        jQuery('#product-options-wrapper > .required').hide();
+    });
+</script>

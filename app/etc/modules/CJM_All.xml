@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+	<modules>
+		<CJM_All>
+			<active>true</active>
+			<codePool>local</codePool>
+		</CJM_All>
+	</modules>
+</config>

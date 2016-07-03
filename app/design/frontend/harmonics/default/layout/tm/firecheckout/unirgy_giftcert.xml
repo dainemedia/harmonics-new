@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <reference name="info">
+            <action method="addItemRender"><type>ugiftcert</type><block>ugiftcert/cart_item</block><template>checkout/onepage/review/item.phtml</template></action>
+        </reference>
+        <reference name="firecheckout">
+            <block type="core/template" name="checkout.giftcard" as="giftcard" template="tm/firecheckout/unirgy/giftcert/cart/form.phtml"/>
+        </reference>
+    </firecheckout_index_index>
+
+    <firecheckout_index_updatecheckout>
+        <reference name="checkout.review">
+            <action method="addItemRender"><type>ugiftcert</type><block>ugiftcert/cart_item</block><template>checkout/onepage/review/item.phtml</template></action>
+        </reference>
+        <block type="core/template" name="checkout.giftcard" as="giftcard" template="tm/firecheckout/unirgy/giftcert/cart/form.phtml"/>
+    </firecheckout_index_updatecheckout>
+</layout>

@@ -1,0 +1,240 @@
+<?php if ($this->getQuote()->isVirtual() || !Mage::getStoreConfig('firecheckout/general/shipping_address')) : return; endif; ?>
+<ul class="form-list">
+    <li class="control">
+        <input type="checkbox" name="shipping[same_as_billing]" id="shipping:same_as_billing" value="1"<?php if($this->getAddress()->getSameAsBilling()): ?> checked="checked"<?php endif; ?> title="<?php echo $this->__('Ship to the same address') ?>" onclick="shipping.setSameAsBilling(this.checked)" class="checkbox" /><label for="shipping:same_as_billing"><?php echo $this->__('Ship to the same address') ?></label>
+    </li>
+</ul>
+
+<?php
+    $_layout = $this->getLayout();
+    $_isCustomerLoggedIn = $this->isCustomerLoggedIn();
+    $_address = $this->getAddress();
+    $_prefix  = 'shipping';
+
+    $status = Mage::getStoreConfig('firecheckout/address_form_status');
+    $fields = array(
+        'name'  => array(),
+//        'company' => array(
+//            'class' => 'input-text',
+//            'label' => 'Company'
+//        ),
+        'fax' => array(
+            'class' => 'input-text',
+            'label' => 'Fax'
+        ),
+        'telephone' => array(
+            'class' => 'input-text',
+            'label' => 'Telephone'
+        ),
+        'city' => array(
+            'class' => 'input-text',
+            'label' => 'City'
+        ),
+        'postcode' => array(
+            'class' => 'input-text validate-zip-international',
+            'label' => 'Zip/Postal Code'
+        ),
+        'street1' => array(
+            'class' => 'input-text',
+            'label' => 'Address',
+            'title' => 'Street Address',
+            'name'  => $_prefix . '[street][]',
+            'value' => $_address->getStreet(1)
+        ),
+        'country_id' => array(
+            'label' => 'Country',
+            'required_to_render' => 1
+        ),
+        'region' => array(
+            'label' => 'State/Province',
+            'required_to_render' => 1
+        )
+    );
+?>
+
+<div id="shipping-address" class="firecheckout-section"<?php if($this->getAddress()->getSameAsBilling()): ?> style="display: none;"<?php endif; ?>>
+    <div class="block-title"><span><?php echo $this->__('Shipping Address') ?></span></div>
+    <ul class="form-list">
+    <?php if ($this->customerHasAddresses()): ?>
+       <li class="wide">
+           <label for="shipping-address-select"><?php echo $this->__('Select a shipping address from your address book or enter a new address.') ?></label>
+           <div class="input-box">
+               <?php echo $this->getAddressesHtmlSelect('shipping') ?>
+           </div>
+       </li>
+    <?php endif ?>
+        <li id="shipping-new-address-form"<?php if ($this->customerHasAddresses()): ?> style="display:none;"<?php endif ?>>
+            <fieldset>
+                <input type="hidden" name="shipping[address_id]" value="<?php echo $this->getAddress()->getId() ?>" id="shipping:address_id" />
+                <ul>
+                    <?php foreach (Mage::helper('firecheckout/address')->getSortedFields() as $row) : ?>
+                        <?php
+                            $countVisible          = 0;
+                            $countRequiredToRender = 0;
+
+                            foreach ($row as $key => $field) { // do not use break in this cycle to fill statuses for all fields
+                                if (!isset($fields[$field])) { // shipping address doesn't has all of the fields
+                                    unset($row[$key]);
+                                    continue;
+                                }
+
+                                if (empty($status[$field])) {
+                                    if (!empty($fields[$field]['status'])) {
+                                        $status[$field] = $fields[$field]['status'];
+                                    } else {
+                                        $status[$field] = 'required';
+                                    }
+                                }
+                                if (!empty($fields[$field]['required_to_render'])) {
+                                    $countRequiredToRender++;
+                                }
+                                if ('hidden' !== $status[$field]) {
+                                    $countVisible++;
+                                }
+                            }
+
+                            $isMulticolumn = ($countVisible > 1 || current($row) == 'name');
+                        ?>
+
+                        <?php if (!$countVisible && !$countRequiredToRender): continue; endif; ?>
+
+                        <li class="<?php echo $isMulticolumn ? 'fields' : 'wide' ?>"<?php echo $countVisible ? '' : ' style="display: none;"' ?>>
+                            <?php foreach ($row as $field) : ?>
+                                <?php $required = ('required' === $status[$field]); ?>
+
+                                <?php if ('name' === $field) : ?>
+                                    <?php echo $this->getLayout()->createBlock('customer/widget_name')->setObject($_address)->setFieldIdFormat($_prefix . ':%s')->setFieldNameFormat($_prefix . '[%s]')->toHtml() ?>
+                                <?php else : ?>
+
+                                    <?php if ('hidden' === $status[$field]) :
+                                        if (empty($fields[$field]['required_to_render'])) :
+                                            continue;
+                                        endif; ?>
+
+                                        <div style="display: none;">
+                                    <?php endif; ?>
+
+                                    <?php if ($isMulticolumn) : ?>
+                                        <?php if ('postcode' == $field) : ?>
+                                            <div class="field" id="zipDiv2">
+                                        <?php elseif ('region' == $field): ?>
+                                            <div class="field" id="countyDiv2">
+                                        <?php else: ?>
+                                            <div class="field">
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+
+                                    <label for="<?php echo $_prefix ?>:<?php echo $field ?>"
+                                        class="<?php echo $required ? 'required' : '' ?>"
+                                        ><?php if ($required): ?><em>*</em><?php endif; ?><?php echo $this->__($fields[$field]['label']) ?></label>
+                                    <div class="input-box">
+                                        <?php if ('country_id' === $field) : ?>
+                                            <?php echo $this->getCountryHtmlSelect($_prefix) ?>
+                                        <?php elseif ('region' === $field): ?>
+                                            <select id="<?php echo $_prefix ?>:region_id" name="<?php echo $_prefix ?>[region_id]"
+                                                title="<?php echo (empty($fields[$field]['title']) ? $this->__($fields[$field]['label']) : $this->__($fields[$field]['title'])) ?>"
+                                                class="validate-select<?php echo $required ? ' required-entry' : '' ?>" style="display:none;"
+                                            >
+                                                <option value=""><?php echo $this->__('Please select region, state or province') ?></option>
+                                            </select>
+                                            <script type="text/javascript">
+                                            //<![CDATA[
+                                                $('<?php echo $_prefix ?>:region_id').setAttribute('defaultValue',  "<?php echo $_address->getRegionId() ?>");
+                                            //]]>
+                                            </script>
+                                            <input type="text" id="<?php echo $_prefix ?>:region" name="<?php echo $_prefix ?>[region]"
+                                                value="<?php echo $this->htmlEscape($_address->getRegion()) ?>"
+                                                title="<?php echo (empty($fields[$field]['title']) ? $this->__($fields[$field]['label']) : $this->__($fields[$field]['title'])) ?>"
+                                                class="input-text<?php echo $required ? ' required-entry' : '' ?>" style="display:none;"
+                                            />
+                                        <?php else: ?>
+                                            <?php
+                                                if (isset($fields[$field]['value'])):
+                                                    $value = $fields[$field]['value'];
+                                                else:
+                                                    $method = 'get' . ucfirst($field);
+                                                    $value = $_address->{$method}();
+                                                endif;
+                                            ?>
+                                            <input type="text"
+                                                name="<?php echo (empty($fields[$field]['name']) ? $_prefix . '[' . $field . ']' : $fields[$field]['name']) ?>"
+                                                id="<?php echo $_prefix ?>:<?php echo $field ?>"
+                                                value="<?php echo $this->htmlEscape($value) ?>"
+                                                title="<?php echo (empty($fields[$field]['title']) ? $this->__($fields[$field]['label']) : $this->__($fields[$field]['title'])) ?>"
+                                                class="<?php echo $fields[$field]['class'] ?><?php echo $required ? ' required-entry' : '' ?>"
+                                            />
+                                        <?php endif ?>
+                                    </div>
+
+                                    <?php if ($isMulticolumn) : ?>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <?php if ('hidden' === $status[$field]) : ?>
+                                        </div>
+                                    <?php endif; ?>
+
+                                <?php endif; ?>
+
+                                <?php if ('postcode' === $field) : ?>
+                                    <div class="field" id="findAddrBtnDiv2" style="display:none;"><br />
+                                        &nbsp;
+                                        <?php if ('' != Mage::getStoreConfig('general/craftyclicks/button_image')) : ?>
+                                            <img style="cursor: pointer;" src="<?php echo $this->getSkinUrl('images/craftyclicks/'.Mage::getStoreConfig('general/craftyclicks/button_image')); ?>" onclick="_cp_do_lookup2()" title="Find Address" class="<?php echo Mage::getStoreConfig('general/craftyclicks/button_class');?>"/>
+                                        <?php else : ?>
+                                            <button type="button" onclick="_cp_do_lookup2()" title="Find Address" class="<?php echo Mage::getStoreConfig('general/craftyclicks/button_class');?>"><span><span>Find Address</span></span></button>
+                                        <?php endif ?>
+                                    </div>
+                                </li>
+                                <li class="fields">
+                                    <span style="display:none;" id="crafty_postcode_result_display2">&nbsp;</span>
+                                </li>
+                                <li class="fields" id="hideOnNewAddress_<?php echo $_prefix ?>:company">
+                                   <div class="field">
+                                        <label for="<?php echo $_prefix ?>:company"><?php echo $this->__('Company') ?></label>
+                                        <div class="input-box">
+                                            <input type="text" id="<?php echo $_prefix ?>:company" name="<?php echo $_prefix ?>[company]" value="<?php echo $this->htmlEscape($this->getAddress()->getCompany()) ?>" title="<?php echo $this->__('Company') ?>" class="input-text" />
+                                        </div>
+                                    </div>
+                            <?php elseif ('country_id' === $field) : ?>
+                                <?php if (Mage::getStoreConfig('general/craftyclicks/house_search')): ?>
+                                    </li>
+                                    <li class="wide">
+                                        <div id="houseSearchDiv2">
+                                            <label for="crafty_in_search_string2"><?php echo $this->__('House Name or Number') ?></label>
+                                            <div class="input-box">
+                                                <input type="text" title="<?php echo $this->__('House Name or Number') ?>" name="crafty_in_search_string2" id="crafty_in_search_string2" class="input-text" />
+                                            </div>
+                                        </div>
+                                <?php endif; ?>
+                            <?php elseif ('street1' === $field) : ?>
+                                <?php for ($_i = 2, $_n = $this->helper('customer/address')->getStreetLines(); $_i <= $_n; $_i++): ?>
+                                    </li>
+                                    <li class="wide">
+                                        <div class="input-box">
+                                            <input type="text" title="<?php echo $this->__('Street Address %s', $_i) ?>" name="<?php echo $_prefix ?>[street][]" id="<?php echo $_prefix ?>:street<?php echo $_i?>" value="<?php echo $this->htmlEscape($_address->getStreet($_i)) ?>" class="input-text" />
+                                        </div>
+                                <?php endfor ?>
+                            <?php endif; ?>
+
+                            <?php endforeach; ?>
+                        </li>
+                    <?php endforeach; ?>
+
+                <?php if ($this->isCustomerLoggedIn() && $this->customerHasAddresses()):?>
+                    <li class="control">
+                        <input type="checkbox" name="shipping[save_in_address_book]" value="1" title="<?php echo $this->__('Save in address book') ?>" id="shipping:save_in_address_book" <?php if ($this->getAddress()->getSaveInAddressBook()):?> checked="checked"<?php endif;?> class="checkbox" /><label for="shipping:save_in_address_book"><?php echo $this->__('Save in address book') ?></label></li>
+                <?php else:?>
+                    <li class="no-display"><input type="hidden" name="shipping[save_in_address_book]" value="1" /></li>
+                <?php endif;?>
+                </ul>
+            </fieldset>
+        </li>
+    </ul>
+    <script type="text/javascript">
+    //<![CDATA[
+        var shipping = new Shipping('firecheckout-form');
+        var shippingRegionUpdater = new RegionUpdater('shipping:country_id', 'shipping:region', 'shipping:region_id', countryRegions, undefined, 'shipping:postcode');
+    //]]>
+    </script>
+</div>

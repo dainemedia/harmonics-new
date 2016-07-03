@@ -1,0 +1,51 @@
+<?php
+$_order = Mage::registry('current_order');
+
+if (!$_order) {
+    return;
+}
+
+if ($_deliveryDate = $_order->getFirecheckoutDeliveryDate()) {
+    $_deliveryDate = $this->formatDate($_deliveryDate, Mage_Core_Model_Locale::FORMAT_TYPE_LONG);
+}
+$_deliveryTime = $_order->getFirecheckoutDeliveryTimerange();
+
+if (!$_deliveryDate && !$_deliveryTime) {
+    return;
+}
+
+?>
+
+<div id="deliverydate">
+    <?php if ($_deliveryDate && $_deliveryTime): ?>
+        <label><?php echo $this->__("Delivery Date and Time") ?></label>
+        <strong><?php echo $this->htmlEscape($_deliveryDate . ' ' . $_deliveryTime) ?></strong>
+    <?php elseif ($_deliveryDate): ?>
+        <label><?php echo $this->__("Delivery Date") ?></label>
+        <strong><?php echo $this->htmlEscape($_deliveryDate) ?></strong>
+    <?php else: ?>
+        <label><?php echo $this->__("Delivery Time") ?></label>
+        <strong><?php echo $this->htmlEscape($_deliveryTime) ?></strong>
+    <?php endif; ?>
+</div>
+
+<script type="text/javascript">
+document.observe('dom:loaded', function() {
+    var cnt            = $('deliverydate'),
+        shippingHeader = $$('.head-shipping-method')[0];
+
+    if (!shippingHeader) {
+        return;
+    }
+
+    var fieldset = shippingHeader.up('.entry-edit').down('fieldset');
+
+    fieldset && fieldset.insert({
+        top: '<strong>' + cnt.down('label').innerHTML + '</strong> '
+            + '<span class="deliverydate">' + cnt.down('strong').innerHTML + '</span><br/>'
+    });
+
+    cnt.hide();
+});
+</script>
+

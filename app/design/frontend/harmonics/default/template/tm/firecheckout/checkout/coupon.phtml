@@ -1,0 +1,60 @@
+<div id="coupon-discount" class="firecheckout-section">
+    <div class="block-title"><span><?php echo $this->__('Discount Codes') ?></span></div>
+    <div class="discount-form" id="discount-code">
+        <?php
+            echo $this->getMessagesBlock()->getGroupedHtml();
+            $this->getMessagesBlock()->getMessageCollection()->clear();
+        ?>
+        <label for="coupon-code"><?php echo $this->__('Enter your coupon code if you have one.') ?></label>
+        <div class="input-box">
+            <input type="hidden" name="coupon[remove]" id="coupon-remove" value="0" />
+            <div class="input-field-wrapper">
+                <input class="input-text" id="coupon-code" name="coupon[code]" value="<?php echo $this->htmlEscape($this->getCouponCode()) ?>" />
+            </div>
+            <?php if (strlen($this->getCouponCode())) : ?>
+                &nbsp; <button type="button" title="<?php echo $this->__('Cancel Coupon') ?>" id="coupon-cancel" class="button" value="<?php echo $this->__('Cancel Coupon') ?>"><span><span><?php echo $this->__('Cancel Coupon') ?></span></span></button>
+            <?php else: ?>
+                &nbsp; <button type="button" title="<?php echo $this->__('Apply Coupon') ?>" id="coupon-apply" class="button" value="<?php echo $this->__('Apply Coupon') ?>"><span><span><?php echo $this->__('Apply Coupon') ?></span></span></button>
+            <?php endif; ?>
+        </div>
+    </div>
+    <script type="text/javascript">
+    //<![CDATA[
+    $('coupon-apply') && $('coupon-apply').observe('click', function(e) {
+        var code = $('coupon-code');
+        if (!code.value.length) {
+            code.addClassName('required-entry');
+            Validation.validate(code);
+            code.removeClassName('required-entry');
+            return;
+        }
+        $('coupon-remove').value = "0";
+        checkout.update(checkout.urls.coupon, {
+            'review': 1
+        });
+    });
+    $('coupon-cancel') && $('coupon-cancel').observe('click', function(e) {
+        $('coupon-remove').value = "1";
+        checkout.update(checkout.urls.coupon, {
+            'review': 1
+        });
+    });
+    $('coupon-code').observe('keydown', function(e) {
+        if (e.keyCode != 13) {
+            return;
+        }
+        var code = $('coupon-code');
+        if (!code.value.length) {
+            code.addClassName('required-entry');
+            Validation.validate(code);
+            code.removeClassName('required-entry');
+            return;
+        }
+        $('coupon-remove').value = "0";
+        checkout.update(checkout.urls.coupon, {
+            'review': 1
+        });
+    });
+    //]]>
+    </script>
+</div>

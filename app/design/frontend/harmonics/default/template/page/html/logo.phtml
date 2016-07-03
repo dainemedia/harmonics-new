@@ -1,0 +1,16 @@
+<?php
+/**
+ * HTML5 Template - Logo
+ */
+?>
+<?php
+	$isHomePage = Mage::getBlockSingleton( 'page/html_header' )->getIsHomePage();
+	$logoSrc = Mage::getBlockSingleton( 'page/html_header' )->getLogoSrc();
+	$logoAlt = Mage::getBlockSingleton( 'page/html_header' )->getLogoAlt();
+	$homeURL = Mage::helper( 'core/url' )->getHomeUrl();
+?>
+<?php if ( $isHomePage ) { ?>
+	<h1 class="logo"><img src="<?php echo $logoSrc; ?>" alt="<?php echo $logoAlt; ?>" /></h1>
+<?php } else { ?>
+	<a href="<?php echo $homeURL; ?>" title="<?php echo $logoAlt; ?>" class="logo"><img src="<?php echo $logoSrc; ?>" alt="<?php echo $logoAlt; ?>" /></a>
+<?php } ?>

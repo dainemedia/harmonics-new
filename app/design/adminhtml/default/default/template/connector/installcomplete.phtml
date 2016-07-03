@@ -1,0 +1,110 @@
+<?php
+//version 100
+//echo "Magento to Microbiz Sync Settings";
+$SyncDirectionData = $this->getSyncDirectionData();
+//echo "<pre>";print_r($SyncDirectionData);
+?>
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td><h3 class="icon-head"><?php echo Mage::helper('microbiz_connector')->__('Microbiz POS Plugin Install') ?></h3>
+
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="entry-edit">
+    <form id="mbiz_begin_initial_sync" action="<?php echo $this->getUrl('*/*/mbizbegininitialsync') ?>" method="post" enctype="multipart/form-data">
+        <?php echo $this->getBlockHtml('formkey')?>
+        <div class="entry-edit-head collapseable">
+            <a>Microbiz POS Plugin Install</a>
+        </div>
+        <fieldset id="connector_settings" class="config collapseable" style="">
+            <legend>Microbiz POS Plugin Install</legend>
+            <table cellspacing="0" class="form-list">
+                <colgroup class="label"></colgroup>
+                <colgroup class="value"></colgroup>
+                <colgroup class="scope-label"></colgroup>
+                <colgroup class=""></colgroup>
+                <tbody>
+                <tr id="row_connector_install_setting_products">
+                    <td class="label">
+                        <img src="<?php echo $this->getSkinUrl('images/connector/install-complete.png')?>" width="100px" height="100px" />
+                    </td>
+                    <td class="value" colspan="2">
+                        <p>Initial Sync will take 12-24 hours you will be emailed when it completes</p>
+                        <p>Click Begin to Start Sync</p>
+                    </td>
+                </tr>
+                <?php
+                $formKey = Mage::getSingleton('core/session')->getFormKey();
+                ?>
+                <tr>
+                    <td colspan="3">
+                        <button class="scalable back" id="back_to" type="submit" title="Back" ><span><span><span>Back</span></span></span></button>
+                        <button class="scalable mbizform-cancelinstallpos" id="cancel_to_config" type="button" title="Cancel" ><span><span><span>Cancel</span></span></span></button>
+                        <button class="scalable install-begin-initial-sync" type="button" title="Save and Continue" ><span><span><span>Begin Initial Sync</span></span></span></button>
+                    </td>
+                </tr>
+                <?php $mage_url = Mage::getBaseUrl();
+                //$mage_url_domain = explode('://',Mage::getBaseUrl());
+                //print_r($mage_url_domain[1]);
+                $formKey = $this->getBlockHtml('formkey');
+                $mage_api_url = explode("/index.php/",$mage_url);
+                $sitename = Mage::getStoreConfig('connector/installation/mbiz_sitename');
+                $siteType = Mage::getStoreConfig('connector/installation/mbiz_sitetype');
+                $username = Mage::getStoreConfig('connector/installation/mbiz_username');
+                $password = Mage::getStoreConfig('connector/installation/mbiz_password');
+                $magApiUname = Mage::getStoreConfig('connector/installation/mag_api_username');
+                $magApiEmail = Mage::getStoreConfig('connector/installation/mag_api_email');
+                $mbizApiUserName = Mage::getStoreConfig('connector/settings/api_user');
+                $mbizApiUserPwd = Mage::getStoreConfig('connector/settings/api_key');
+                $magApiUserPwd = Mage::getStoreConfig('connector/settings/mag_api_key');
+                $syncDirection = Mage::getStoreConfig('connector/installation/sync_direction');
+                ?>
+                <?php
+                $isLinked = Mage::getStoreConfig('connector/installation/is_linked');
+                ?>
+                <input type="hidden" id="is_linked_status" value="<?php echo $isLinked; ?>" />
+                <input type="hidden" id="mage_url" name="mage_url" value="<?php echo $mage_api_url[0]; ?>">
+                <input type="hidden" id="mbiz_back_url" name="mbiz_back_url" value="<?php echo Mage::helper("adminhtml")->getUrl("connector/adminhtml_connector/mbizsavedirection/"); ?>" />
+                <input type="hidden" id="mbiz_cancel_url" name="mbiz_cancel_url" value="<?php echo Mage::helper("adminhtml")->getUrl("connector/adminhtml_connector/cancelintialsync/"); ?>" />
+                <input type="hidden" id="mbiz_sitetype" name="mbiz_sitetype" value="<?php echo $siteType ?>" />
+                <input type="hidden" id="mbiz_sitename" name="mbiz_sitename" value="<?php echo $sitename; ?>" />
+                <input type="hidden" id="mbiz_username" name="mbiz_username" value="<?php echo $username; ?>" />
+                <input type="hidden" id="mbiz_password" name="mbiz_password" value="<?php echo $password; ?>" />
+                <input type="hidden" id="mag_api_username" name="mag_api_username" value="<?php echo $magApiUname; ?>" />
+                <input type="hidden" id="mag_api_email" name="mag_api_email" value="<?php echo $magApiEmail; ?>" />
+                <input type="hidden" id="mag_api_password" name="mag_api_password" value="<?php echo $magApiUserPwd; ?>" />
+                <input type="hidden" id="mbiz_api_username" name="mbiz_api_username" value="<?php echo $mbizApiUserName; ?>" />
+                <input type="hidden" id="mbiz_api_password" name="mbiz_api_password" value="<?php echo $mbizApiUserPwd; ?>" />
+                <input type="hidden" id="sync_direction" name="sync_direction" value="<?php echo $syncDirection; ?>" />
+                </tbody>
+            </table>
+        </fieldset>
+    </form>
+</div>
+
+<script type="text/javascript">
+
+    jQuery('.install-begin-initial-sync').live('click',function(){
+            var mbizSignInForm = new varienForm('mbiz_begin_initial_sync');
+            var validated=mbizSignInForm.validate();
+            if(validated){
+                mbizSignInForm.submit();
+            }
+
+        }
+    );
+    jQuery('#back_to').click(function(){
+        var $mbizBackUrl = jQuery('#mbiz_back_url').val();
+        jQuery("#mbiz_begin_initial_sync").attr('action',$mbizBackUrl);
+        jQuery("#mbiz_begin_initial_sync").submit();
+    });
+    jQuery('#cancel_to_config').click(function(){
+        var $mbizBackUrl = jQuery('#mbiz_cancel_url').val();
+        jQuery("#mbiz_begin_initial_sync").attr('action',$mbizBackUrl);
+        jQuery("#mbiz_begin_initial_sync").submit();
+    });
+
+</script>

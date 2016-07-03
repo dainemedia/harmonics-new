@@ -1,0 +1,84 @@
+<?php
+
+/**
+ * RocketWeb
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * @category   RocketWeb
+ * @package    default_default
+ * @copyright  Copyright (c) 2012 RocketWeb (http://rocketweb.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @author     RocketWeb
+ */
+
+?>
+<style type="text/css" >
+    ul { list-style-type:none; padding:0; margin:0; }
+    li { margin-left:0; border:1px solid #ccc; margin:2px; padding:2px 2px 2px 2px; font:normal 12px sans-serif; }
+    img { margin-right:5px; }
+</style>
+<ul>
+    <li style="background-color:#FFD;">
+    	<img src="<?php echo $this->getSkinUrl('images/fam_bullet_error.gif');?>" class="v-middle" style="margin-right:5px"/>
+    	<?php echo $this->__("Warning: Please do not close the window during the generation of the feed. Otherwise it will not finish the job.");?>
+    </li>
+    <?php if ($this->getData('script_started_at') instanceof Zend_Date):?>
+    <li style="background-color:#DDDDFF;">
+    	<img src="<?php echo $this->getSkinUrl('images/note_msg_icon.gif');?>" class="v-middle" style="margin-right:5px"/>
+    	Started at: <?php echo $this->getData('script_started_at')->__toString()?>
+    </li>
+    <?php endif;?>
+<?php foreach ($this->getMessages() as $msg):?>
+	<?php if ($msg['type'] == 'error'):?>
+		<li style="background-color:#FFD;">
+			<img src="<?php echo $this->getSkinUrl('images/error_msg_icon.gif');?>" class="v-middle" style="margin-right:5px"/>
+			<?php echo $msg['msg']?>
+		</li>
+	<?php else:?>
+		<li style="background-color:#DDDDFF;">
+			<img src="<?php echo $this->getSkinUrl('images/note_msg_icon.gif');?>" class="v-middle" style="margin-right:5px"/>
+			<?php echo $msg['msg']?>
+		</li>
+	<?php endif;?>
+<?php endforeach;?>
+	<?php if ($this->getData('script_finished_at') instanceof Zend_Date):?>
+		<li style="background-color:#DDDDFF;">
+	    	<img src="<?php echo $this->getSkinUrl('images/note_msg_icon.gif');?>" class="v-middle" style="margin-right:5px"/>
+            <?php echo $this->__("Finished at:");?> <?php echo $this->getData('script_finished_at')->__toString()?>
+	    </li>
+	<?php endif;?>
+</ul>
+<?php if ($this->getIsFeed()):?>
+	<br />
+	<img src="<?php echo $this->getSkinUrl('images/icon_export.gif');?>" class="v-middle" style="margin-right:5px"/>
+	<a href="<?php echo $this->getDownloadUrl()?>" title="Download feed">Download feed</a>
+<?php endif;?>
+
+<?php if ($this->getIsFeed() && count($this->getFeedData()) > 0):?>
+	<?php foreach ($this->getFeedData() as $row):?>
+		<table style="margin-top:20px; border:1px solid #000; " class="data" cellspacing="0">
+			<?php $i = 0; $cf = count($row); foreach ($row as $column => $value): $i++;?>
+				<tr>
+					<th style="padding:1px 5px; background:#D1E0E2; border:1px solid #ccc;<?php echo ($i < $cf ? " border-right:none; border-bottom:none" : "")?>"><?php echo $column?></th>
+					<td style="padding:1px 5px; background:#fff; border:1px solid #ccc;<?php echo ($i < $cf ? " border-bottom:none" : "")?>"><?php echo $value?></td>
+				</tr>
+			<?php endforeach;?>
+		</table>
+	<?php endforeach;?>
+<?php endif;?>
+<?php if (count($this->getLogMessages()) > 0):?>
+<div style="clear:both; float:none; font-size:1px; line-height:1; ">&nbsp;</div>
+<br />
+<h3><?php echo sprintf('Last %d log messages', count($this->getLogMessages()));?></h3>
+<pre>
+<?php foreach ($this->getLogMessages() as $msg):?>
+<?php echo $msg . "\n"?>
+<?php endforeach;?>
+</pre>
+<?php endif;?>

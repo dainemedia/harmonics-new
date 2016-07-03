@@ -1,0 +1,129 @@
+<?php
+/**
+ * GCMC SagePay extension
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ *
+ * @category   design_base
+ * @package    GCMC_SagePay
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+ ?>
+
+<?php
+     $charities = $this->getCharities();
+     $item      = $this->getDonationItem();
+?>
+
+<div id="givechange">
+    <div class="left" id="givechange-logo"><img src="<?php echo $this->getSkinUrl('images/givechange/givechange.gif') ?>" alt="Give Change Make Change" /></div>
+    <div class="right">
+        <p>
+            <input type="radio" name="roundup" id="roundup" value="<?php echo $this->getDonationTypeCode('roundup') ?>"<?php echo ($this->isRoundup() ? 'checked="checked"' : '') ?> />
+            <label for="roundup"><?php echo $this->__('I would like to round up my purchase to %s%s donating %s%s to charity', $this->getCurrencySymbol(), $this->getTotalPlusRoundup(), $this->getCurrencySymbol(), $this->getRoundupValue()) ?></label>
+        </p>
+        <?php if($this->allowCustomDonations()): ?>
+            <p><strong>OR</strong></p>
+            <p>
+                <input type="radio" name="roundup" id="ownvalue" value="<?php echo $this->getDonationTypeCode('custom') ?>"<?php echo ($this->isCustom() ? 'checked="checked"' : '') ?> />
+                <label for="ownvalue"><?php echo $this->__('I would like to add my own amount to give to charity %s', $this->getCurrencySymbol()) ?></label>
+                <input type="text" name="custom" id="custom" value="<?php echo $this->isCustom() ? $this->getDonationValue() : '' ?>" />
+            </p>
+        <?php endif; ?>
+    </div>
+    <div class="bottom">
+        <?php if(count($charities)): ?>
+        <ul id="givechange-charities" class="left">
+            <?php foreach($this->getCharities() as $charity): ?>
+            <li class="item">
+                <a onclick="Modalbox.show($('givechange-<?php echo $charity->getCharityId() ?>'), {title:'&nbsp;', width: 600}); return false;" title="" href="#">
+                    <img src="<?php echo $charity->getImage() ?>" alt="<?php echo $charity->getName() ?>" />
+                </a>
+                <div id="givechange-<?php echo $charity->getCharityId() ?>" class="givechange-charity-info" style="display: none">
+                    <img src="<?php echo $charity->getImage() ?>" alt="<?php echo $charity->getName() ?>" />
+                    <p><?php echo $charity->getText() ?></p>
+                </div>
+            </li>
+            <?php endforeach ?>
+        </ul>
+        <?php endif; ?>
+
+        <a onclick="Modalbox.show($('givechange-info'), {title: '&nbsp;', width: 600}); return false;" title="" href="#" class="left" id="givechange-how"><?php echo $this->__('How does it work?') ?></a>
+        <?php if($item): ?>
+            <button type="button" title="<?php echo $this->__('Update donation') ?>" class="button" id="donation-btn"><span><span><?php echo $this->__('Update donation') ?></span></span></button>
+        <?php else: ?>
+            <button type="button" title="<?php echo $this->__('Add donation') ?>" class="button" id="donation-btn"><span><span><?php echo $this->__('Add donation') ?></span></span></button>
+        <?php endif; ?>
+    </div>
+
+    <div id="givechange-info" style="display: none">
+        <div id="givechange-logo-modal"><img src="<?php echo $this->getSkinUrl('images/givechange/givechange.gif') ?>" alt="Give Change Make Change" /></div>
+        <p><?php echo $this->__('Give Change Make Change is a fundraising initiative by four of the UK&rsquo;s best known charities - British Red Cross, Great Ormond Street Hospital Childrens Charity, WWF and Cancer Research UK.') ?></p>
+        <p><?php echo $this->__('By clicking the button you can round-up your purchase to the nearest &pound;1 e.g. if it&rsquo;s &pound118.80 you can round-up &pound;0.20 to £119. Alternatively you can select your own amount to donate.') ?></p>
+        <p><?php echo $this->__('All donations are divided equally between the charities with a transaction charge coverd by them of 0.85p(less that 1p) fo each donation, so rest assured your small change will add up to make big change to these fantastic causes.') ?></p>
+        <p><?php echo $this->__('Thank you!') ?></p>
+        <ul id="givechange-charities-modal">
+            <?php foreach($this->getCharities() as $charity): ?>
+            <li class="item">
+                <a onclick="Modalbox.show($('givechange-<?php echo $charity->getCharityId() ?>'), {title: this.title, width: 600}); return false;" title="" href="#">
+                    <img src="<?php echo $charity->getImage() ?>" alt="<?php echo $charity->getName() ?>" />
+                </a>
+                <div id="givechange-<?php echo $charity->getCharityId() ?>" class="givechange-charity-info" style="display: none">
+                    <h2><?php echo $charity->getName() ?></h2>
+                    <img src="<?php echo $charity->getImage() ?>" alt="<?php echo $charity->getName() ?>" />
+                    <p><?php echo $charity->getText() ?></p>
+                </div>
+            </li>
+            <?php endforeach ?>
+        </ul>
+        <p id="smallprint"><?php echo $this->__('The British Red Cross Society(Reg. Charity No.220949), Cancer Research UK (Reg. Charity No. in England &amp; Wales (1089464) and in Scotland (SC041666), Great Ormond Street Hospital Chlidren&rsquo;s Charity (Reg. Charity No. 235825) and WWF-UK (Reg. Charity No. in England &amp; Wales(4016725) and in Scotland(SC039593))') ?></p>
+    </div>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+//    var givechange = new GiveChange(
+//        '#roundup',
+//        '#ownvalue',
+//        '#custom',
+//        '#donation-btn',
+//        '<?php echo $this->getDonationValue() ?>',
+//        '<?php echo $this->getRoundupValue() ?>'
+//    );
+
+    var givechange = '<?php echo $this->getUrl('firecheckout/index/givechangeadd', array('_secure'=>$_isSecure)) ?>';
+    $$('#donation-btn, #roundup, #ownvalue').each(function(el) {
+        el.observe('click', function(e) {
+            if (el.id === 'ownvalue' && !$('custom').value.length) {
+                return;
+            }
+            checkout.update(givechange, {
+                'review': 1
+            });
+        });
+    });
+    $('custom') && $('custom').observe('keydown', function(e) {
+        if (e.keyCode != 13) {
+            return;
+        }
+        var amount = $('custom');
+        if (!amount.value.length) {
+            amount.addClassName('required-entry');
+            Validation.validate(code);
+            amount.removeClassName('required-entry');
+            return;
+        }
+        checkout.update(givechange, {
+            'review': 1
+        });
+    });
+//]]>
+</script>
+
+

@@ -1,0 +1,43 @@
+<?php
+$_order = Mage::registry('current_order');
+
+if (!$_order) {
+    return;
+}
+
+$fields = Mage::helper('checkoutfields')->getFields();
+
+?>
+
+<div class="box-left" id="checkoutfields">
+    <div class="entry-edit">
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-checkoutfields"><?php echo $this->__('Checkout Fields') ?></h4>
+        </div>
+        <fieldset>
+        <?php foreach ($fields as $field => $config) : ?>
+            <?php $value = (string)$_order->getData($field) ?>
+
+            <?php
+            if (!strlen($value)) :
+                continue;
+            endif;
+            ?>
+
+            <label><?php echo $this->escapeHtml($config['label']) ?>:</label> <strong><?php echo $this->escapeHtml($value) ?></strong><br/>
+        <?php endforeach; ?>
+        </fieldset>
+    </div>
+</div>
+
+<script type="text/javascript">
+document.observe('dom:loaded', function() {
+    var div = $('sales_order_view_tabs_order_info_content').down('div');
+    div.insert({
+        bottom: $('checkoutfields')
+    });
+    div.insert({
+        bottom: '<div class="clear"></div>'
+    });
+});
+</script>

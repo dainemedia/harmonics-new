@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <reference name="head">
+            <action method="addItem"><type>js</type><name>customweb/payunitycw/checkout.js</name><params/><if/></action>
+            <action method="addItem"><type>skin_css</type><name>customweb/payunitycw/updates.css</name></action>
+        </reference>
+        <reference name="content">
+            <block type="payunitycw/Checkout" name="loadJavascriptForPayUnityCw" after="-" />
+        </reference>
+    </firecheckout_index_index>
+</layout>

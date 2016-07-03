@@ -1,0 +1,179 @@
+<div class="page-title checkout-title">
+    <h1><?php echo Mage::getStoreConfig('firecheckout/general/title') ?></h1>
+    <?php if (!Mage::getSingleton('customer/session')->isLoggedIn()) : ?>
+    <p class="firecheckout-login-wrapper">
+        <a href="<?php echo $this->getUrl('customer/account/login') ?>" class="firecheckout-login">
+            <span><span><?php echo $this->__('Already registered? Login into your account') ?></span></span>
+        </a>
+    </p>
+    <?php endif; ?>
+</div>
+
+<?php
+    echo $this->getMessagesBlock()->getGroupedHtml();
+    $this->getMessagesBlock()->getMessageCollection()->clear();
+?>
+
+<?php
+    $topContainer = $this->getChildHtml('firecheckout.top.container');
+    $topContainer = trim($topContainer);
+    if (strlen($topContainer)) :
+?>
+    <div class="firecheckout-top-container">
+        <?php echo $topContainer ?>
+    </div>
+<?php endif ?>
+
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/tm/firecheckout.js') ?>"></script>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/tm/firecheckout-compatibility.js') ?>"></script>
+<script type="text/javascript">countryRegions = <?php echo $this->helper('directory')->getRegionJson() ?></script>
+<script type="text/javascript">FireCheckout.Ajax.rules = <?php echo Mage::helper('core')->jsonEncode(Mage::helper('firecheckout/ajax')->getRules()) ?></script>
+
+<form action="" id="firecheckout-form" method="post">
+<?php
+if ($blockId = Mage::getStoreConfig('firecheckout/additional_content/top')) :
+    echo $this->getLayout()->createBlock('cms/block')->setBlockId($blockId)->toHtml();
+endif;
+?>
+<div class="clearer"></div>
+
+<?php $layout = Mage::getStoreConfig('firecheckout/general/layout'); ?>
+<div class="row firecheckout-set">
+    <div class="col-md-6">
+        <?php echo $this->getChildHtml('billing.address') ?>
+        <?php echo $this->getChildHtml('shipping.address') ?>
+    </div>
+
+    <div class="col-md-6">
+        <?php echo $this->getChildHtml('shipping.method') ?>
+
+        <?php echo $this->getChildHtml('payment.method') ?>
+        <?php if ($j2tRewardPoints = $this->getLayout()->getBlock('checkout_cart_coupon_normal')): // rewardpoints extension override standard discount block too ?>
+            <div id="checkout-coupon-discount-load">
+                <?php echo $j2tRewardPoints->toHtml(); ?>
+            </div>
+        <?php else: ?>
+            <div id="checkout-coupon-discount-load">
+                <?php echo $this->getChildHtml('coupon') ?>
+            </div>
+        <?php endif; ?>
+        <div id="checkout-giftcard-load">
+            <?php echo $this->getChildHtml('giftcard') ?>
+        </div>
+    </div>
+</div>
+<?php echo $this->getChildHtml('review') ?>
+
+<?php
+if ($blockId = Mage::getStoreConfig('firecheckout/additional_content/bottom')) :
+    echo $this->getLayout()->createBlock('cms/block')->setBlockId($blockId)->toHtml();
+endif;
+?>
+<div class="clearer"></div>
+</form>
+
+<?php echo $this->getChildHtml('customer.login') ?>
+<?php echo $this->getChildHtml('customer.forgot') ?>
+<?php if (Mage::helper('core')->isModuleOutputEnabled('Mage_Persistent')) : ?>
+    <?php echo $this->getChildHtml('persistent.login') ?>
+<?php endif; ?>
+<div id="checkout-centinel-iframe-load" style="display: none;"></div>
+<div id="checkout-paypaliframe-load" class="authentication" style="display: none;"></div>
+<div id="checkout-sagepay-iframe-load"></div>
+<form id="co-payment-form" method="post" action=""></form>
+<script type="text/javascript">
+//<![CDATA[
+    <?php $_isSecure = $this->getRequest()->isSecure(); ?>
+    var checkout = new FireCheckout('firecheckout-form', {
+        success         : '<?php echo $this->getUrl('checkout/onepage/success',              array('_secure'=>$_isSecure)) ?>',
+        save            : '<?php echo $this->getUrl('firecheckout/index/saveOrder',          array('_secure'=>$_isSecure, 'form_key' => Mage::getSingleton('core/session')->getFormKey())) ?>',
+        billing_address : '<?php echo $this->getUrl('firecheckout/index/saveBilling',        array('_secure'=>$_isSecure)) ?>',
+        shipping_address: '<?php echo $this->getUrl('firecheckout/index/saveShipping',       array('_secure'=>$_isSecure)) ?>',
+        shipping_method : '<?php echo $this->getUrl('firecheckout/index/saveShippingMethod', array('_secure'=>$_isSecure)) ?>',
+        payment_method  : '<?php echo $this->getUrl('firecheckout/index/savePayment',        array('_secure'=>$_isSecure)) ?>',
+        coupon          : '<?php echo $this->getUrl('firecheckout/index/saveCoupon',         array('_secure'=>$_isSecure)) ?>',
+        giftcard        : '<?php echo $this->getUrl('firecheckout/index/saveGiftcard',       array('_secure'=>$_isSecure)) ?>',
+        paymentdata     : '<?php echo $this->getUrl('firecheckout/index/savePaymentData',    array('_secure'=>$_isSecure)) ?>',
+        presave         : '<?php echo $this->getUrl('firecheckout/index/preSaveOrder',       array('_secure'=>$_isSecure)) ?>',
+        shopping_cart   : '<?php echo $this->getUrl('firecheckout/index/saveCart',           array('_secure'=>$_isSecure)) ?>',
+        failure         : '<?php echo $this->getUrl('checkout/cart') ?>'
+    }, {
+        acceptAgreementText: "<?php echo $this->__('Please agree to all the terms and conditions before placing the order.') ?>",
+        spinnerText        : "<?php echo $this->__('Please wait...') ?>",
+        productRemoveConfirm: "<?php echo $this->__('Are you sure you would like to remove this item from the shopping cart?') ?>"
+    });
+    var fireCart = new FireCheckout.Cart({
+        descriptionLength: <?php echo (int)Mage::getStoreConfig('firecheckout/shopping_cart/short_description_length') ?>
+    });
+
+    <?php if (Mage::getStoreConfig('firecheckout/general/order_review')) : ?>
+    var reviewInfo;
+    function initOrderReview() {
+        reviewInfo = new FireCheckout.OrderReview({
+            changeText: "<?php echo $this->__('Change') ?>"
+        });
+    }
+    if (Prototype.Browser.IE) {
+        document.observe("dom:loaded", function() { //KB927917 fix
+            initOrderReview();
+        });
+    } else {
+        initOrderReview();
+    }
+    <?php endif; ?>
+
+    <?php $agreeText = $this->__(Mage::getStoreConfig('firecheckout/agreements/agree_text')) ?>
+    document.observe("dom:loaded", function() {
+        var triggers = {
+            login: {
+                el    : $$('.firecheckout-login'),
+                event : 'click',
+                window: $('firecheckout-login-window'),
+                size: {
+                    maxWidth: 380
+                }
+            },
+            forgot: {
+                el    : $$('.firecheckout-forgot'),
+                event : 'click',
+                window: $('firecheckout-forgot-window'),
+                size: {
+                    maxWidth: 380
+                }
+            }
+        };
+        $$('.firecheckout-agreement-label-minimal').each(function(el) {
+            var agreement = el.readAttribute('data-agreement');
+            triggers[agreement] = {
+                el    : $$('.' + agreement),
+                event : 'click',
+                window: $(agreement + '-window'),
+                actionbar: {
+                    hidden: <?php echo (int)empty($agreeText) ?>,
+                    html: '<label class="btn-agree" id="' + agreement + '-button">'
+                        + "<?php echo $agreeText ?>"
+                        + '</label>',
+                    el: agreement + '-button',
+                    event: 'click',
+                    callback: function(e, id) {
+                        // prevent if inner link was clicked
+                        if (e.element().tagName === 'A') {
+                            return;
+                        }
+
+                        if (typeof event != 'undefined') { // ie9 fix
+                            event.preventDefault ? event.preventDefault() : event.returnValue = false;
+                        }
+                        e.stop();
+                        $(id).checked = 'checked';
+                        this.hide();
+                    }
+                }
+            };
+        });
+        firecheckoutWindow = new FireCheckout.Window({
+            triggers: triggers
+        });
+    });
+//]]>
+</script>

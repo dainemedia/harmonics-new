@@ -1,0 +1,258 @@
+<?php
+//version 105
+header('Content-Type: application/json');
+$isSecure = Mage::app()->getStore()->isCurrentlySecure();
+$magentoBaseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, $isSecure);
+$_code=$this->getMethodCode();
+$carrier = $this->getMethodInstance();
+$pickupData = $this->getQuote()->getPickupData();
+if($this->getMethodAddress()) {
+    if($this->getQuote()->getIsMultiShipping()) {
+        $_address = $this->getMethodAddress();
+        $addressId = $_address->getId();
+        $zipCode=$_address->getPostcode();
+    }
+    else {
+        $zipCode=$this->getMethodAddress()->getPostcode();
+    }
+
+}
+if($this->getQuote()->getIsMultiShipping()) {
+    $pickupData = $pickupData[$addressId];
+}
+$_rate = $this->getRate();
+
+// using cUrl get data from MBiz
+$apiInformation=Mage::helper('microbiz_connector')->getApiDetails();
+$instanceId = Mage::helper('microbiz_connector')->getAppInstanceId();
+$url = $apiInformation['api_server']; // get microbiz server details fron configuration settings.
+
+$api_user = $apiInformation['api_user'];
+$api_key = $apiInformation['api_key'];
+
+//$url    = $url.'/index.php/api/serviceWindows?zipcode=97409';			// prepare url for the rest call
+$url    = $url.'/index.php/api/serviceWindows?zipcode='.$zipCode.'&window_type=2';
+$method = 'GET';
+
+// headers and data (this is API dependent, some uses XML)
+$headers = array(
+    'Accept: application/json',
+    'Content-Type: application/json',
+    'X-MBIZPOS-USERNAME: '.$api_user,
+    'X-MBIZPOS-PASSWORD: '.$api_key
+);
+
+
+$handle = curl_init();		//curl request to create the product
+curl_setopt($handle, CURLOPT_URL, $url);
+curl_setopt($handle, CURLOPT_HTTPHEADER, $headers);
+curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($handle, CURLOPT_SSL_VERIFYHOST, false);
+curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, false);
+
+switch ($method) {
+    case 'GET':
+        break;
+
+    case 'POST':
+        curl_setopt($handle, CURLOPT_POST, true);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+        break;
+
+    case 'PUT':
+        curl_setopt($handle, CURLOPT_CUSTOMREQUEST, 'PUT');	// create product request.
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+        break;
+
+    case 'DELETE':
+        curl_setopt($handle, CURLOPT_CUSTOMREQUEST, 'DELETE');
+        break;
+} //$method
+
+$response = curl_exec($handle);	// send curl request to microbiz
+$response=json_decode($response,true);
+//Mage::log($response);
+Mage::getSingleton('checkout/session')->setServiceWindows($response);
+
+
+
+$serviceWindows = Mage::getSingleton('checkout/session')->getServiceWindows();
+
+$storeOptions = '';
+$serWinOptions = '';
+foreach($serviceWindows as $key=>$serviceWindow) {
+    $stores[$key] = $serviceWindow['store_name'];
+    $selected = '';
+    if($key == $pickupData['store']) {
+        $selected = "selected='selected'";
+    }
+    $storeOptions .= "<option value='".$key."' ".$selected.">".$serviceWindow['store_name']."</option>";
+
+    foreach($serviceWindow['serviceWindows'] as $serviceWindowId => $serviceWin) {
+        $allowedDays = array();
+        if(isset($serviceWin['zones'])) {
+            $shipingPrice =  $serviceWin['zones'][0]['service_item_price'];
+            $shippingZoneId = $serviceWin['zones'][0]['zone_id'];
+        }
+        else {
+            $shipingPrice = 0;
+            $shippingZoneId = 0;
+        }
+        foreach($serviceWin['service_days'] as $serviceDays) {
+
+            $allowedDays[] = $serviceDays;
+        }
+        if(isset($serviceWin['holiday_dates']) && count($serviceWin['holiday_dates'])){
+            $holidayDates = $serviceWin['holiday_dates'];
+            $holidayDatesData = "data-holidaydates = ".implode(',',$holidayDates);
+        }
+        $selected = '';
+        if($serviceWindowId == $pickupData['deliveryWindow']) {
+            $selected = "selected='selected'";
+        }
+        $serWinOptions .= "<option data-shippingzone='".$shippingZoneId."'  data-shippingprice='".$shipingPrice."'  ".$holidayDatesData."  data-alloweddays='".implode(',',$allowedDays)."' class='store_".$key."' value='".$serviceWindowId."' ".$selected.">".$serviceWin['window_name']."  From  ".$serviceWin['window_begins_at']."  To ".$serviceWin['window_ends_at']."</option>";
+    }
+
+}
+?>
+<ul class="form-list" id="shipping_form_<?php echo $_rate->getCode() ?><?php if($addressId) { echo "_".$addressId; } ?>" style="display:none;">
+    <li>
+        <label for="<?php echo $_code ?>_store" class="required"><em>*</em><?php echo $this->__('Select Store:') ?></label>
+        <span class="input-box">
+            <select class="required-entry" name="<?php echo $_rate->getCode() ?>_shipping_pickup[store]" id="storesDropDown<?php if($addressId) { echo "_".$addressId; } ?>">
+                <option value='' <?php if($pickupData['store'] == ''){ echo "selected=selected";} ?>><?php echo $this->__('Select Store..');?></option>
+                <?php echo $storeOptions; ?>
+            </select>
+        </span>
+        <label for="<?php echo $_code ?>_store" class="required"><em>*</em><?php echo $this->__('Select Delivery Window:') ?></label>
+        <span class="input-box">
+            <select class="required-entry" rel="<?php if($addressId) { echo $addressId; } ?>" name="<?php echo $_rate->getCode() ?>_shipping_pickup[deliveryWindow]" id="deleveryWindowDropDown<?php if($addressId) { echo "_".$addressId; } ?>">
+                <option value='' <?php if($pickupData['deliveryWindow'] == ''){ echo "selected=selected";} ?>><?php echo $this->__('Select Delivery Window..');?></option>
+                <?php echo $serWinOptions; ?>
+            </select>
+        </span>
+        <label for="<?php echo $_code ?>_store" class="required"><em>*</em><?php echo $this->__("Expected Date:") ?></label>
+        <span class="input-box">
+        <input type="text" style="width:237px" class="input-text required-entry" value='<?php echo $pickupData['date']?>' id="pickup_date<?php if($addressId) { echo "_".$addressId; } ?>" name="<?php echo $_rate->getCode() ?>_shipping_pickup[date]" readonly="readonly" />
+		 </span>
+        <label for="<?php echo $_code ?>_store"><?php echo $this->__("Note:") ?></label>
+        <span class="input-box">
+            <textarea name='<?php echo $_rate->getCode() ?>_shipping_pickup[note]' id="pickupnote<?php if($addressId) { echo "_".$addressId; } ?>" ><?php echo $pickupData['note']?></textarea>
+        </span>
+        <input type="hidden" value='2' name="<?php echo $_rate->getCode() ?>_shipping_pickup[window_type]" />
+        <!--<div class="get_shipping_estimate_div" style="padding: 10px 0 0;">
+	<button type="button" class="button" id="get_pickup_estimate<?php if($addressId) { echo "_".$addressId; } ?>"><span><span>Get Estimate</span></span></button>
+	</div>-->
+    </li>
+</ul>
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+        var inputFieldId = "pickup_date<?php if($addressId) { echo '_'.$addressId; } ?>";
+        var dateTrig = "date_pickup_trig<?php if($addressId) { echo '_'.$addressId; } ?>";
+        var allowedDays = [0,1,2,3,4,5,6];
+        var dateToday = new Date();
+        jQuery('#'+inputFieldId).datepicker({
+            minDate: dateToday,
+            showOn: 'both', buttonImageOnly: true, buttonImage: '<?php echo $this->getSkinUrl("images/calendar.gif");?>',
+            beforeShowDay: function(date) {
+
+                return [!(jQuery.inArray( date.getDay(), allowedDays ) == -1 )];
+
+            }
+        });
+        jQuery('#storesDropDown<?php if($addressId) { echo "_".$addressId; } ?>').change(function(){
+            if (jQuery(this).data('options') == undefined) {
+                jQuery(this).data('options', jQuery('#deleveryWindowDropDown<?php if($addressId) { echo "_".$addressId; } ?> option').clone());
+            }
+            var id = jQuery(this).val();
+            var that = this;
+            jQuery("#deleveryWindowDropDown<?php if($addressId) { echo "_".$addressId; } ?>").each(function () {
+                var thisname = 'store';
+                var theseoptions = jQuery(that).data('options').filter('.' + thisname + '_' + id);
+                jQuery(this).html(theseoptions);
+                jQuery(this).find(':first').attr('selected','selected')
+                jQuery(this).val(jQuery(this).find(':first').val());
+            });
+            jQuery("#deleveryWindowDropDown<?php if($addressId) { echo "_".$addressId; } ?>").trigger('change');
+        });
+        jQuery("#deleveryWindowDropDown<?php if($addressId) { echo "_".$addressId; } ?>").change(function(){
+            var allowedDayValues = jQuery(this).find(':selected').attr('data-alloweddays');
+            var holiDayValues = jQuery(this).find(':selected').attr('data-holidaydates');
+
+            var addressId = jQuery(this).attr('rel');
+            if(addressId) {
+                var inputFieldId = "pickup_date_"+addressId;
+                var dateTrig = "date_pickup_trig_"+addressId;
+            }
+            else {
+                var inputFieldId = "pickup_date";
+                var dateTrig = "date_pickup_trig";
+            }
+            jQuery('#'+inputFieldId).datepicker("destroy");
+
+            if(typeof allowedDayValues != 'undefined' && (allowedDayValues != null)){
+                var attributeIds = allowedDayValues.split(',');
+            }
+            else{
+                var attributeIds = [];
+            }
+            if(typeof holiDayValues != 'undefined' && (holiDayValues != null)) {
+                var unavailableDates = holiDayValues.split(',');
+            }
+            else {
+                var unavailableDates = [];
+            }
+            var len = attributeIds.length;
+
+            while( len-- ) {
+                attributeIds[len] = +attributeIds[len];
+            }
+            var dateToday = new Date();
+            jQuery('#'+inputFieldId).datepicker({
+                minDate: dateToday,
+                showOn: 'both', buttonImageOnly: true, buttonImage: '<?php echo $this->getSkinUrl("images/calendar.gif");?>',
+                beforeShowDay: function(date) {
+
+                    var dmy = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+                    if (((jQuery.inArray(dmy, unavailableDates) == -1) && (jQuery.inArray(date.getDay(), attributeIds) >= 0))) {
+                        return [true, ""];
+                    }
+
+                    else {
+                        return [false, "", "Unavailable"];
+                    }
+
+                }
+            });
+
+
+        });
+        jQuery('#shipping_form_<?php echo $_rate->getCode() ?><?php if($addressId) { echo "_".$addressId; } ?>').change(function(){
+            var shippingPrice = jQuery('#deleveryWindowDropDown<?php if($addressId) { echo "_".$addressId; } ?>').find(':selected').attr('data-shippingprice');
+            var shippingZone = jQuery('#deleveryWindowDropDown<?php if($addressId) { echo "_".$addressId; } ?>').find(':selected').attr('data-shippingzone');
+            //alert(shippingPrice);
+            var storeSelected =  jQuery('#storesDropDown<?php if($addressId) { echo "_".$addressId; } ?>').val();
+            var deliveryWindowSelected =  jQuery('#deleveryWindowDropDown<?php if($addressId) { echo "_".$addressId; } ?>').val();
+            var deleveryDate =  jQuery('#pickup_date<?php if($addressId) { echo "_".$addressId; } ?>').val();
+            var shippingNote =  jQuery('#pickupnote<?php if($addressId) { echo "_".$addressId; } ?>').val();
+            var addressId = '<?php if($addressId) { echo $addressId; } ?>';
+            var url = '<?php echo $magentoBaseUrl; ?>connector/index/getEstimateShipping';
+            var type = 2;
+            jQuery.ajax({
+                url: url,
+                dataType: 'json',
+                type : 'post',
+                data:{ shippingPrice:shippingPrice,shippingZone:shippingZone, store: storeSelected,date: deleveryDate,addressId:addressId,note:shippingNote,type:type,deliveryWindow:deliveryWindowSelected},
+                success: function(data){
+                    if(data.status == '1') {
+                        //window.location.href=window.location.href;
+                    }
+                    else {
+                        //shipping.save();
+                    }
+                }
+            });
+        });
+        jQuery('#storesDropDown<?php if($addressId) { echo "_".$addressId; } ?>').change();
+    });
+</script>

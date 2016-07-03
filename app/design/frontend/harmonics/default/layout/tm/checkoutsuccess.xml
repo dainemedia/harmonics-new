@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <checkout_onepage_success>
+        <update handle="sales_order_view"/>
+        <update handle="page_one_column"/>
+        <remove name="customer_account_navigation"/>
+        <remove name="left"/>
+        <remove name="right"/>
+        <remove name="downloadable.checkout.success"/>
+
+        <!-- revert some changes of sales_order_view handle -->
+        <remove name="sales.order.info.buttons"/>
+        <reference name="my.account.wrapper">
+            <action method="unsetChildren"/>
+        </reference>
+        <reference name="sales.order.info">
+            <action method="setTemplate"><template>tm/checkoutsuccess/sales/order/info.phtml</template></action>
+        </reference>
+        <reference name="sales.order.view">
+            <action method="setTemplate"><template>tm/checkoutsuccess/sales/order/view.phtml</template></action>
+        </reference>
+
+        <!-- change blocks location -->
+        <reference name="checkout.success">
+            <action method="setTemplate"><template>tm/checkoutsuccess/success.phtml</template></action>
+            <action method="insert">
+                <blockName>sales.order.info</blockName>
+                <alias>info</alias>
+            </action>
+            <action method="insert">
+                <blockName>sales.order.view</blockName>
+                <alias>sales.order.view</alias>
+            </action>
+            <block type="core/template" name="checkoutsuccess.additional" template="tm/checkoutsuccess/success/additional.phtml"/>
+        </reference>
+    </checkout_onepage_success>
+</layout>

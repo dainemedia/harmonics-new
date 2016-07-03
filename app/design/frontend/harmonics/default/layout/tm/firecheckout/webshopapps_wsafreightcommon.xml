@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <reference name="checkout.onepage.shipping_method">
+            <block type="wsafreightcommon/checkout_onepage_shipping_method_accessorials"
+               name="choose-shipping-method-freightcommon"
+               as="wsa-accessorials"
+               template="webshopapps/wsafreightcommon/checkout/onepage/shipping_method/accessorials.phtml"
+            />
+        </reference>
+    </firecheckout_index_index>
+</layout>

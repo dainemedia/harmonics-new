@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * RocketWeb
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * @category   RocketWeb
+ * @package    RocketWeb_GoogleBaseFeedGenerator
+ * @copyright  Copyright (c) 2012 RocketWeb (http://rocketweb.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @author     RocketWeb
+ */
+-->
+<config>
+    <modules>
+        <RocketWeb_GoogleBaseFeedGenerator>
+            <version>0.3.9</version>
+            <extension_version>1.5.19</extension_version>
+        </RocketWeb_GoogleBaseFeedGenerator>
+    </modules>
+
+    <global>
+    	<models>
+    		<googlebasefeedgenerator>
+                <class>RocketWeb_GoogleBaseFeedGenerator_Model</class>
+                <resourceModel>googlebasefeedgenerator_mysql4</resourceModel>
+            </googlebasefeedgenerator>
+            
+            <googlebasefeedgenerator_mysql4>
+                <class>RocketWeb_GoogleBaseFeedGenerator_Model_Mysql4</class>
+                <entities>
+                    <shipping>
+                        <table>rw_gfeed_shipping</table>
+                    </shipping>
+                </entities>
+            </googlebasefeedgenerator_mysql4>
+        </models>
+        
+        <resources>
+            <googlebasefeedgenerator_setup>
+             	<setup>
+                    <module>RocketWeb_GoogleBaseFeedGenerator</module>
+					<class>RocketWeb_GoogleBaseFeedGenerator_Model_Resource_Eav_Mysql4_Setup</class>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </googlebasefeedgenerator_setup>
+            <googlebasefeedgenerator_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </googlebasefeedgenerator_write>
+            <googlebasefeedgenerator_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </googlebasefeedgenerator_read>
+        </resources>
+        
+        <blocks>
+            <googlebasefeedgenerator><class>RocketWeb_GoogleBaseFeedGenerator_Block</class></googlebasefeedgenerator>
+        </blocks>
+
+        <helpers>
+			<googlebasefeedgenerator>
+				<class>RocketWeb_GoogleBaseFeedGenerator_Helper</class>
+			</googlebasefeedgenerator>
+        </helpers>
+    </global>
+
+    <default>
+    	<rocketweb_googlebasefeedgenerator>
+        	<settings>
+        		<is_turned_on>1</is_turned_on>
+                <locale>en_US</locale>
+        		<log_filename><![CDATA[google_base_feed_%s.log]]></log_filename>
+        		<force_log>0</force_log>
+                <auto_skip>1</auto_skip>
+        		<log_skip>1</log_skip>
+				<feed_filename><![CDATA[google_base_%s.txt]]></feed_filename>
+				<test_feed_filename><![CDATA[test_google_base_%s.txt]]></test_feed_filename>
+				<feed_dir><![CDATA[media/feeds]]></feed_dir>
+				<alternate_feed_dir><![CDATA[]]></alternate_feed_dir>
+				<product_types>simple,bundle,configurable,downloadable,grouped,virtual</product_types>
+				<add_out_of_stock>1</add_out_of_stock>
+                <qty_mode>0</qty_mode>
+				
+				<!--for configurable products-->
+				<associated_products_mode>0</associated_products_mode>
+				<add_out_of_stock_configurable_assoc>1</add_out_of_stock_configurable_assoc>
+				
+				<!--for grouped products-->
+				<grouped_associated_products_mode>0</grouped_associated_products_mode>
+				<add_out_of_stock_grouped_assoc>1</add_out_of_stock_grouped_assoc>
+				
+				<submit_no_img>0</submit_no_img>
+                <store_lock_filename><![CDATA[store_%s.lock]]></store_lock_filename>
+                <batch_lock_filename><![CDATA[batch_%s.lock]]></batch_lock_filename>
+				<use_batch_segmentation>0</use_batch_segmentation>
+				<batch_limit>5000</batch_limit>
+				<button_max_products>5000</button_max_products>
+                <category_depth>5</category_depth>
+                <attribute_merge_value_separator><![CDATA[, ]]></attribute_merge_value_separator>
+        	</settings>
+        	
+        	<columns>
+        		<map_product_columns backend_model="googlebasefeedgenerator/system_config_backend_serialized_mapproductcolumns" />
+        		<ttl>7</ttl>
+        		<id_store_code>0</id_store_code>
+        		<id_add_store_unique><![CDATA[]]></id_add_store_unique>
+        		<max_description_length>1000</max_description_length>
+                <max_title_length>70</max_title_length>
+        		
+        		<!--for configurable products-->
+        		<associated_products_description>4</associated_products_description>
+        		<associated_products_link>0</associated_products_link>
+        		<associated_products_link_add_unique>1</associated_products_link_add_unique>
+        		<associated_products_image_link_configurable>2</associated_products_image_link_configurable>
+        		
+        		<!--for grouped products-->
+        		<grouped_associated_products_description>4</grouped_associated_products_description>
+        		<grouped_associated_products_link>0</grouped_associated_products_link>
+        		<grouped_associated_products_link_add_unique>1</grouped_associated_products_link_add_unique>
+        		<grouped_associated_products_image_link>2</grouped_associated_products_image_link>
+        		<grouped_price_display_mode>0</grouped_price_display_mode>
+        		
+        		<add_to_product_url><![CDATA[?utm_source=google_shopping]]></add_to_product_url>
+                <add_to_adwords_product_url><![CDATA[]]></add_to_adwords_product_url>
+        		<use_default_stock>1</use_default_stock>
+        		<stock_attribute_code></stock_attribute_code>
+        		<add_tax_to_price>0</add_tax_to_price>
+        		<apply_catalog_price_rules>1</apply_catalog_price_rules>
+        		<format_prices_locale>1</format_prices_locale>
+				<weight_unit_measure>lb</weight_unit_measure>
+				<map_replace_empty_columns backend_model="adminhtml/system_config_backend_serialized_array" />
+				<google_product_category_by_category  backend_model="adminhtml/system_config_backend_serialized_array" />
+				<adwords_grouping_by_category  backend_model="adminhtml/system_config_backend_serialized_array" />
+				<adwords_labels_by_category  backend_model="adminhtml/system_config_backend_serialized_array" />
+				<product_type_by_category  backend_model="adminhtml/system_config_backend_serialized_array" />
+				<skip_column_empty><![CDATA[]]></skip_column_empty>
+				<skip_category><![CDATA[]]></skip_category>
+        	</columns>
+        	
+        	<shipping>
+        		<enabled>0</enabled>
+        		<methods />
+        		<country />
+        		<by_region>0</by_region>
+        		<country_with_region />
+        		<only_minimum>1</only_minimum>
+        		<only_free_shipping>1</only_free_shipping>
+        		<add_tax_to_price>0</add_tax_to_price>
+        		<format_prices_locale>1</format_prices_locale>
+        		<cache_enabled>1</cache_enabled>
+        		<ttl>168</ttl>
+        		
+        		<carrier_realtime><![CDATA[ups,usps,fedex,dhl,dhlint]]></carrier_realtime>
+        	</shipping>
+        	
+        	<general>
+        		<exclude_attributes><![CDATA[gallery,image,small_image,price,special_price,special_from_date,special_to_date,price_view,url_key]]></exclude_attributes>
+        		<directives>
+        			<rw_gbase_directive_id><label><![CDATA[Product Id]]></label></rw_gbase_directive_id>
+                    <rw_gbase_directive_parent_id><label><![CDATA[Parent Product Id]]></label></rw_gbase_directive_parent_id>
+        			<rw_gbase_directive_url><label><![CDATA[Product URL]]></label></rw_gbase_directive_url>
+        			<rw_gbase_directive_image_link><label><![CDATA[Product Image URL]]></label></rw_gbase_directive_image_link>
+                    <rw_gbase_directive_category_image_link><label><![CDATA[Product Category Image URL]]></label></rw_gbase_directive_category_image_link>
+                    <rw_gbase_directive_external_image_link><label><![CDATA[Product External Image URL]]></label></rw_gbase_directive_external_image_link>
+        			<rw_gbase_directive_additional_image_link><label><![CDATA[Additional URLs of images of the item]]></label></rw_gbase_directive_additional_image_link>
+        			<rw_gbase_directive_price><label><![CDATA[Price]]></label></rw_gbase_directive_price>
+        			<rw_gbase_directive_sale_price><label><![CDATA[Sale Price - Special Price]]></label></rw_gbase_directive_sale_price>
+        			<rw_gbase_directive_sale_price_effective_date><label><![CDATA[Sale Price Date Range]]></label></rw_gbase_directive_sale_price_effective_date>
+        			<rw_gbase_directive_availability><label><![CDATA[Availability]]></label></rw_gbase_directive_availability>
+                    <rw_gbase_directive_quantity><label><![CDATA[Inventory Count]]></label></rw_gbase_directive_quantity>
+        			<rw_gbase_directive_expiration_date><label><![CDATA[Product Expiration Date in Feed]]></label></rw_gbase_directive_expiration_date>
+        			<rw_gbase_directive_condition><label><![CDATA[Product Condition]]></label></rw_gbase_directive_condition>
+        			<rw_gbase_directive_shipping><label><![CDATA[Shipping]]></label></rw_gbase_directive_shipping>
+        			
+        			<rw_gbase_directive_apparel_color><label><![CDATA[Apparel - Color]]></label></rw_gbase_directive_apparel_color>
+        			<rw_gbase_directive_apparel_size><label><![CDATA[Apparel - Size]]></label></rw_gbase_directive_apparel_size>
+        			<rw_gbase_directive_apparel_age_group><label><![CDATA[Apparel - Age Group]]></label></rw_gbase_directive_apparel_age_group>
+        			<rw_gbase_directive_apparel_gender><label><![CDATA[Apparel - Gender]]></label></rw_gbase_directive_apparel_gender>
+        			<rw_gbase_directive_apparel_pattern><label><![CDATA[Apparel - Pattern]]></label></rw_gbase_directive_apparel_pattern>
+        			<rw_gbase_directive_apparel_material><label><![CDATA[Apparel - Material]]></label></rw_gbase_directive_apparel_material>
+
+                    <rw_gbase_directive_adwords_redirect><label><![CDATA[Adwords Redirect]]></label></rw_gbase_directive_adwords_redirect>
+                    <rw_gbase_directive_adwords_labels><label><![CDATA[Adwords Labels]]></label></rw_gbase_directive_adwords_labels>
+                    <rw_gbase_directive_adwords_grouping><label><![CDATA[Adwords Grouping]]></label></rw_gbase_directive_adwords_grouping>
+                    <rw_gbase_directive_adwords_price_buckets><label><![CDATA[Adwords Price Buckets]]></label></rw_gbase_directive_adwords_price_buckets>
+                    <rw_gbase_directive_static_value><label><![CDATA[Static Value]]></label></rw_gbase_directive_static_value>
+                    <rw_gbase_directive_product_review_average><label><![CDATA[Product Review Average]]></label></rw_gbase_directive_product_review_average>
+                    <rw_gbase_directive_product_review_count><label><![CDATA[Product Review Count]]></label></rw_gbase_directive_product_review_count>
+					<rw_gbase_directive_product_type_magento_category><label><![CDATA[Product Type using Magento Category]]></label></rw_gbase_directive_product_type_magento_category>
+                    <rw_gbase_directive_identifier_exists><label><![CDATA[Identifier Exists]]></label></rw_gbase_directive_identifier_exists>
+        		</directives>
+        		<default_map_product_columns>
+        			<rw_gbase_directive_id><column>id</column><disabled_default_value>1</disabled_default_value><order>10</order></rw_gbase_directive_id>
+        			<name><column>title</column><disabled_default_value>1</disabled_default_value><order>20</order></name>
+        			<description><column>description</column><disabled_default_value>1</disabled_default_value><order>30</order></description>
+        			<rw_gbase_directive_url><column>link</column><disabled_default_value>1</disabled_default_value><order>40</order></rw_gbase_directive_url>
+        			<rw_gbase_directive_image_link><column>image_link</column><disabled_default_value>1</disabled_default_value><order>50</order></rw_gbase_directive_image_link>
+        			<rw_gbase_directive_additional_image_link><column>additional_image_link</column><disabled_default_value>1</disabled_default_value><order>60</order></rw_gbase_directive_additional_image_link>
+        			<rw_gbase_directive_price><column>price</column><disabled_default_value>1</disabled_default_value><order>70</order></rw_gbase_directive_price>
+        			<rw_gbase_directive_sale_price><column>sale_price</column><disabled_default_value>1</disabled_default_value><order>80</order></rw_gbase_directive_sale_price>
+        			<rw_gbase_directive_sale_price_effective_date><column>sale_price_effective_date</column><disabled_default_value>1</disabled_default_value><order>90</order></rw_gbase_directive_sale_price_effective_date>
+        			<rw_gbase_directive_availability><column>availability</column><default_value></default_value><order>110</order></rw_gbase_directive_availability>
+        			<weight><column>shipping_weight</column><default_value></default_value><order>120</order></weight>
+                    <manufacturer><column>brand</column><default_value></default_value><order>140</order></manufacturer>
+                    <sku><column>mpn</column><default_value></default_value><order>150</order></sku>
+        			<rw_gbase_directive_condition><column>condition</column><default_value>new</default_value><order>160</order></rw_gbase_directive_condition>
+        			<rw_google_base_product_type><column>product_type</column><default_value></default_value><order>170</order></rw_google_base_product_type>
+        			<rw_google_base_product_categ><column>google_product_category</column><default_value></default_value><order>180</order></rw_google_base_product_categ>
+                    <rw_gbase_directive_identifier_exists><column>identifier_exists</column><default_value></default_value><order>190</order></rw_gbase_directive_identifier_exists>
+        		</default_map_product_columns>
+        	</general>
+        	
+        	<apparel>
+        		<is_turned_on>0</is_turned_on>
+                <associated_products_mode>1</associated_products_mode>
+        		<allow_empty_color_size>1</allow_empty_color_size>
+        		<submit_no_img>1</submit_no_img>
+        		<variant_submit_no_img>1</variant_submit_no_img>
+
+        		<variant_pattern_attribute_code></variant_pattern_attribute_code>
+        		<variant_material_attribute_code></variant_material_attribute_code>
+        		<color_attribute_code></color_attribute_code>
+        		<size_attribute_code></size_attribute_code>
+        		<age_group_attribute_code></age_group_attribute_code>
+        		<gender_attribute_code></gender_attribute_code>
+        		
+        		<google_product_category_apparel>
+                    <en_US><element><![CDATA[Apparel & Accessories]]></element></en_US>
+                    <en_GB><element><![CDATA[Clothing & Accessories]]></element></en_GB>
+                    <en_AU><element><![CDATA[Clothing & Accessories]]></element></en_AU>
+                    <es_ES><element><![CDATA[Ropa y accesorios]]></element></es_ES>
+                    <it_IT><element><![CDATA[Abbigliamento e accessori]]></element></it_IT>
+                    <nl_NL><element><![CDATA[Kleding en accessoires]]></element></nl_NL>
+                    <pt_BR><element><![CDATA[Vestuário e acessórios]]></element></pt_BR>
+                    <cs_CZ><element><![CDATA[Oblečení a doplňky]]></element></cs_CZ>
+                    <de_DE><element><![CDATA[Bekleidung & Accessoires]]></element></de_DE>
+                    <fr_FR><element><![CDATA[Vêtements et accessoires]]></element></fr_FR>
+                    <ja_JP><element><![CDATA[ファッション、アクセサリー]]></element></ja_JP>
+                    <ru_RU><element><![CDATA[Предметы одежды и аксессуары]]></element></ru_RU>
+                    <da_DK><element><![CDATA[Tøj og tilbehør]]></element></da_DK>
+					<da_DK><element><![CDATA[Tøj og tilbehør]]></element></da_DK>
+					<no_NO><element><![CDATA[Klær og tilbehør]]></element></no_NO>
+					<pl_PL><element><![CDATA[Ubrania i akcesoria]]></element></pl_PL>
+					<sv_SE><element><![CDATA[Kläder och accessoarer]]></element></sv_SE>
+                    <tr_TR><element><![CDATA[Giyim ve Aksesuar]]></element></tr_TR>
+                </google_product_category_apparel>
+        		<google_product_category_apparel_clothing>
+                    <en_US><element><![CDATA[Apparel & Accessories > Clothing]]></element></en_US>
+                    <en_GB><element><![CDATA[Clothing & Accessories > Clothing]]></element></en_GB>
+					<en_AU><element><![CDATA[Clothing & Accessories > Clothing]]></element></en_AU>
+                    <es_ES><element><![CDATA[Ropa y accesorios > Prendas de vestir]]></element></es_ES>
+                    <it_IT><element><![CDATA[Abbigliamento e accessori > Abbigliamento]]></element></it_IT>
+                    <nl_NL><element><![CDATA[Kleding en accessoires > Kleding]]></element></nl_NL>
+                    <pt_BR><element><![CDATA[Vestuário e acessórios > Roupas]]></element></pt_BR>
+                    <cs_CZ><element><![CDATA[Oblečení a doplňky > Oblečení]]></element></cs_CZ>
+                    <de_DE><element><![CDATA[Bekleidung & Accessoires > Bekleidung]]></element></de_DE>
+                    <fr_FR><element><![CDATA[Vêtements et accessoires > Vêtements]]></element></fr_FR>
+                    <ja_JP><element><![CDATA[ファッション、アクセサリー > ファッション]]></element></ja_JP>
+                    <ru_RU><element><![CDATA[Предметы одежды и аксессуары > Одежда]]></element></ru_RU>
+                    <da_DK><element><![CDATA[Tøj og tilbehør > Tøj]]></element></da_DK>
+					<no_NO><element><![CDATA[Klær og tilbehør > Klær]]></element></no_NO>
+					<pl_PL><element><![CDATA[Ubrania i akcesoria > Ubrania]]></element></pl_PL>
+					<sv_SE><element><![CDATA[Kläder och accessoarer > Kläder]]></element></sv_SE>
+                    <tr_TR><element><![CDATA[Giyim ve Aksesuar > Giyim]]></element></tr_TR>
+                </google_product_category_apparel_clothing>
+        		<google_product_category_apparel_shoes>
+                    <en_US><element><![CDATA[Apparel & Accessories > Shoes]]></element></en_US>
+                    <en_GB><element><![CDATA[Clothing & Accessories > Shoes]]></element></en_GB>
+                    <en_AU><element><![CDATA[Clothing & Accessories > Shoes]]></element></en_AU>
+                    <es_ES><element><![CDATA[Ropa y accesorios > Calzado]]></element></es_ES>
+                    <it_IT><element><![CDATA[Abbigliamento e accessori > Scarpe]]></element></it_IT>
+                    <nl_NL><element><![CDATA[Kleding en accessoires > Schoenen]]></element></nl_NL>
+                    <pt_BR><element><![CDATA[Vestuário e acessórios > Sapatos]]></element></pt_BR>
+                    <cs_CZ><element><![CDATA[Oblečení a doplňky > Obuv]]></element></cs_CZ>
+                    <de_DE><element><![CDATA[Bekleidung & Accessoires > Schuhe]]></element></de_DE>
+                    <fr_FR><element><![CDATA[Vêtements et accessoires > Chaussures]]></element></fr_FR>
+                    <ja_JP><element><![CDATA[ファッション、アクセサリー > 靴]]></element></ja_JP>
+                    <ru_RU><element><![CDATA[Предметы одежды и аксессуары > Обувь]]></element></ru_RU>
+                    <da_DK><element><![CDATA[Tøj og tilbehør > Sko]]></element></da_DK>
+					<no_NO><element><![CDATA[Klær og tilbehør > Sko]]></element></no_NO>
+					<pl_PL><element><![CDATA[Ubrania i akcesoria > Buty]]></element></pl_PL>
+					<sv_SE><element><![CDATA[Kläder och accessoarer > Skor]]></element></sv_SE>
+                    <tr_TR><element><![CDATA[Giyim ve Aksesuar > Ayakkabılar]]></element></tr_TR>
+                </google_product_category_apparel_shoes>
+
+        		<gender_not_req_categories><![CDATA[pinback buttons,tie clips,wristbands,shoe covers,shoe laces,spurs,watch bands]]></gender_not_req_categories>
+        		<age_group_not_req_categories><![CDATA[pinback buttons,tie clips,wristbands,shoe covers,shoe laces,spurs,watch bands]]></age_group_not_req_categories>
+                <associated_products_link_add_unique>1</associated_products_link_add_unique>
+        	</apparel>
+        	
+        	<debug>
+        		<sku></sku>
+        	</debug>
+        </rocketweb_googlebasefeedgenerator>
+    </default>
+    
+    <admin>
+        <routers>
+            <googlebasefeedgenerator_admin>
+                <use>admin</use>
+                <args>
+                    <module>RocketWeb_GoogleBaseFeedGenerator</module>
+                    <frontName>googlebasefeedgenerator_admin</frontName>
+                </args>
+            </googlebasefeedgenerator_admin>
+        </routers>
+    </admin>
+
+    <frontend>
+        <layout>
+            <updates>
+                <rocketweb_googlebasefeedgenerator>
+                    <file>rocketweb_googlebasefeedgenerator.xml</file>
+                </rocketweb_googlebasefeedgenerator>
+            </updates>
+        </layout>
+    </frontend>
+
+    <crontab>
+        <jobs>
+            <googlebasefeedgenerator_generate>
+                <!-- In batch mode (use_batch_segmentation==1) must be set after midnight otherwise will not finish the queue. -->
+                <!-- each 1 am -->
+                <schedule><cron_expr>0 1 * * *</cron_expr></schedule>
+                <run><model>googlebasefeedgenerator/observer::generateFeed</model></run>
+                <!--<store>default</store>-->
+            </googlebasefeedgenerator_generate>
+
+            <!--
+            Setting generator to run for other stores in a multistore configuration.
+            <googlebasefeedgenerator_generate_store_2>
+                <schedule><cron_expr>0 2 * * *</cron_expr></schedule>
+                <run><model>googlebasefeedgenerator/observer::generateFeed</model></run>
+                <store>store_code_2</store>
+            </googlebasefeedgenerator_generate_store_2>-->
+        </jobs>
+    </crontab>
+</config>

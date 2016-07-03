@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <modules>
+        <CJM_All>
+            <version>1.0.0</version>
+        </CJM_All>
+    </modules>
+    <global>
+        <models>
+            <cjm_all>
+                <class>CJM_All_Model</class>
+            </cjm_all>
+        </models>
+    </global>
+    <adminhtml>
+        <events>
+            <controller_action_predispatch>
+                <observers>
+                    <cjm_all>
+                        <class>cjm_all/observer</class>
+                        <method>preDispatch</method>
+                    </cjm_all>
+                </observers>
+            </controller_action_predispatch>
+        </events>
+    </adminhtml>
+    <default>
+        <system>
+            <cjm_all>
+                <feed_url_cjm>chadjmorgan.com/cjmextensions.rss</feed_url_cjm>
+            </cjm_all>
+        </system>
+    </default>
+</config>

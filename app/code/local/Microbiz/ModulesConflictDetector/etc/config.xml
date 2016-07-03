@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author    Marcin Frymark
+ * @email     contact@microbiz.com
+ * @company   Microbiz
+ * @website   www.microbiz.com
+ */
+-->
+<config>
+    <modules>
+        <Microbiz_ModulesConflictDetector>
+            <version>0.1.1</version>
+        </Microbiz_ModulesConflictDetector>
+    </modules>
+    <global>
+        <helpers>
+            <microbiz_modulesConflictDetector>
+                <class>Microbiz_ModulesConflictDetector_Helper</class>
+            </microbiz_modulesConflictDetector>
+        </helpers>
+        <blocks>
+            <microbiz_modulesConflictDetector>
+                <class>Microbiz_ModulesConflictDetector_Block</class>
+            </microbiz_modulesConflictDetector>            
+        </blocks>
+        <models>
+            <microbiz_modulesConflictDetector>
+                <class>Microbiz_ModulesConflictDetector_Model</class>
+            </microbiz_modulesConflictDetector>
+        </models>        
+    </global>
+    <admin>
+         <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <microbiz_modulesConflictDetector before="Mage_Adminhtml">Microbiz_ModulesConflictDetector_Adminhtml</microbiz_modulesConflictDetector>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+    <adminhtml>
+        <events>
+            <controller_action_predispatch>
+                <observers>
+                    <microbiz_adminNotification>
+                        <class>microbiz_modulesConflictDetector/microbizAdminNotification_observer</class>
+                        <method>preDispatch</method>
+                    </microbiz_adminNotification>
+                </observers>
+            </controller_action_predispatch>
+        </events>
+    </adminhtml>
+    <default>
+        <microbiz_adminNotification>
+            <general>
+                <enabled>1</enabled>
+                <frequency>12</frequency>
+            </general>
+        </microbiz_adminNotification>
+    </default>
+</config>

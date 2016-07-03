@@ -1,0 +1,46 @@
+<?php $_product = $this->getProduct() ?>
+<?php $productkind = $_product->getTypeId(); ?>
+<?php $theGoods = Mage::helper('customstockstatus')->getTheGoods($_product->getId()); ?>
+<?php $availabilitytext = Mage::helper('customstockstatus')->getAvailabilityText($theGoods, $productkind); ?>
+<?php $stockInfo = Mage::getModel('cataloginventory/stock_item')->loadByProduct($_product); ?>
+<?php $stocklevel = (int)$stockInfo->getQty(); ?>
+<?php $backordered = $stockInfo->getBackorders(); ?>
+<?php $stockmanaged = $stockInfo->getManageStock(); ?>
+<?php $restrictionsText = Mage::helper('customstockstatus')->getRestrictionsText(); ?>
+
+<?php echo $this->getPriceHtml($_product) ?>
+
+<div class="add-to-box">
+    <form action="<?php echo $this->getAddToCartUrl($_product) ?>" method="post" id="product_addtocart_form_<?php echo $_product->getId()?>"<?php if($_product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>>
+        <?php if(!$_product->isGrouped()): ?>
+            <label for="qty"><?php echo $this->__('Qty') ?>:</label>
+            <input type="text" name="qty" id="qty" maxlength="12" value="<?php echo ($this->getMinimalQty($_product)?$this->getMinimalQty($_product):1) ?>" />
+        <?php endif; ?>
+        <button  type="button" title="<?php echo $this->__('Add to Basket') ?>" class="button btn-cart add-to-cart" onclick="this.form.submit()"><span><span><span><?php echo $this->__('Add to Cart') ?></span></span></span></button>
+    </form>
+</div>
+
+<div class="facebook-like-button">
+    <a href="http://www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2FHarmonicsMusic&width&layout=button&action=like&show_faces=true&share=false&height=80"><img src="<?php echo $this->getSkinUrl( 'images/like.jpg' ); ?>" /></a>   
+</div>      
+
+<?php if ($_product->isAvailable()): ?>
+    <?php if(($productkind == 'simple' || $productkind == 'virtual') && $stockmanaged == 1 && $backordered != 1): ?>
+		<?php if($stocklevel > 0): ?>
+    		<p class="availability"><?php echo $this->__('Availability:') ?> <?php echo $availabilitytext; ?></p>
+    		<?php if($restrictionsText) echo $restrictionsText; ?>
+    		<p class="shipsin"><?php echo Mage::helper('customstockstatus')->getShipDateHtml($theGoods, $productkind);?></p>
+ 		<?php else: ?>
+    		<p class="availability"><?php echo $this->__('Availability:') ?> <?php echo $availabilitytext; ?></p>
+    		<?php if($restrictionsText) echo $restrictionsText; ?>
+ 		<?php endif; ?>
+	<?php else: ?>
+    	<p class="availability"><?php echo $this->__('Availability:') ?> <?php echo $availabilitytext; ?></p>
+    	<?php if($restrictionsText) echo $restrictionsText; ?>
+    	<p class="shipsin"><?php echo Mage::helper('customstockstatus')->getShipDateHtml($theGoods, $productkind);?></p>
+  	<?php endif; ?>
+<?php else: ?>
+    <p class="availability"><?php echo $this->__('Availability:') ?> <?php echo $availabilitytext; ?></p><?php if($restrictionsText) echo $restrictionsText; ?>
+<?php endif; ?>
+<?php echo $this->getChildHtml('product_type_data_extra') ?>
+

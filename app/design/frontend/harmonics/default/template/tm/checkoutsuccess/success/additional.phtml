@@ -1,0 +1,26 @@
+<div class="additional-checkout-fields" style="margin: 20px 0 10px;">
+    <?php
+    // checkoutfields
+    if (Mage::helper('core')->isModuleOutputEnabled('TM_CheckoutFields')) :
+        echo $this->getLayout()->createBlock('checkoutfields/view')
+            ->setTemplate('tm/checkoutfields/view.phtml')
+            ->toHtml();
+    endif;
+
+    // firecheckout
+    $_order = Mage::registry('current_order');
+    if ($firecheckoutComment = $_order->getFirecheckoutCustomerComment()) :
+        echo '<strong>' . $this->__('Comment') . '</strong>: ' . $this->escapeHtml($firecheckoutComment) . '<br/>';
+    elseif ($customerComment = $_order->getCustomerComment()) :
+        echo '<strong>' . $this->__('Comment') . '</strong>: ' . $this->escapeHtml($customerComment) . '<br/>';
+    endif;
+    if ($firecheckoutDate = $_order->getFirecheckoutDeliveryDate()) :
+        $date = new Zend_Date($firecheckoutDate, 'yyyy-MM-dd');
+        $format = Mage::app()->getLocale()->getDateFormat(Mage_Core_Model_Locale::FORMAT_TYPE_LONG);
+        echo '<strong>' . $this->__('Delivery Date') . '</strong>: ' . $date->toString($format) . '<br/>';
+    endif;
+    if ($firecheckoutTime = $_order->getFirecheckoutDeliveryTimerange()) :
+        echo '<strong>' . $this->__('Delivery Time') . '</strong>: ' . $this->escapeHtml($firecheckoutTime) . '<br/>';
+    endif;
+    ?>
+</div>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <reference name="head">
+            <action method="addJs"><script>givechange/modalbox.js</script></action>
+            <action method="addCss"><stylesheet>css/givechange.css</stylesheet></action>
+        </reference>
+        <reference name="checkout.onepage.review.info.items.before">
+            <block type="givechange/info" name="givechange.info" as="givechange_info" template="tm/firecheckout/givechange/info.phtml" after="-"/>
+        </reference>
+    </firecheckout_index_index>
+    <firecheckout_index_updatecheckout>
+        <reference name="checkout.onepage.review.info.items.before">
+            <block type="givechange/info" name="givechange.info" as="givechange_info" template="tm/firecheckout/givechange/info.phtml" after="-"/>
+        </reference>
+    </firecheckout_index_updatecheckout>
+</layout>

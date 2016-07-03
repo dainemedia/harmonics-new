@@ -1,0 +1,15 @@
+<?php
+    $order  = $this->getOrder();
+    $fields = Mage::helper('checkoutfields')->getFields();
+?>
+<?php foreach ($fields as $field => $config) : ?>
+    <?php $value = (string)$order->getData($field) ?>
+
+    <?php
+    if (!strlen($value)) :
+        continue;
+    endif;
+    ?>
+
+    <strong><?php echo $this->escapeHtml($config['label']) ?>:</strong> <?php echo $this->escapeHtml($value) ?><br/>
+<?php endforeach; ?>

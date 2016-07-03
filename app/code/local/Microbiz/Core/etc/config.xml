@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<config>
+<modules>
+        <Microbiz_Core>
+            <version>0.1.0</version>
+        </Microbiz_Core>
+    </modules>
+    <global>
+        <blocks>
+            <microbiz_core>
+                <class>Microbiz_Core_Block</class>
+            </microbiz_core>
+        </blocks>
+        <helpers>
+            <microbiz_core>
+                <class>Microbiz_Core_Helper</class>
+            </microbiz_core>
+        </helpers>
+        <models>
+            <microbiz_core>
+                <class>Microbiz_Core_Model</class>
+            </microbiz_core>
+        </models>
+    </global>
+	<frontend>
+        <routers>
+            <mbizcore>
+                <use>standard</use>
+                <args>
+                    <module>Microbiz_Core</module>
+                    <frontName>mbizcore</frontName>
+                </args>
+            </mbizcore>
+        </routers>
+    </frontend>
+    <admin>
+        <routers>
+			<mbizcore>
+				<use>admin</use>
+				<args>
+					<module>Microbiz_Core</module>
+                    <frontName>mbizcore</frontName>
+				</args>
+			</mbizcore>
+		</routers>
+    </admin>
+    <adminhtml>
+		<layout>
+			<updates>
+				<mbizcore>
+					<file>core.xml</file>
+				</mbizcore>
+			</updates>
+		</layout>
+    </adminhtml>
+
+<adminhtml>
+<menu>
+	<microbiz_connector>
+		<title>MicroBiz POS</title>
+                <sort_order>77</sort_order>
+                <children>
+			<microbiz_core module="microbiz_core">
+                        <title>Installation</title>
+                        <sort_order>0</sort_order>
+                        <action>mbizcore/adminhtml_mbizcore</action>
+                    </microbiz_core>
+		</children>
+	</microbiz_connector>
+</menu>
+    <events>
+        <admin_system_config_changed_section_advanced>
+            <observers>
+                <admin_system_config_changed_section_advanced>
+                    <type>singleton</type>
+                    <class>Microbiz_Core_Model_Observer</class>
+                    <method>onModuleStatusChange</method>
+                </admin_system_config_changed_section_advanced>
+            </observers>
+        </admin_system_config_changed_section_advanced>
+    </events>
+</adminhtml>
+</config>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <remove name="checkout.coupon"/>
+        <block type="rewardpoints/coupon" name="checkout_cart_coupon_normal" as="coupon_points" template="tm/firecheckout/rewardpoints/reward_coupon.phtml">
+            <block type="checkout/cart_coupon" name="checkout_cart_coupon_reward" as="coupon_original">
+                <action method="setTemplate" ifconfig="firecheckout/general/discount"><template>tm/firecheckout/checkout/coupon.phtml</template></action>
+            </block>
+        </block>
+        <reference name="checkout.onepage.review.info.totals">
+            <block type="tax/checkout_discount" name="discount_total_renderer" template="rewardpoints/total/default.phtml" />
+        </reference>
+    </firecheckout_index_index>
+    <firecheckout_index_updatecheckout>
+        <remove name="checkout.coupon"/>
+        <block type="rewardpoints/coupon" name="checkout_cart_coupon_normal" as="coupon_points" template="tm/firecheckout/rewardpoints/reward_coupon.phtml">
+            <block type="checkout/cart_coupon" name="checkout_cart_coupon_reward" as="coupon_original">
+                <action method="setTemplate" ifconfig="firecheckout/general/discount"><template>tm/firecheckout/checkout/coupon.phtml</template></action>
+            </block>
+        </block>
+        <reference name="checkout.onepage.review.info.totals">
+            <block type="tax/checkout_discount" name="discount_total_renderer" template="rewardpoints/total/default.phtml" />
+        </reference>
+    </firecheckout_index_updatecheckout>
+</layout>

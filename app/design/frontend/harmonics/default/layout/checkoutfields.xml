@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+
+    <firecheckout_index_index translate="label">
+        <reference name="checkout.onepage.review">
+            <action method="setTemplate"><template>checkoutfields/firecheckout/checkout/review.phtml</template></action>
+            <block type="checkoutfields/form" name="checkoutfields" template="checkoutfields/form.phtml"/>
+        </reference>
+    </firecheckout_index_index>
+
+    <sales_order_view>
+        <reference name="sales.order.info">
+            <action method="setTemplate"><template>checkoutfields/sales/order/info.phtml</template></action>
+            <block type="checkoutfields/view" name="checkoutfields" template="checkoutfields/view.phtml"/>
+        </reference>
+    </sales_order_view>
+
+    <sales_order_print>
+        <reference name="sales.order.print">
+            <action method="setTemplate"><template>checkoutfields/sales/order/print.phtml</template></action>
+            <block type="checkoutfields/view" name="checkoutfields" template="checkoutfields/view.phtml"/>
+        </reference>
+    </sales_order_print>
+
+</layout>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <reference name="head">
+            <block type="core/text" name="Stripe.js" as="stripejs" before="-">
+                <action method="setText">
+                    <text><![CDATA[<script type="text/javascript" src="https://js.stripe.com/v1/"></script>]]></text>
+                </action>
+            </block>
+        </reference>
+    </firecheckout_index_index>
+</layout>

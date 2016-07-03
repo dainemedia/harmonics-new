@@ -1,0 +1,4 @@
+<?php
+	$checkoutURL = Mage::helper( 'checkout/url' )->getCheckoutUrl();
+	echo "<a class='checkout-btn' href='" . $checkoutURL . "' title='Checkout'>Checkout</a>";
+?>

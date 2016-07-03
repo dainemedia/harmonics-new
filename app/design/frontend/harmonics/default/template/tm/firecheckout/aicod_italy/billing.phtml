@@ -1,0 +1,370 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+/** @var Mage_Checkout_Block_Onepage_Billing $this */
+?>
+<div id="billing-address" class="firecheckout-section">
+    <?php if (!$this->canShip() || !Mage::getStoreConfig('firecheckout/general/shipping_address')): ?>
+        <div class="block-title"><span><?php echo $this->helper('checkout')->__('Address'); ?></span></div>
+    <?php else: ?>
+        <div class="block-title"><span><?php echo $this->helper('checkout')->__('Billing Address'); ?></span></div>
+    <?php endif; ?>
+    <div class="block-content">
+        <ul class="form-list">
+        <?php if ($this->customerHasAddresses()): ?>
+            <li class="wide">
+                <label for="billing-address-select"><?php echo $this->__('Select a billing address from your address book or enter a new address.') ?></label>
+                <div class="input-box">
+                    <?php echo $this->getAddressesHtmlSelect('billing') ?>
+                </div>
+            </li>
+        <?php endif; ?>
+        <li id="billing-new-address-form"<?php if ($this->customerHasAddresses()): ?> style="display:none;"<?php endif; ?>>
+            <fieldset>
+                <input type="hidden" name="billing[address_id]" value="<?php echo $this->getAddress()->getId() ?>" id="billing:address_id" />
+                <ul>
+                    <li class="fields"><?php echo $this->getLayout()->createBlock('customer/widget_name')->setObject($this->getAddress()->getFirstname() ? $this->getAddress() : $this->getQuote()->getCustomer())->setForceUseCustomerRequiredAttributes(!$this->isCustomerLoggedIn())->setFieldIdFormat('billing:%s')->setFieldNameFormat('billing[%s]')->toHtml() ?></li>
+                    <li class="fields">
+            <?php if(!$this->isCustomerLoggedIn()): ?>
+                        <div class="field">
+                            <label for="billing:email" class="required"><em>*</em><?php echo $this->__('Email Address') ?></label>
+                            <div class="input-box">
+                                <input type="text" name="billing[email]" id="billing:email" value="<?php echo $this->escapeHtml($this->getAddress()->getEmail()) ?>" title="<?php echo $this->__('Email Address') ?>" class="input-text validate-email required-entry" />
+                            </div>
+                        </div>
+            <?php endif; ?>
+                    </li>
+
+
+                    <li class="fields">
+                        <div class="field">
+                            <label for="billing:telephone" class="required"><em>*</em><?php echo $this->__('Telephone') ?></label>
+                            <div class="input-box">
+                                <input type="text" name="billing[telephone]" value="<?php echo $this->escapeHtml($this->getAddress()->getTelephone()) ?>" title="<?php echo $this->__('Telephone') ?>" class="input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('telephone') ?>" id="billing:telephone" />
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="billing:fax"><?php echo $this->__('Fax') ?></label>
+                            <div class="input-box">
+                                <input type="text" name="billing[fax]" value="<?php echo $this->escapeHtml($this->getAddress()->getFax()) ?>" title="<?php echo $this->__('Fax') ?>" class="input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('fax') ?>" id="billing:fax" />
+                            </div>
+                        </div>
+                    </li>
+                    <?php if(!$this->isCustomerLoggedIn()): ?>
+
+            <?php $_dob = $this->getLayout()->createBlock('customer/widget_dob') ?>
+            <?php $_gender = $this->getLayout()->createBlock('customer/widget_gender') ?>
+                <?php if ($_dob->isEnabled() || $_gender->isEnabled()): ?>
+                    <li class="fields">
+                    <?php if ($_dob->isEnabled()): ?>
+                        <div class="field">
+                            <?php echo $_dob->setDate($this->getQuote()->getCustomerDob())->setFieldIdFormat('billing:%s')->setFieldNameFormat('billing[%s]')->toHtml() ?>
+                        </div>
+                    <?php endif; ?>
+                    <?php if ($_gender->isEnabled()): ?>
+                        <div class="field">
+                            <?php echo $_gender->setGender($this->getQuote()->getCustomerGender())->setFieldIdFormat('billing:%s')->setFieldNameFormat('billing[%s]')->toHtml() ?>
+                        </div>
+                    <?php endif ?>
+                    </li>
+                <?php endif ?>
+
+                <?php if ($this->isTaxvatEnabled()):?>
+                    <li><?php echo $this->getTaxvatHtml() ?></li>
+                <?php endif; ?>
+
+                <?php endif; ?>
+
+
+
+                    <!-- INIZIO CAMPI AICOD ITALY -->
+
+
+                    <?php
+                        $_companyTypeMode = Mage::getStoreConfig('customer/aicod_italy/companytype_show');
+                        $_companyTypeValidationClass = "";
+                        if($_companyTypeMode=='req') $_companyTypeValidationClass = "required-entry";
+
+                        if($_companyTypeMode) {
+                        $_companyTypeAttr = Mage::getResourceSingleton('customer/address')->getAttribute('company_type');
+                        $_companyTypeId = 'billing:company_type';
+                        $_companyTypeName = 'billing[company_type]';
+                        $_companyTypeLabel = Mage::helper('aicod_italy')->__('Customer Type');
+                        //$_companyTypeRequired = $_companyTypeAttr->getIsRequired();
+                        $_companyTypeRequired = $_companyTypeMode=='req'?true:false;
+                        /*while(ob_get_level())
+                            ob_end_flush();
+                        var_dump($_companyTypeAttr->getData());
+                        exit;*/
+                    ?>
+                    <li>
+                        <label for="<?php echo $_companyTypeId?>"<?php if ($_companyTypeRequired) echo ' class="required"' ?>><?php if ($_companyTypeRequired) echo '<em>*</em>' ?><?php echo $_companyTypeLabel ?></label>
+                        <div class="input-box">
+                            <select id="<?php echo $_companyTypeId?>" name="<?php echo $_companyTypeName?>" title="<?php echo $_companyTypeLabel ?>"<?php if ($_companyTypeRequired):?> class="validate-select"<?php endif; ?>>
+                                <?php $options = $_companyTypeAttr->getSource()->getAllOptions();?>
+                                <?php $current_value = null;?>
+                                <?php foreach ($options as $option):?>
+                                    <option value="<?php echo $option['value'] ?>"<?php if ($option['value'] == $value) echo ' selected="selected"' ?>><?php echo $option['label'] ?></option>
+                                <?php endforeach;?>
+                            </select>
+                            <script>if(typeof jQuery != 'undefined'){jQuery(function($){
+                               var sel_ct = $('#billing\\:company_type');
+                               var hideshow_inputs = $('#billing\\:company,#billing\\:vat_id');
+                               var hideshow_elements = $('#company_specific_fields');
+                               sel_ct.on('click change keyup',function(){
+                                 //console.log(hideshow_inputs);
+                                 //console.log(hideshow_elements);
+                                 var val = sel_ct.val();
+                                 var bshow = val=='A';
+                                 hideshow_elements.toggle(bshow);
+                                 hideshow_inputs.attr("disabled",!bshow);
+                               }).triggerHandler('change');
+                            })}</script>
+                        </div>
+                    </li>
+                    <?}?>
+
+
+                    <?php
+                        $_fiscalIdMode = Mage::getStoreConfig('customer/aicod_italy/fiscalid_show');
+                        $_fiscalIdVrx = Mage::getStoreConfig('customer/aicod_italy/fiscalid_vrx');
+                        $_fiscalIdValidationClass = "";
+                        if($_fiscalIdMode=='req') $_fiscalIdValidationClass = "required-entry";
+                        if($_fiscalIdVrx) $_fiscalIdValidationClass = "required-".uniqid();
+                        //echo $_fiscalIdMode;
+                        if($_fiscalIdMode) {
+                    ?>
+                    <li>
+                        <div class="field">
+                            <?php
+                                if($_fiscalIdVrx){
+                                    $validation_info = array(
+                                        $_fiscalIdValidationClass,
+                                        'This is a required field.',
+                                        $_fiscalIdVrx
+                                    );
+                            ?>
+                                <script>
+                                    var _cfg_fiscalid = <?php echo json_encode($validation_info); ?>;
+                                    Validation.addAllThese([
+                                        ["<?php echo $validation_info[0]?>", '<?php echo $validation_info[1]?>', function(v) {
+                                                    return new RegExp(_cfg_fiscalid[2]).test(v);
+                                                }]
+                                    ]);
+                                </script>
+                            <?}?>
+                            <label for="billing:fiscal_id" class="<?php echo $_fiscalIdValidationClass?'required':'' ?>"><?php echo $_fiscalIdValidationClass?'<em>*</em>':'' ?><?php echo Mage::helper('aicod_italy')->__('SSN') ?></label>
+                            <div class="input-box">
+                                <input type="text" id="billing:fiscal_id" name="billing[fiscal_id]" value="<?php echo $this->escapeHtml($this->getAddress()->getFiscalId()) ?>" title="<?php echo Mage::helper('aicod_italy')->__('SSN') ?>" class="input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('fiscal_id') ?> <?php echo $_fiscalIdValidationClass ?>" />
+                            </div>
+                        </div>
+                    </li>
+                    <? } ?>
+
+                    <li id="company_specific_fields">
+                        <?php
+                            $_companyMode = Mage::getStoreConfig('customer/aicod_italy/company_show');
+                            $_companyValidationClass = "";
+                            if($_companyMode=='req') $_companyValidationClass = "required-entry";
+                            if($_companyMode) {
+                        ?>
+                        <div class="field">
+                            <label for="billing:company" class="<?php echo $_companyValidationClass?'required':'' ?>"><?php echo $_companyValidationClass?'<em>*</em>':'' ?><?php echo Mage::helper('aicod_italy')->__('Company Name') ?></label>
+                            <div class="input-box">
+                                <input type="text" id="billing:company" name="billing[company]" value="<?php echo $this->escapeHtml($this->getAddress()->getCompany()) ?>" title="<?php echo Mage::helper('aicod_italy')->__('Company Name') ?>" class="input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('company') ?> <?php echo $_companyValidationClass ?>" />
+                            </div>
+                        </div>
+                        <?}?>
+
+                        <?php if ($this->helper('customer/address')->isVatAttributeVisible()) : ?>
+
+
+                            <?php
+                                $_vatMode = Mage::getStoreConfig('customer/aicod_italy/vat_show');
+                                $_vatVrx = Mage::getStoreConfig('customer/aicod_italy/vat_vrx');
+                                $_vatValidationClass = "";
+                                if($_vatMode=='req') $_vatValidationClass = "required-entry";
+                                if($_vatVrx) $_vatValidationClass = "required-".uniqid();
+                                //echo $_fiscalIdMode;
+                                if($_vatMode) {
+                            ?>
+
+                            <div class="field">
+
+                                <?php
+                                    if($_vatVrx){
+                                        $validation_info = array(
+                                            $_vatValidationClass,
+                                            'This is a required field.',
+                                            $_vatVrx
+                                        );
+                                ?>
+                                    <script>
+                                        var _cfg_vat = <?php echo json_encode($validation_info); ?>;
+                                        Validation.addAllThese([
+                                            ["<?php echo $validation_info[0]?>", '<?php echo $validation_info[1]?>', function(v) {
+                                                        return new RegExp(_cfg_vat[2]).test(v);
+                                                    }]
+                                        ]);
+                                    </script>
+                                <?}?>
+
+                                <label for="billing:vat_id" class="<?php echo $_vatValidationClass?'required':'' ?>"><?php echo $_vatValidationClass?'<em>*</em>':'' ?><?php echo Mage::helper('aicod_italy')->__('VAT Number') ?></label>
+                                <div class="input-box">
+                                    <input type="text" id="billing:vat_id" name="billing[vat_id]" value="<?php echo $this->escapeHtml($this->getAddress()->getVatId()) ?>" title="<?php echo Mage::helper('aicod_italy')->__('VAT Number') ?>" class="input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('vat_id') ?> <?php echo $_vatValidationClass ?>" />
+                                </div>
+                            </div>
+
+                            <?}?>
+                        <?php endif; ?>
+                    </li>
+                    <!-- FINE CAMPI AICOD ITALY -->
+
+
+                    <li class="fields">
+                        <div class="field">
+                            <label for="billing:city" class="required"><em>*</em><?php echo $this->__('City') ?></label>
+                            <div class="input-box">
+                                <input type="text" title="<?php echo $this->__('City') ?>" name="billing[city]" value="<?php echo $this->escapeHtml($this->getAddress()->getCity()) ?>" class="input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('city') ?>" id="billing:city" />
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="billing:postcode" class="required"><em>*</em><?php echo $this->__('Zip/Postal Code') ?></label>
+                            <div class="input-box">
+                                <input type="text" title="<?php echo $this->__('Zip/Postal Code') ?>" name="billing[postcode]" id="billing:postcode" value="<?php echo $this->escapeHtml($this->getAddress()->getPostcode()) ?>" class="input-text validate-zip-international <?php echo $this->helper('customer/address')->getAttributeValidationClass('postcode') ?>" />
+                            </div>
+                        </div>
+                    </li>
+                    <li class="fields">
+                        <div class="field">
+                            <label for="billing:country_id" class="required"><em>*</em><?php echo $this->__('Country') ?></label>
+                            <div class="input-box">
+                                <?php echo $this->getCountryHtmlSelect('billing') ?>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="billing:region_id" class="required"><em>*</em><?php echo $this->__('State/Province') ?></label>
+                            <div class="input-box">
+                                <select id="billing:region_id" name="billing[region_id]" title="<?php echo $this->__('State/Province') ?>" class="validate-select" style="display:none;">
+                                    <option value=""><?php echo $this->__('Please select region, state or province') ?></option>
+                                </select>
+                                <script type="text/javascript">
+                                //<![CDATA[
+                                    $('billing:region_id').setAttribute('defaultValue',  "<?php echo $this->getAddress()->getRegionId() ?>");
+                                //]]>
+                                </script>
+                                <input type="text" id="billing:region" name="billing[region]" value="<?php echo $this->escapeHtml($this->getAddress()->getRegion()) ?>"  title="<?php echo $this->__('State/Province') ?>" class="input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('region') ?>" style="display:none;" />
+                            </div>
+                        </div>
+                    </li>
+
+
+
+            <?php $_streetValidationClass = $this->helper('customer/address')->getAttributeValidationClass('street'); ?>
+                    <li class="wide">
+                        <label for="billing:street1" class="required"><em>*</em><?php echo $this->__('Address') ?></label>
+                        <div class="input-box">
+                            <input type="text" title="<?php echo $this->__('Street Address') ?>" name="billing[street][]" id="billing:street1" value="<?php echo $this->escapeHtml($this->getAddress()->getStreet(1)) ?>" class="input-text <?php echo $_streetValidationClass ?>" />
+                        </div>
+                    </li>
+            <?php $_streetValidationClass = trim(str_replace('required-entry', '', $_streetValidationClass)); ?>
+            <?php for ($_i = 2, $_n = $this->helper('customer/address')->getStreetLines(); $_i <= $_n; $_i++): ?>
+                    <li class="wide">
+                        <div class="input-box">
+                            <input type="text" title="<?php echo $this->__('Street Address %s', $_i) ?>" name="billing[street][]" id="billing:street<?php echo $_i ?>" value="<?php echo $this->escapeHtml($this->getAddress()->getStreet($_i)) ?>" class="input-text <?php echo $_streetValidationClass ?>" />
+                        </div>
+                    </li>
+            <?php endfor; ?>
+
+
+                <?php if(!$this->isCustomerLoggedIn()): ?>
+                    <?php
+                        $registrationMode = Mage::getStoreConfig('firecheckout/general/registration_mode');
+                        $register = $this->getRegisterAccount();
+                        $isAllowedGuest = Mage::helper('firecheckout')->isAllowedGuestCheckout();
+                    if ($isAllowedGuest || $register) : ?>
+                        <li class="control">
+                            <input type="checkbox" name="billing[register_account]" value="1" title="<?php echo $this->__('Create account for later use') ?>" id="billing:register_account" onclick="if(window.billing) billing.setCreateAccount(this.checked);"<?php if ($register || 'optional-checked' == $registrationMode) : ?> checked="checked"<?php endif;?> class="checkbox" /><label for="billing:register_account"><?php echo $this->__('Create account for later use') ?></label>
+                        </li>
+                    <?php else: ?>
+                        <li class="no-display">
+                            <input type="hidden" name="billing[register_account]" value="1"/>
+                        </li>
+                    <?php endif ?>
+                    <?php if ('hidden' !== $registrationMode || $register) : ?>
+                        <li class="fields" id="register-customer-password" <?php if ('optional' == $registrationMode && !$register) : ?>style="display: none;" <?php endif; ?>>
+                            <div class="field">
+                                <label for="billing:customer_password" class="required"><em>*</em><?php echo $this->__('Password') ?></label>
+                                <div class="input-box">
+                                    <input type="password" name="billing[customer_password]" id="billing:customer_password" title="<?php echo $this->__('Password') ?>" class="input-text required-entry validate-password" />
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label for="billing:confirm_password" class="required"><em>*</em><?php echo $this->__('Confirm Password') ?></label>
+                                <div class="input-box">
+                                    <input type="password" name="billing[confirm_password]" title="<?php echo $this->__('Confirm Password') ?>" id="billing:confirm_password" class="input-text required-entry validate-cpassword" />
+                                </div>
+                            </div>
+                        </li>
+                    <?php endif; ?>
+                <?php endif; ?>
+                    <?php if ($this->isCustomerLoggedIn() && $this->customerHasAddresses()):?>
+                        <li class="control">
+                            <input type="checkbox" name="billing[save_in_address_book]" value="1" title="<?php echo $this->__('Save in address book') ?>" id="billing:save_in_address_book" <?php if ($_address->getSaveInAddressBook()):?> checked="checked"<?php endif;?> class="checkbox" /><label for="billing:save_in_address_book"><?php echo $this->__('Save in address book') ?></label>
+                        </li>
+                    <?php else:?>
+                        <li class="no-display"><input type="hidden" name="billing[save_in_address_book]" value="1" /></li>
+                    <?php endif; ?>
+                    <?php echo $this->getChildHtml('form.additional.info'); ?>
+                </ul>
+            </fieldset>
+        </li>
+        <?php /* Extensions placeholder */ ?>
+        <?php echo $this->getChildHtml('checkout.onepage.billing.extra')?>
+        <?php if (Mage::helper('firecheckout')->canShowNewsletter()) : ?>
+            <li class="newsletter control">
+                <input type="checkbox" id="newsletter-signup" name="newsletter" value="1"<?php if (Mage::getStoreConfig('firecheckout/general/newsletter_checkbox_state')) : ?> checked="checked"<?php endif; ?> title="<?php echo Mage::helper('newsletter')->__('Sign up for our newsletter') ?>" class="checkbox" /><label for="newsletter-signup"><?php echo Mage::helper('newsletter')->__('Sign up for our newsletter') ?></label>
+            </li>
+        <?php endif; ?>
+        <?php $additional = $this->getChildHtml('billing.additional.container');
+        if (!empty($additional)) : ?>
+            <li class="billing-additional">
+                <?php echo $additional; ?>
+            </li>
+        <?php endif; ?>
+        </ul>
+    <?php if (!$this->canShip() || !Mage::getStoreConfig('firecheckout/general/shipping_address')): ?>
+        <input type="hidden" name="billing[use_for_shipping]" value="1" />
+    <?php else: ?>
+        <input type="hidden" name="billing[use_for_shipping]" id="billing:use_for_shipping" value="<?php if ($this->isUseBillingAddressForShipping()):?>1<?php else:?>0<?php endif; ?>" />
+    <?php endif; ?>
+    <script type="text/javascript">
+    //<![CDATA[
+        var billing = new Billing();
+        var billingRegionUpdater = new RegionUpdater('billing:country_id', 'billing:region', 'billing:region_id', <?php echo $this->helper('directory')->getRegionJson() ?>, undefined, 'billing:postcode');
+    //]]>
+    </script>
+    </div>
+</div>

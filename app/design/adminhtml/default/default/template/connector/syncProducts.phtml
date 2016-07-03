@@ -1,0 +1,139 @@
+<?php //Version 100 ?>
+<script src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS)?>jquerylib/jquery-1.7.2.min.js"></script>
+<script src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS)?>jquerylib/noconflict.js"></script>
+<?php
+$from = $this->getRequest()->getParam('updated_from');
+$to = $this->getRequest()->getParam('updated_to');
+$updateFullInfo = $this->getRequest()->getParam('total_data');
+$syncStatus = $this->getRequest()->getParam('sync_status');
+if(($from || $to) && $from <= $to) {
+$productCollection = Mage::getModel('catalog/product')->getCollection()->addAttributeToSelect('*')->addAttributeToFilter('type_id', array('in' => array('simple','configurable')))->addFieldToFilter('updated_at',array(
+    'from' => $from,
+    'to' => $to,
+    'date' => true,
+));
+
+    $msg = '';
+    foreach($productCollection as $product){
+
+
+        try{
+            Mage::unregister('update_full_product_info');
+            Mage::register('update_full_product_info',$updateFullInfo);
+               if(!$syncStatus) {
+                   Mage::dispatchEvent('catalog_product_save_after', array(
+                       'product'  => $product,
+                   ));
+               }
+                else {
+                    $product->setSyncStatus(1);
+                    $product->setPosProductStatus(1);
+                    $product->save();
+                    Mage::dispatchEvent('catalog_product_save_after', array(
+                        'product'  => $product,
+                    ));
+                }
+
+            }
+            catch(Exception $e){
+                $msg .=  '<li><span>'.$product->getId()."Not Saved due to Error". $e->getMessage()."</span></li>";
+            }
+
+
+}
+
+    if(!$msg) { ?>
+        <div id="messages"><ul class="messages"><li class="success-msg"><ul><li><span>All Products between updated dates (<?php echo $from." - ".$to;?>) Info saved into Sync Tables.</span></li></ul></li></ul></div>
+    <?php
+    }
+    else {
+        echo '<div id="messages"><ul class="messages"><li class="error-msg"><ul>'.$msg.'</ul></li></ul></div>';
+    }
+}
+else if($from || $to){
+    echo '<div id="messages"><ul class="messages"><li class="error-msg"><ul>Please Enter Valid From and To Values</ul></li></ul></div>';
+}
+
+    ?>
+
+    <div class="content-header">
+        <table cellspacing="0">
+            <tr>
+                <td><h3 class="icon-head"><?php echo Mage::helper('microbiz_connector')->__('Sync Products') ?></h3>
+                    <button style="float:right;" class="scalable mbizform" type="button" title="Save Config" id=""><span><span><span>Save Sync Information For Produtcs</span></span></span></button>	</td>
+            </tr>
+        </table>
+    </div>
+    <div class="entry-edit">
+
+    <form id="mbiz_form" action="<?php echo $this->getUrl('*/*/productSync') ?>" method="post" enctype="multipart/form-data">
+    <?php echo $this->getBlockHtml('formkey')?>
+        <table cellspacing="0" class="form-list">
+        <tbody>
+
+        <tr>
+            <td class="label"><label for="updated_to">Updated Date From</label></td>
+            <td class="value">
+                <input name="updated_from" id="updated_from" class="input-text required-entry validate-date" value="<?php echo date('m/d/Y h:i A') ?>" type="text">
+                <img title="Updated date From" id="updated_from-cal" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN) . 'adminhtml/default/default/images/grid-cal.gif'; ?>">
+            </td>
+        </tr>
+        <tr>
+            <td class="label"><label for="updated_to">Updated Date To</label></td>
+            <td class="value">
+                <input name="updated_to" id="updated_to" class="input-text required-entry validate-date" value="<?php echo date('m/d/Y h:i A') ?>" type="text" >
+                <img title="Select To date" id="updated_to-cal" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN) . 'adminhtml/default/default/images/grid-cal.gif'; ?>">
+            </td>
+        </tr>
+        <tr>
+            <td class="label"><label for="total_data">Save Product Total Information Into Sync Tables</label></td>
+            <td class="value">
+                <input name="total_data" id="total_data_yes" class="input-text validate-one-required" value="1" type="radio" >Yes
+                <input name="total_data" id="total_data_no" class="input-text" value="0" type="radio" >No
+                </td>
+        </tr>
+        <tr>
+            <td class="label"><label for="sync_status">Enable Sync to MicroBiz and Pos Product Status As Enabled</label></td>
+            <td class="value">
+                <input name="sync_status" id="sync_status_yes" class="input-text validate-one-required" value="1" type="radio" >Yes
+                <input name="sync_status" id="sync_status_no" class="input-text" value="0" type="radio" >No
+            </td>
+        </tr>
+            </tbody>
+        </table>
+
+    </form>
+        <script type="text/javascript">
+            //<!–[CDATA[
+            Calendar.setup({
+            inputField : 'updated_from',  //Id of input field where you want to put date
+            ifFormat : "%m/%d/%Y %I:%M %p",
+            button : 'updated_from-cal', //Id of Date picker image
+            align : 'Bl',
+            date: new Date(),
+            showsTime: true,
+            singleClick : true
+            });
+            Calendar.setup({
+                inputField : 'updated_to',  //Id of input field where you want to put date
+                ifFormat : "%m/%d/%Y %I:%M %p",
+                button : 'updated_to-cal', //Id of Date picker image
+                align : 'Bl',
+                date: new Date(),
+                showsTime: true,
+                timeFormat: "12",
+                singleClick : true
+            });
+            //]]>
+        </script>
+    <script type="text/javascript">
+        var importForm = new varienForm('mbiz_form');
+        jQuery('.mbizform').live('click',function(){
+            var validated=importForm.validate();
+            if(validated){
+                importForm.submit();
+            }
+        });
+    </script>
+
+    </div>

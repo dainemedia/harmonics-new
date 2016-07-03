@@ -1,0 +1,74 @@
+/** ZOOM **/
+#colorswatch-media-block {position:relative}
+.colorswatch-images-zoom .ajax-loader{position:absolute; z-index: 100;display:none; left:10px; top:10px;}
+.colorswatch-images-zoom{position:relative}
+.colorswatch-images-zoom .thumbnails-container{position:relative;}
+.colorswatch-images-zoom .thumbnails-container:before,{}
+.colorswatch-images-zoom .thumbnails-container:after{content: " ";display: table;}
+.colorswatch-images-zoom .thumbnails-container:after{clear:both}
+.colorswatch-images-zoom .thumbnails-container{}
+.colorswatch-images-zoom .thumbnails-container.top{margin-bottom:10px;}
+.colorswatch-images-zoom .thumbnails-container.bottom{margin-top:10px;}
+.colorswatch-images-zoom .item{float:left;border: 1px solid #DADDDD;margin-bottom:5px;margin-right: 6px;margin-left:6px}
+.colorswatch-images-zoom .thumbnails-container.right ul{}
+.colorswatch-images-zoom .thumbnails-container.right ul li{float:none;margin-left:0; margin-right:0}
+.colorswatch-images-zoom .thumbnails-container.left ul{}
+.colorswatch-images-zoom .thumbnails-container.left ul li{float:none;margin-left:0; margin-right:0}
+
+.colorswatch-images-zoom .zoom-container{border: 1px solid #DADDDD;position:relative;}
+.colorswatch-images-zoom .zoom-select{border:1px solid red; position:absolute;border: 1px solid red;left: 1px;position: absolute;top: 1px; display:none; background-color: #FFFFFF;opacity: 0.4;}
+.colorswatch-images-zoom .colorswatch-zoom-box{display:none;position:absolute;overflow:hidden;background-color:#fff;z-index:200;border:1px solid #C4C1BC }
+.colorswatch-images-zoom .colorswatch-zoom-box img{position:relative;width:auto !important;max-width: none !important}
+.colorswatch-images-zoom .slider{position: relative;overflow: hidden;}
+.colorswatch-images-zoom .slider ul {    width: 20000em;    position: relative;    /* Optional, required in this case since it's a <ul> element */    list-style: none;    margin: 0;    padding: 0;}
+
+.colorswatch-slider-control.control-bottom {}
+.colorswatch-slider-control.control-bottom .prev{left:-15px; position:absolute; top:50px; cursor:pointer}
+.colorswatch-slider-control.control-bottom .next{right:-15px; position:absolute; top:50px; cursor:pointer}
+
+.thumbnails-container .prev .ico {background:url('img/prev.png') no-repeat; width:16px; height:24px; display:block; z-index:1;}
+.thumbnails-container .next .ico {background:url('img/next.png') no-repeat; width:16px; height:24px; display:block; z-index:1;}
+
+.thumbnails-container.top .prev{left:-15px; position:absolute; top:30px; cursor:pointer;}
+.thumbnails-container.top .next{right:-15px; position:absolute; top:30px; cursor:pointer;}
+
+.thumbnails-container.bottom .prev{left:-15px; position:absolute; top:30px; cursor:pointer;}
+.thumbnails-container.bottom .next{right:-15px; position:absolute; top:30px; cursor:pointer;}
+
+.thumbnails-container.right .prev{left:24px; position:absolute; top:-20px; cursor:pointer; -moz-transform:rotate(90deg); -webkit-transform:rotate(90deg); -o-transform:rotate(90deg); -ms-transform:rotate(90deg); transform:rotate(90deg);}
+.thumbnails-container.right .next{left:24px; position:absolute; bottom:-20px; cursor:pointer; -moz-transform:rotate(90deg); -webkit-transform:rotate(90deg); -o-transform:rotate(90deg); -ms-transform:rotate(90deg); transform:rotate(90deg);}
+
+.thumbnails-container.left .prev{left: 24px;position: absolute;top: -20px;cursor:pointer;-moz-transform: rotate(90deg);-webkit-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);}
+.thumbnails-container.left .next{left: 24px;position: absolute;bottom: -20px;cursor:pointer;-moz-transform: rotate(90deg);-webkit-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);}
+
+.thumbnails-container.top ul li:first-child, .thumbnails-container.bottom ul li:first-child {margin-left:0;}
+.thumbnails-container.left ul li:first-child, .thumbnails-container.right ul li:first-child {margin-top:0;}
+
+/** internal **/
+.grid12-4 .colorswatch-images-zoom{width: 100%;}
+.grid12-4 .zoom-container {width: 100% !important; overflow:hidden;}
+.grid12-4 .zoom-container img{}
+.category-products-grid.hover-effect .item:hover{z-index:30}
+
+/** VIDEO **/
+#iwd_product_media_box {position:relative;}
+
+#iwd_product_video_box {display:none;}
+.iwd-product-video-wrapper {width:100%; height:100%; border:1px solid #DADDDD;}
+
+#iwd_media_pre_loader {background-color:#FFFFFF; opacity:0.4; display:none; width:100%; height:100%; position:absolute; z-index:10;}
+.ajax-loader-gif {display:block; background:url("img/ajax-load-video.gif") no-repeat; width:66px; height:66px; position:absolute; top:45%; left:45%;}
+
+#iwd_product_video_popup_overlay {display:none; position:fixed; left:0; top:0; width:100%; height:100%;  background:rgba(0,0,0,.7); text-align:center; z-index:999999;}
+#iwd_product_video_popup_overlay:after { display:inline-block; height:100%; width:0; vertical-align:middle; content: ''}
+#video_popup_close {display:block; position:absolute; top:-20px; right:10px; width:12px;  height:12px; padding:8px; border:5px solid #fff;  border-radius:50%; -webkit-box-shadow:inset 0 2px 2px 2px rgba(0,0,0,.4), 0 3px 3px rgba(0,0,0,.4); box-shadow:inset 0 2px 2px 2px rgba(0,0,0,.4), 0 3px 3px rgba(0,0,0,.4); cursor:pointer;  background:#fff;   text-align:center;  font-size:12px; line-height:12px; color:#444; text-decoration:none; font-weight:bold}
+#video_popup_close:hover {background: #ddd}
+#iwd_product_video_popup_overlay .video_popup {width:90%; height:80%; display:inline-block; position:relative; max-width:80%; padding:20px; border:5px solid #fff; border-radius:15px; box-shadow:inset 0 2px 2px 2px rgba(0,0,0,.4); background:#fff; vertical-align:middle}
+#iwd_product_video_popup_overlay .video_popup h4 {margin:2px 0; width:100%;}
+#iwd_product_video_popup_overlay .video-player {height:90%; width:100%;}
+#iwd_product_video_popup_overlay .video_popup p {margin:2px 0; width:100%; }
+.video-wrapper {overflow:hidden; height:100%; width:100%;}
+
+.video-launcher {cursor:pointer; position:relative;}
+.play-button {height:25px; width:25px; background:url("img/play-pause.png") 0px 0px no-repeat; position:absolute; top:15px; left:15px;}
+.video-launcher:hover .play-button {background-position:-25px 0px;}

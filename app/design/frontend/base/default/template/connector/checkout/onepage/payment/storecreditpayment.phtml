@@ -1,0 +1,508 @@
+<?php
+//version 106
+$isSecure = Mage::app()->getStore()->isCurrentlySecure();
+$magentoBaseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, $isSecure);
+if(Mage::getSingleton('customer/session')->isLoggedIn()):
+    if(Mage::getStoreConfig('connector/settings/storecreditpayment')) {
+        $cart_qty = (int) Mage::getModel('checkout/cart')->getQuote()->getItemsQty();
+        if($cart_qty==0 || $cart_qty=='')
+        {
+            Mage::getSingleton('checkout/session')->unsMultiData();
+            Mage::getSingleton('core/session')->unsCreditData();
+            Mage::getSingleton('checkout/session')->unsCreditData();
+            Mage::getSingleton('checkout/session')->unsCreditFinalData();
+            Mage::getSingleton('checkout/session')->unsCreditDiscountData();
+            Mage::getSingleton('checkout/session')->unsGiftBuyData();
+        }
+
+        ?>
+<div class="mbizStoreCreditBlock" style="display: none;">
+        <?php
+        //Mage::getSingleton('checkout/session')->unsCreditData();
+        //Mage::getSingleton('checkout/session')->unsCreditFinalData();
+        Mage::log("no items cart",null,'giftcardsale.log');
+        $creditData = Mage::getSingleton('checkout/session')->getCreditData();
+        $arrCreditData = unserialize($creditData);
+        $isCredit = 0;
+        $creditNo = 0;
+        $creditAmt = 0;
+        if(count($arrCreditData>0))
+        {
+            foreach($arrCreditData as $key=>$data)
+            {
+                if($data['credit_type']==1)
+                {
+                    $isCredit = 1;
+                    $creditNo = $data['credit_no'];
+                    $creditAmt = $data['credit_amt'];
+                }
+            }
+        }
+        ?>
+        <?php
+        if($isCredit==1)
+        {
+            $actionUrl = $this->getUrl('connector/index/mbizUpdateDiscountAmount');
+        }
+        else
+        {
+            $actionUrl = $this->getUrl('connector/index/mbizValidateStoreCredit');
+        }
+        ?>
+
+        <div class="cart">
+            <form id="discount-storecredit-form" action="" method="post">
+                <input type="hidden" class="base_url" value="<?php echo $magentoBaseUrl; ?>" />
+                <div class="discount">
+                    <h2><?php echo $this->__('Store Credit Redemption') ?></h2>
+                    <div class="mbizvalidate_store_info" style="display:none;">
+
+                    </div>
+                    <div class="load-cancel-store-img">
+                        <img src="<?php echo Mage::getBaseUrl('skin').'adminhtml/default/default/images/ajax-loader-tr.gif'?>"
+                             alt="NOT FOUND" style="display:none;" width="20px" class="mbiz_cancelstore_load_img"/>
+                    </div>
+                    <div class="mbizvalidatestoreblock">
+                        <!--<input type="button" class="test" value="getMethods"/>
+                        <div class="methods-update">
+                            <dl class="update-payments">
+
+                            </dl>
+                        </div>-->
+                        <label for="credit_no"><?php echo $this->__('Enter your store credit no.') ?></label>
+                        <input type="hidden" name="remove" id="remove-coupone" value="0" />
+                        <div class="input-box">
+                            <input class="input-text" id="storecredit_no" name="storecredit_no" value="" />
+                        </div>
+                        <div class="buttons-set">
+                            <button type="button" title="<?php echo $this->__('Validate Store Credit') ?>" class="mbizvalidate_storecredit_button button"
+                                    value="<?php echo $this->__('Validate Store Credit') ?>">
+                                <span><span><?php echo $this->__('Validate Store Credit') ?></span></span></button>
+                         </div>
+                        <img src="<?php echo Mage::getBaseUrl('skin').'adminhtml/default/default/images/ajax-loader-tr.gif'?>"
+                             alt="NOT FOUND" style="display:none;" width="20px" class="mbiz_validatestore_load_img"/>
+                    </div>
+
+                    <div class="mbizapplystoreblock" style="display: none;">
+                        <?php
+                        $quote = Mage::getModel('checkout/cart')->getQuote();
+                        $cartTotal = $quote->getGrandTotal();
+                        ?>
+                        <label for="credit_amt"><?php echo $this->__('Amount.') ?></label>
+                        <div class="input-box">
+                            <input class="credit_amt" name="credit_amt" value="<?php echo $amount ?>" />
+                            <input type="hidden" class="credit_no" value="<?php echo $creditNo ?>" />
+                            <input type="hidden" class="credit_type" value="1" />
+                            <input type="hidden" class="current_bal" value="<?php echo $creditAmt; ?>" />
+                            <input type="hidden" class="cart_total" value="<?php echo $cartTotal; ?>" />
+                        </div>
+                        <div class="buttons-set">
+                            <button type="button" title="<?php echo $this->__('Apply Store Credit') ?>" class="mbizstorecredit_apply button"
+                                    value="<?php echo $this->__('Apply Store Credit') ?>" >
+                                <span><span><?php echo $this->__('Apply Store Credit') ?></span></span>
+                            </button>
+                        </div>
+                        <img src="<?php echo Mage::getBaseUrl('skin').'adminhtml/default/default/images/ajax-loader-tr.gif'?>"
+                             alt="NOT FOUND" style="display:none;" width="20px" class="mbiz_applystore_load_img"/>
+                     </div>
+
+                    <div class="mbizstorehistoryblock">
+                        <?php
+                        $quote = Mage::getModel('checkout/cart')->getQuote();
+                        $quoteCreditDiscountData = $quote->getCreditDiscountData();
+                        $quoteCreditDiscountData = unserialize($quoteCreditDiscountData);
+                        if($quote->getIsMultiShipping())
+                        {
+                            $quoteCreditDiscountData = Mage::getModel('checkout/session')->getCreditDiscountData();
+                            $quoteCreditDiscountData = unserialize($quoteCreditDiscountData);
+                            //$quoteCreditDiscountData = Mage::getSingleton('checkout/session')->getCreditFinalData();
+                            //$quoteCreditDiscountData = unserialize($quoteCreditDiscountData);
+                            Mage::log("from storecredits muli",null,'payment.log');
+                            Mage::log($quoteCreditDiscountData,null,'payment.log');
+                            ?>
+                            <input type="hidden" class="is_multiship" value="1" />
+                        <?php
+                        }else{
+                            $isShippable=0;
+                            $quote = Mage::getModel('checkout/session')->getQuote();
+                            $Items = $quote->getAllItems();
+                            foreach ($Items as $item)
+                            {
+                                $isVirtual = $item->getIsVirtual();
+                                if(!$isVirtual)
+                                {
+                                    $isShippable=1;
+                                }
+
+                                // Do something
+                            }
+                            $quote = Mage::getModel('checkout/cart')->getQuote();
+                            $quoteCreditDiscountData = $quote->getCreditDiscountData();
+                            $quoteCreditDiscountData = unserialize($quoteCreditDiscountData);
+
+                            ?>
+                            <input type="hidden" class="is_multiship" value="0" />
+                            <input type="hidden" class="is_shippable" value="<?php echo $isShippable;?>" />
+                        <?php
+                        }
+                        ?>
+                        <div class="mbizstorehistoryblock_info">
+                        <?php
+                        if(count($quoteCreditDiscountData)>0)
+                        {
+                            ?>
+                            <br/>
+                            <?php
+                            if(is_array($quoteCreditDiscountData))
+                            {
+
+                                foreach($quoteCreditDiscountData as $data)
+                                {
+                                    if($data['credit_type']==1){
+                                        ?>
+                                        <p id="history_<?php echo $data['credit_no']; ?>">Store Credit (<?php echo $data['credit_no']; ?>) - Amount <?php echo $this->helper('checkout')->formatPrice(-$data['credit_amt']); ?>
+                                            <a class="mbizremovestorecredit btn-remove btn-remove2" remove_url="connector/index/mbizRemoveCreditPost/id/<?php echo $data['credit_no']; ?>" href="javascript:void(1)"> Remove</a></p>
+                                    <?php
+                                    }
+
+                                }
+
+                            }
+                            ?>
+
+
+
+                        <?php
+                        }
+                        ?>
+                            <img src="<?php echo Mage::getBaseUrl('skin').'adminhtml/default/default/images/ajax-loader-tr.gif'?>"
+                                 alt="NOT FOUND" style="display:none;" width="20px" class="mbiz_removestore_load_img"/>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+    <?php } ?>
+<?php endif;?>
+<script type="text/javascript">
+    /*jQuery(document).ready(function(){
+        jQuery('#mbiz_storecredit_payment').live('click',function($this){
+
+            if(jQuery(this).attr('checked'))
+            {
+                jQuery('.mbizStoreCreditBlock').show();
+            }
+            else
+            {
+                jQuery('.mbizStoreCreditBlock').hide();
+                jQuery('.mbizvalidate_store_info').html('');
+                jQuery('#storecredit_no').val('');
+                jQuery('.credit_amt').val('');
+                jQuery('.credit_no').val('');
+                jQuery('.current_bal').val('');
+
+            }
+        });
+
+        jQuery('.mbizvalidate_storecredit_button').live('click',function($this){
+            //jQuery('.mbizgiftcard_validate').hide();
+            var postUrl = jQuery('.base_url').val();
+            postUrl = postUrl+'connector/index/mbizValidateStoreCredit';
+            var scrNo = jQuery('#storecredit_no').val();
+            if(scrNo!='' || scrNo!=0)
+            {
+
+                var isPayment = 1;
+                jQuery('.mbizvalidate_storecredit_button').hide();
+                jQuery('.mbiz_validatestore_load_img').show();
+                var data = {credit_no:scrNo,is_payment:isPayment};
+                console.log(data);
+                jQuery.ajax({
+                    url: postUrl,
+                    type: "POST",
+                    dataType: "json",
+                    data: data,
+                    success: function(data)
+                    {
+                        console.log(data);
+                        var status = data.status;
+                        if(status=='SUCCESS')
+                        {
+                            alert(data.message);
+                            var availableAmt = data.available_amt;
+                            jQuery('.mbizvalidate_store_info').html('');
+                            jQuery('.mbizvalidate_store_info').append('<p style="font-size: 10px;">***'+scrNo+' Current Balance is '+
+                                availableAmt+'<a class="mbizcancelstorecredit" href="javascript:void(1)" cancel_url="connector/index/mbizCancelCreditPost/id/'+scrNo+'" >Cancel</a> </p>');
+                            jQuery('.mbizvalidate_store_info').show();
+                            jQuery('.mbizvalidatestoreblock').hide();
+                            var cartTotal = jQuery('.cart_total').val();
+                            if(cartTotal>=availableAmt)
+                            {
+                                var amount = availableAmt;
+                            }
+                            else
+                            {
+                                var amount = cartTotal;
+                            }
+                            //alert(amount+'$$'+cartTotal+'$$'+availableAmt);
+                            jQuery('.credit_amt').val(amount);
+                            jQuery('.credit_no').val(scrNo);
+                            jQuery('.current_bal').val(availableAmt);
+                            jQuery('.mbizapplystoreblock').show();
+                            jQuery('.mbizvalidate_storecredit_button').show();
+                            jQuery('.mbiz_validatestore_load_img').hide();
+
+                        }
+                        else
+                        {
+                            alert(data.message);
+                            jQuery('.mbizvalidate_storecredit_button').show();
+                            jQuery('.mbiz_validatestore_load_img').hide();
+                        }
+                    },
+                    error: function(e)
+                    {
+                        alert("error Occured"+ e.message)
+                        jQuery('.mbizvalidate_storecredit_button').show();
+                        jQuery('.mbiz_validatestore_load_img').hide();
+                    }
+                });
+            }
+            else {
+                alert('Please enter Store Credit number.')
+                jQuery('#storecredit_no').focus();
+            }
+        });
+
+        jQuery(".mbizstorecredit_apply").live('click',function($this){
+            var applyAmt = jQuery('.credit_amt').val();
+            //alert(applyAmt);
+            var cartTotal = jQuery('.cart_total').val();
+            var creditNo = jQuery('.credit_no').val();
+            var currentBal = jQuery('.current_bal').val();
+            var baseUrl = jQuery('.base_url').val();
+            var creditType = 1;
+            var applyUrl = baseUrl+'connector/index/mbizUpdateDiscountAmount'
+            var data = {credit_no:creditNo,credit_type:creditType,credit_amt:applyAmt,current_bal:currentBal,is_payment:1}
+            if(applyAmt>0)
+            {
+                jQuery('.mbizstorecredit_apply').hide();
+                jQuery('.mbiz_applystore_load_img').show();
+                jQuery.ajax({
+                    url: applyUrl,
+                    type: "POST",
+                    dataType: "json",
+                    data: data,
+                    success: function(data)
+                    {
+                        if(data.status=='SUCCESS')
+                        {
+                            alert(data.message);
+                            jQuery('.mbizstorehistoryblock_info').append('<p id="history_'+creditNo+'">Store Credit ('+creditNo+') - Amount '+applyAmt
+                                +'<a href="javascript:void(1)" class="mbizremovestorecredit" remove_url="connector/index/mbizRemoveCreditPost/id/'+creditNo+'" >Remove</p');
+                            jQuery('.mbizapplystoreblock').hide();
+                            jQuery('.mbizvalidatestoreblock').show();
+                            jQuery('.mbizvalidate_store_info').html('')
+                            jQuery('.mbizvalidate_store_info').hide();
+                            jQuery('#storecredit_no').val('');
+                            jQuery('.credit_amt').val('');
+                            jQuery('.credit_no').val('');
+                            jQuery('.current_bal').val('');
+                            jQuery('.mbizstorecredit_apply').show();
+                            ;
+                            var isMultiship = jQuery('.is_multiship').val();
+                            if(isMultiship==1)
+                            {
+                                //window.location.href = jQuery('#connector_multishipping_shipping').attr('href');
+                                jQuery.ajax({
+                                    url: baseUrl+'connector/index/getPaymentMethodsList',
+                                    type:"POST",
+                                    success : function(data)
+                                    {
+                                        if(data.status=='SUCCESS')
+                                        {
+                                            console.log(data);
+                                            console.log(data.methods);
+                                            jQuery('.sp-methods').html(data.methods);
+                                        }
+                                        else {
+                                            alert("error Occurred Unable to Reload Payments");
+                                        }
+                                    },
+                                    error: function(e)
+                                    {
+                                        alert("error Occurred"+ e.message)
+                                    }
+                                });
+
+                            }
+                            else
+                            {
+                                shippingMethod.save();
+                            }
+                            jQuery('.mbiz_applystore_load_img').hide()
+                        }
+                        else {
+                            alert(data.message);
+                            jQuery('.mbizstorecredit_apply').show();
+                            jQuery('.mbiz_applystore_load_img').hide();
+
+                        }
+
+
+                    },
+                    error: function(e)
+                    {
+                        alert("error Occured "+ e.message);
+                        jQuery('.mbizstorecredit_apply').show();
+                        jQuery('.mbiz_applystore_load_img').hide();
+                    }
+                });
+            }
+            else{
+                alert("Please enter a Valid Amount to Redeem Store Credit.")
+            }
+        });
+
+        jQuery(".mbizcancelstorecredit").live('click',function($this){
+            var postUrl = jQuery(".mbizcancelstorecredit").attr('cancel_url');
+            var newPostUrl = postUrl.split('/id/')
+            var creditId = newPostUrl[1];
+            var baseUrl = jQuery(".base_url").val();
+            var cancelUrl = baseUrl+newPostUrl[0];
+
+            if(cancelUrl)
+            {
+                jQuery('.mbizcancelstorecredit').hide();
+                jQuery('.mbiz_cancelstore_load_img').show();
+                jQuery.ajax({
+                    url: cancelUrl+"?id="+creditId+"&is_payment=1",
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data)
+                    {
+                        if(data.status=='SUCCESS')
+                        {
+                            alert(data.message);
+                            jQuery('.mbizapplystoreblock').hide();
+                            jQuery('.mbizvalidatestoreblock').show();
+                            jQuery('.mbizvalidate_store_info').html('')
+                            jQuery('.mbizvalidate_store_info').hide();
+                            jQuery('#storecredit_no').val('');
+                            jQuery('.credit_amt').val('');
+                            jQuery('.credit_no').val('');
+                            jQuery('.current_bal').val('');
+
+                            jQuery('.mbiz_cancelstore_load_img').hide();
+                        }
+                        else {
+                            alert(data.message);
+                            jQuery('.mbizcancelstorecredit').show();
+                            jQuery('.mbiz_cancelstore_load_img').hide();
+                        }
+
+
+                    },
+                    error: function(e)
+                    {
+                        alert("error Occured"+ e.message)
+                        jQuery('.mbizcancelstorecredit').show();
+                        jQuery('.mbiz_cancelstore_load_img').hide();
+                    }
+                })
+            }
+
+        });
+        /*jQuery('.test').click(function(){
+            var baseUrl = jQuery('.base_url').val();
+            jQuery.ajax({
+                url: baseUrl+'connector/index/getPaymentMethodsList',
+                type:"POST",
+                success : function(data)
+                {
+                    if(data.status=='SUCCESS')
+                    {
+                        console.log(data);
+                        console.log(data.methods);
+                        jQuery('.update-payments').html(data.methods);
+                    }
+                },
+                error: function(e)
+                {
+                    alert("error Occurred"+ e.message)
+                }
+            });
+        });*/
+
+    /*jQuery(".mbizremovestorecredit").live('click',function(){
+            var removeUrl = jQuery(".mbizremovestorecredit").attr('remove_url');
+            removeUrl =  removeUrl.split('/id/');
+            var baseUrl = jQuery('.base_url').val();
+            var postUrl = baseUrl+removeUrl[0]+'?id='+removeUrl[1]+'&is_payment=1';
+            var creditId = removeUrl[1];
+            jQuery('.mbizremovestorecredit').hide();
+            jQuery('.mbiz_removestore_load_img').show()
+            jQuery.ajax({
+                url: postUrl,
+                type: "GET",
+                dataType: "json",
+                success: function(data)
+                {
+                    if(data.status=='SUCCESS')
+                    {
+                        alert(data.message)
+
+                        jQuery('#history_'+creditId).detach();
+
+                        var isMultiship = jQuery('.is_multiship').val();
+                        if(isMultiship==1)
+                        {
+                            //window.location.href = jQuery('#connector_multishipping_shipping').attr('href');
+                            jQuery.ajax({
+                                url: baseUrl+'connector/index/getPaymentMethodsList',
+                                type:"POST",
+                                success : function(data)
+                                {
+                                    if(data.status=='SUCCESS')
+                                    {
+                                        console.log(data);
+                                        console.log(data.methods);
+                                        jQuery('.sp-methods').html(data.methods);
+                                    }
+                                    else {
+                                        alert("error Occurred Unable to Reload Payments");
+                                    }
+                                },
+                                error: function(e)
+                                {
+                                    alert("error Occurred"+ e.message)
+                                }
+                            });
+
+                        }
+                        else
+                        {
+                            shippingMethod.save();
+                        }
+                        jQuery('.mbiz_removestore_load_img').hide()
+                    }
+                    else {
+                        alert(data.message);
+                        jQuery('#history_'+creditId).detach();
+                        jQuery('.mbizremovestorecredit').show();
+                        jQuery('.mbiz_removestore_load_img').hide()
+
+                    }
+                },
+                error: function(e)
+                {
+                    alert("error Occured"+e);
+                    jQuery('.mbizremovestorecredit').show();
+                    jQuery('.mbiz_removestore_load_img').hide()
+                }
+            });
+        });
+    });*/
+</script>

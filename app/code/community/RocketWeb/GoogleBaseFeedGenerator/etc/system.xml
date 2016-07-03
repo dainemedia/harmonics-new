@@ -1,0 +1,999 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<tabs>
+        <rocketweb_tab>
+            <label>Rocket Web Extensions</label>
+            <sort_order>1005001</sort_order>
+        </rocketweb_tab>
+    </tabs>
+    <sections>
+        <rocketweb_googlebasefeedgenerator>
+        	<label>Google Shopping Feed</label>
+            <tab>rocketweb_tab</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>100</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <settings translate="label">
+                    <label>Settings</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>50</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <comment><![CDATA[Documentation: <a target="_blank" href="http://www.rocketweb.com/google-base-feed-generator-magento-extension/" title="Quick Start">Extension Documentation</a> <a target="_blank" href="http://www.google.com/support/merchants/bin/answer.py?hl=en&answer=188494#other" title="Google Shopping Specifications">Google Shopping Specifications</a> <a target="_blank" href="http://support.google.com/merchants/bin/answer.py?hl=en&answer=1347943&topic=2473824&ctx=topic" title="Google Apparel Examples">Google Apparel Examples</a>]]></comment>
+                    <fields>
+                        <is_turned_on translate="label">
+                            <label>Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+                        </is_turned_on>
+
+                        <locale translate="label">
+                            <label>Feed Localization</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>googlebasefeedgenerator/locale</source_model>
+                            <sort_order>13</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Changing the language of your feed affects how Apparels are matched using Google taxonomies. Your products should also be in the same language. <br />Refer to 'Google Category of the Item' attribute.<br />Note, this setting does not affect price formatting, assure proper store language for that.]]></comment>
+                        </locale>
+                        
+                        <alternate_feed_dir translate="label">
+                            <label>Feed path</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[&#8226; Dir path to save the feed.<br />&#8226; If empty the feed is saved in media/feeds/google_base_[Store Code].txt<br />&#8226; Relative paths are calculated relative to Magento base dir. <br />&#8226; Please make sure the path set here has enough permission for both web server user and cron user.]]></comment>
+                        </alternate_feed_dir>
+
+                        <generate_feed translate="label">
+                            <label></label>
+                            <button_label>Generate Feed Now</button_label>
+                            <button_url><![CDATA[googlebasefeedgenerator_admin/adminhtml_googlebasefeedgenerator/generate]]></button_url>
+                            <frontend_model>googlebasefeedgenerator/adminhtml_system_config_updatebtn</frontend_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </generate_feed>
+                        
+                        <test_btn translate="label">
+                            <label></label>
+                            <button_label>Test Feed Now</button_label>
+                            <button_url><![CDATA[googlebasefeedgenerator_admin/adminhtml_googlebasefeedgenerator/generate]]></button_url>
+                            <frontend_model>googlebasefeedgenerator/adminhtml_system_config_testbtn</frontend_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[&#8226; It will generate a test feed. It's saved in the same location.<br />&#8226; Enter sku to test a single product.<br />&#8226; Use an offset and a limit to generate a test feed for a limited number of products.]]></comment>
+                        </test_btn>
+                        
+                        <product_types translate="label">
+                            <label>Submit only products of these types</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>googlebasefeedgenerator/source_producttypes</source_model>
+                            <sort_order>50</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[Products submitted to the feed have to be visible in Catalog, meaning visibility "Catalog", "Search", "Catalog, Search", but also "Not Visible Individually if they are part of a visible configurable".]]></comment>
+                        </product_types>
+                        
+                        <add_out_of_stock translate="label">
+                            <label>Add Out of Stock Products</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>60</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+                        </add_out_of_stock>
+
+                        <qty_mode>
+                            <label>Quantity mode</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>googlebasefeedgenerator/source_quantitymode</source_model>
+                            <sort_order>65</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA['This setting is used when mapping the quantity value to parent products types such as configurable or grouped.]]></comment>
+                        </qty_mode>
+                        
+						<use_batch_segmentation translate="label">
+                            <label>Use Batch Segmentation</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>70</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[Recommended for catalogs with tens of thousands of products.<br />The generator will use a limited number of products to process. Will be executed multiple times until all products are processed.]]></comment>
+                        </use_batch_segmentation>
+                        
+                        <batch_limit translate="label">
+                            <label>Batch Limit</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>80</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[Max number of products to be processed in a single cron job.<br />It depends on the number of products in catalog and the desired ussage of memory.]]></comment>
+		                    <depends><use_batch_segmentation>1</use_batch_segmentation></depends>
+		                    <frontend_class>validate-greater-than-zero</frontend_class>
+                        </batch_limit>
+                        
+                        <submit_no_img>
+                        	<label>Submit Products Without Images</label>
+                        	<frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>90</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+                        </submit_no_img>
+                        
+                        <force_log translate="label">
+                            <label>Force Logging</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>200</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+                        </force_log>
+
+                        <auto_skip translate="label">
+                            <label>Auto Skip Products</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>205</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </auto_skip>
+
+                        <log_skip translate="label">
+                            <label>Log skip products messages</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>210</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+                        </log_skip>
+
+                        <find_and_replace translate="label comment">
+                            <label>Find And Replace</label>
+                            <frontend_model>googlebasefeedgenerator/adminhtml_system_config_form_field_findandreplace</frontend_model>
+                            <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+                            <sort_order>220</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Find and replace rules do apply at column output. The more rules you apply the slower your feed will be, not recommended for large catalogs. If you changed the column map, save the config first.]]></comment>
+                        </find_and_replace>
+                    </fields>
+                </settings>
+                
+                <configurable_products>
+                	<label>Configurable products - non apparels</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>70</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <comment><![CDATA[Specific configurations for <span style="color:#ea7601;">configurable</span> products and associated products of configurables.<br />This section does not apply to apparel products.]]></comment>
+                	<fields>
+                	
+                		<associated_products_mode translate="label">
+                            <label>How to add associated products</label>
+                            <config_path>rocketweb_googlebasefeedgenerator/settings/associated_products_mode</config_path>
+                            <frontend_type>select</frontend_type>
+                            <source_model>googlebasefeedgenerator/source_assocprodsmode</source_model>
+                            <sort_order>10</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[Associated products can be added in the feed as separate items even if they are not visible in catalog.]]></comment>
+                        </associated_products_mode>
+                        
+                		<add_out_of_stock_configurable_assoc translate="label">
+                            <label>Add Out of Stock Products - Configurable Associated</label>
+                            <config_path>rocketweb_googlebasefeedgenerator/settings/add_out_of_stock_configurable_assoc</config_path>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>20</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[For associated products of configurable products.]]></comment>
+                        </add_out_of_stock_configurable_assoc>
+                        
+                		<associated_products_description translate="label">
+                            <label>Associated products - Fetch description from</label>
+                            <config_path>rocketweb_googlebasefeedgenerator/columns/associated_products_description</config_path>
+                            <frontend_type>select</frontend_type>
+                            <source_model>googlebasefeedgenerator/source_assocprodsdesc</source_model>
+                            <sort_order>30</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+                        </associated_products_description>
+                        
+                        <associated_products_link translate="label">
+                            <label>Associated products - Fetch link from</label>
+                            <config_path>rocketweb_googlebasefeedgenerator/columns/associated_products_link</config_path>
+                            <frontend_type>select</frontend_type>
+                            <source_model>googlebasefeedgenerator/source_assocprodslink</source_model>
+                            <sort_order>40</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+                        </associated_products_link>
+                        
+                        <associated_products_link_add_unique translate="label">
+                            <label>Associated products - Form unique urls for not visible associated products</label>
+                            <config_path>rocketweb_googlebasefeedgenerator/columns/associated_products_link_add_unique</config_path>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>50</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[The new unique url will be formed from configurable product url and the configurable attributes values of the associated product.<br />e.g http://example.com/configuable.html?color=123&size=99]]></comment>
+                        </associated_products_link_add_unique>
+                        
+                        <associated_products_image_link_configurable translate="label">
+                            <label>Associated products - Fetch main image from</label>
+                            <config_path>rocketweb_googlebasefeedgenerator/columns/associated_products_image_link_configurable</config_path>
+                            <frontend_type>select</frontend_type>
+                            <source_model>googlebasefeedgenerator/source_assocprodsimagelink</source_model>
+                            <sort_order>60</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+                        </associated_products_image_link_configurable>
+                	</fields>
+                </configurable_products>
+                
+                <grouped_products>
+                	<label>Grouped products - non apparels</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>80</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <comment><![CDATA[Specific configurations for <span style="color:#ea7601;">grouped</span> products and associated products of grouped products.<br />This section does not apply to apparel products.]]></comment>
+                	<fields>
+                	
+                		<grouped_associated_products_mode translate="label">
+                            <label>How to add associated products</label>
+                            <config_path>rocketweb_googlebasefeedgenerator/settings/grouped_associated_products_mode</config_path>
+                            <frontend_type>select</frontend_type>
+                            <source_model>googlebasefeedgenerator/source_groupedassocprodsmode</source_model>
+                            <sort_order>10</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[Associated products can be added in the feed as separate items even if they are not visible in catalog.]]></comment>
+                        </grouped_associated_products_mode>
+                        
+                		<add_out_of_stock_grouped_assoc translate="label">
+                            <label>Add Out of Stock Products - Associated Products</label>
+                            <config_path>rocketweb_googlebasefeedgenerator/settings/add_out_of_stock_grouped_assoc</config_path>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>20</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+                        </add_out_of_stock_grouped_assoc>
+                        
+                        <grouped_price_display_mode translate="label">
+                            <label>Price Type</label>
+                            <config_path>rocketweb_googlebasefeedgenerator/columns/grouped_price_display_mode</config_path>
+                            <frontend_type>select</frontend_type>
+                            <source_model>googlebasefeedgenerator/source_pricegroupedmode</source_model>
+                            <sort_order>30</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA['Minimal price' is the lowest associated product price.<br />'Sum of associated products prices' is the default quantity of each associated product multiplied with the price of the associated product and than summed together.]]></comment>
+                        </grouped_price_display_mode>
+                        
+                		<grouped_associated_products_description translate="label">
+                            <label>Associated products - Fetch description from</label>
+                            <config_path>rocketweb_googlebasefeedgenerator/columns/grouped_associated_products_description</config_path>
+                            <frontend_type>select</frontend_type>
+                            <source_model>googlebasefeedgenerator/source_groupedassocprodsdesc</source_model>
+                            <sort_order>40</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+                        </grouped_associated_products_description>
+                        
+                        <grouped_associated_products_link translate="label">
+                            <label>Associated products - Fetch link from</label>
+                            <config_path>rocketweb_googlebasefeedgenerator/columns/grouped_associated_products_link</config_path>
+                            <frontend_type>select</frontend_type>
+                            <source_model>googlebasefeedgenerator/source_groupedassocprodslink</source_model>
+                            <sort_order>50</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+                        </grouped_associated_products_link>
+                        
+                        <grouped_associated_products_link_add_unique translate="label">
+                            <label>Associated products - Form unique urls for not visible associated products</label>
+                            <config_path>rocketweb_googlebasefeedgenerator/columns/grouped_associated_products_link_add_unique</config_path>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>60</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[The new unique url will be formed from grouped product url and the ids of the associated product.<br />e.g http://example.com/grouped.html?prod_id=123]]></comment>
+                        </grouped_associated_products_link_add_unique>
+                        
+                        <grouped_associated_products_image_link translate="label">
+                            <label>Associated products - Fetch main image from</label>
+                            <config_path>rocketweb_googlebasefeedgenerator/columns/grouped_associated_products_image_link</config_path>
+                            <frontend_type>select</frontend_type>
+                            <source_model>googlebasefeedgenerator/source_groupedassocprodsimagelink</source_model>
+                            <sort_order>70</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+                        </grouped_associated_products_image_link>
+                	</fields>
+                </grouped_products>
+                
+                <columns>
+                	<label>Feed Columns</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>100</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <comment><![CDATA[Your Google Shopping Products Feed depends on your store configuration, types of products, available data stored in your products and others. Please carefully read <a target="_blank" href="http://www.google.com/support/merchants/bin/answer.py?hl=en&answer=188494#other">Google Shopping Specifications</a> to configure this extension properly.<br /><br /><br />]]></comment>
+                	<fields>
+                		<map_product_columns translate="label comment">
+                            <frontend_model>googlebasefeedgenerator/adminhtml_system_config_form_field_mapproductcolumns</frontend_model>
+                            <backend_model>googlebasefeedgenerator/system_config_backend_serialized_mapproductcolumns</backend_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[&#8226; If 'Static Value' is filled than it will always be used instead of 'Product Attribute'. Otherwise the 'Default Value' of catalog product attributes could be used.<br />&#8226; Accepted values for 'availability': 'in stock', 'available for order', 'out of stock', 'preorder'<br />&#8226; e.g. for Google Category of the Item: 'Apparel &amp; Accessories > Clothing > Dresses'<br />&#8226; e.g. for Google Shopping Product Type: 'Home &amp; Garden > Kitchen &amp; Dining > Appliances > Refrigerators' or 'Home &amp; Garden'<br />&#8226; Accepted values for Condition: 'new', 'used', 'refurbished'<br />&#8226; Accepted values for gender: 'Male', 'Female', 'Unisex'<br />&#8226; Accepted values for age_group: 'Kids', 'Adult'<br />&#8226; For Adwords Grouping use 'adwords_grouping'in Google Shopping Feed Column<br />&#8226;  For Adwords Labels use 'adwords_labels'in Google Shopping Feed Column, adwords_labels expects labels to be separated by a comma. <a target="_blank" href="http://support.google.com/merchants/bin/answer.py?hl=en&answer=188494#US">Read here</a>]]></comment>
+                        </map_product_columns>
+                        
+                        <ttl translate="label">
+                            <label>Days from Today that Feed Will Expire</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <frontend_class>validate-greater-than-zero</frontend_class>
+		                    <comment><![CDATA[Number of days. Used to set expiration date.]]></comment>
+                        </ttl>
+                        
+                        <id_store_code translate="label">
+                            <label>Add Store Code to Product Id</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>30</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[In multistore configuration ids must be unique across all feeds in your account. Set to 'Yes' will concatenate the product id and the store code. <a target="_blank" href="http://www.google.com/support/merchants/bin/answer.py?answer=188494#id">Read here</a><br />'Unique Identifier to Id' config option from store view config may be used also.]]></comment>
+                        </id_store_code>
+                        
+                        <id_add_store_unique translate="label">
+                            <label>Unique Identifier to Id</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>40</sort_order>
+		                    <show_in_default>0</show_in_default>
+		                    <show_in_website>0</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[Adds text to ids instead of store code. Usually not required.<br />Use for a single account with multiple feeds from stores that may have same store code.<br />e.g. 2 Magento installs with 2 stores that have as store code [default]. Google Shopping Feed Specifications requires unique ids across all feeds in same account.]]></comment>
+		                    <depends><id_store_code>1</id_store_code></depends>
+                            <validate>validate-xml-identifier</validate>
+                        </id_add_store_unique>
+
+                        <max_title_length translate="label">
+                            <label>Max Length of Title</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>45</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <frontend_class>validate-greater-than-zero</frontend_class>
+                            <comment><![CDATA[Maximum length of title. Longer texts will be chunked. Recommended max length is 70. Set to empty, the title will not be chunked.]]></comment>
+                        </max_title_length>
+
+                        <max_description_length translate="label">
+                            <label>Max Length of Description</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>50</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <frontend_class>validate-greater-than-zero</frontend_class>
+		                    <comment><![CDATA[Maximum length of description. Longer texts will be chunked. Recommended max length is 500-1000, but no longer than 10000. Set to empty, the description will not be chunked.]]></comment>
+                        </max_description_length>
+                        
+                        <add_to_product_url translate="label">
+                            <label>Add to Product URL</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>60</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[Product URL will be concatenated with the text above. Can be used to track URLs. e.g. ?utm_source=google_shopping]]></comment>
+                        </add_to_product_url>
+
+                        <add_to_adwords_product_url translate="label">
+                            <label>Add to Adwords Product URL</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>65</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Adwords Redirect directive will utilise this value to append it at the end of regular product url. Can be used to track URLs. e.g. ?utm_source=google_shopping]]></comment>
+                        </add_to_adwords_product_url>
+                        
+                        <use_default_stock translate="label">
+                            <label>Use default Stock Statuses</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>70</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[Fills 'availability' with 'in stock' or 'out of stock' depending on product's stock status. When set to 'No' a valid product attribute is required.]]></comment>
+                        </use_default_stock>
+                        
+                        <stock_attribute_code translate="label">
+                            <label>Alternate Stock/Availability Attribute.</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>googlebasefeedgenerator/source_productattributescodes</source_model>
+                            <backend_model>googlebasefeedgenerator/system_config_backend_attributecode</backend_model>
+                            <sort_order>80</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[To fill 'availability'. The attribute's values can be: 'in stock', 'available for order', 'out of stock', 'preorder'. Other values will be replaced by 'out of stock'.]]></comment>
+		                    <depends><use_default_stock>0</use_default_stock></depends>
+                        </stock_attribute_code>
+                        
+                        <add_tax_to_price translate="label">
+                            <label>Add Tax to Price</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>90</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[For US feeds column 'price' should not include tax.]]></comment>
+                        </add_tax_to_price>
+                        
+                        <apply_catalog_price_rules translate="label">
+                            <label>Apply Catalog Price Rules</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>100</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+                        </apply_catalog_price_rules>
+                        
+                        <format_prices_locale translate="label">
+                            <label>Format Prices</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>110</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[Format price to current store locale. e.g. for fr_FR 1,000,000.99 will be 1.000.000,99]]></comment>
+                        </format_prices_locale>
+
+                        <weight_unit_measure translate="label">
+                            <label>Weight Unit of Measurement</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>googlebasefeedgenerator/source_weightunitmeasure</source_model>
+                            <sort_order>130</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+                        </weight_unit_measure>
+
+                        <custom_js>
+                            <frontend_model>googlebasefeedgenerator/adminhtml_system_config_form_field_customjs</frontend_model>
+                            <backend_model>core/config_data</backend_model>
+                            <sort_order>145</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </custom_js>
+
+                        <google_product_category_by_category translate="label comment">
+                            <label>Google Product Category by Category</label>
+                            <frontend_model>googlebasefeedgenerator/adminhtml_system_config_form_field_mapcategory_fill</frontend_model>
+                            <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+                            <sort_order>150</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Values with empty order are matched last.<br />Values set here precedes 'Static Value' from 'Feed's Columns Map'.]]></comment>
+                        </google_product_category_by_category>
+                        
+                        <product_type_by_category translate="label comment">
+                            <label>Product Type by Category</label>
+                            <frontend_model>googlebasefeedgenerator/adminhtml_system_config_form_field_mapcategory_copy</frontend_model>
+                            <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+                            <sort_order>160</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Values with empty order are matched last.<br />Values set here precedes 'Static Value' from 'Feed's Columns Map'.]]></comment>
+                        </product_type_by_category>
+                        
+                        <adwords_grouping_by_category translate="label comment">
+                            <label>Adwords Grouping by Category</label>
+                            <frontend_model>googlebasefeedgenerator/adminhtml_system_config_form_field_mapcategory_copy</frontend_model>
+                            <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+                            <sort_order>162</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Values with empty order are matched last.<br />Values set here precedes 'Static Value' from 'Feed's Columns Map'.]]></comment>
+                        </adwords_grouping_by_category>
+                        
+                        <adwords_labels_by_category translate="label comment">
+                            <label>Adwords Labels by Category</label>
+                            <frontend_model>googlebasefeedgenerator/adminhtml_system_config_form_field_mapcategory_copy</frontend_model>
+                            <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+                            <sort_order>164</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Values with empty order are matched last.<br />Values set here precedes 'Static Value' from 'Feed's Columns Map'. Separate labels with a comma.]]></comment>
+                        </adwords_labels_by_category>
+
+                        <adwords_price_buckets translate="label comment">
+                            <label>Adwords Price Buckets</label>
+                            <frontend_model>googlebasefeedgenerator/adminhtml_system_config_form_field_mapprice</frontend_model>
+                            <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+                            <sort_order>168</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Create price ranges and apply labels to them. Values set here precedes 'Static Value' from 'Feed's Columns Map'. To be used with 'Adwords Price Buckets' directive in column map.]]></comment>
+                        </adwords_price_buckets>
+
+                        <map_replace_empty_columns translate="label comment">
+                            <label>Replace empty values</label>
+                            <frontend_model>googlebasefeedgenerator/adminhtml_system_config_form_field_mapemptycolumns</frontend_model>
+                            <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+                            <sort_order>170</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Rules with empty order are processed last.<br />Columns must be in 'Feeds's Columns Map'. Static value overrules attribute replacement.]]></comment>
+                        </map_replace_empty_columns>
+                        
+                        <skip_column_empty translate="label">
+                            <label>Skip Products with empty</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>googlebasefeedgenerator/source_feedcolumns</source_model>
+                            <sort_order>180</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[Don't add products in the feed that have empty cells values for above columns.<br />Columns must be in 'Feeds's Columns Map'.]]></comment>
+                        </skip_column_empty>
+                        
+                        <skip_category translate="label">
+                            <label>Skip Products From Categories</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>googlebasefeedgenerator/source_category</source_model>
+                            <sort_order>190</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[Don't add products in the feed from selected categories.]]></comment>
+                        </skip_category>
+                	</fields>
+                </columns>
+                
+                <shipping>
+                	<label>Shipping (Beta)</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>110</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <comment><![CDATA[By adding the shipping column to the feed the generation time will greatly increase.<br />It is recommended to <span style="color:#ea7601;">test</span> the feed generation for 10/100 products (Test Feed Now button) before generating the entire feed for all products.<br />If it is possible set your shipping prices only in your Google Merchant Account.]]></comment>
+                	<fields>
+                		<enabled translate="label">
+                            <label>Enable Shipping Feature</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[To enable shipping you must also add a column named 'shipping' in Feed's Columns Map and map the column to the directive called 'Shipping'.]]></comment>
+                        </enabled>
+                        
+                		<methods translate="label">
+                            <label>Methods</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>googlebasefeedgenerator/source_shipping_allmethods</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>1</can_be_empty>
+                            <comment><![CDATA[Allowed shipping methods.<br />Realtime carriers aren't allowed to avoid getting banned or to spam carriers' servers. e.g. UPS, USPS, FedEx, DHL, Royal Mail, ..<br />Please add/configure any realtime carriers in your Google Merchant account.]]></comment>
+                        </methods>
+                		
+                		<country translate="label">
+                            <label>Countries</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>adminhtml/system_config_source_country</source_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>1</can_be_empty>
+                            <comment><![CDATA[Shipping allowed countries.<br />Select only a few countries the avoid a very long feed generation and to keep the feed size to a minimnum.]]></comment>
+                        </country>
+                        
+                        <by_region translate="label">
+                            <label>Vary by Regions</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>40</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[Shipping price will vary by targeted regions.<br />Set to 'Yes' if any shipping method depends by regions.]]></comment>
+                        </by_region>
+                        
+                        <country_with_region translate="label">
+                            <label>Countries with Regions</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>adminhtml/system_config_source_country</source_model>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>1</can_be_empty>
+                            <comment><![CDATA[Select for wich countries the shipping vary by regions. Countries selected must be in configuration 'Countries' above.<br />Improves feed generation speed.]]></comment>
+                            <depends><by_region>1</by_region></depends>
+                        </country_with_region>
+                        
+                        <only_minimum translate="label">
+                            <label>Only Minimum Price</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>60</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[If there are more carriers/shipping methods than the shipping column will be filled with only the minimum price and the related carrier/shipping method.]]></comment>
+                        </only_minimum>
+                        
+                        <only_free_shipping translate="label">
+                            <label>Only Free Shipping</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>70</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[Add only free shipping when is available.]]></comment>
+                        </only_free_shipping>
+                        
+                        <add_tax_to_price translate="label">
+                            <label>Add Tax to Shipping Price</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>80</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[For US feeds column 'price' should not include tax.]]></comment>
+                        </add_tax_to_price>
+                        
+                        <format_prices_locale translate="label">
+                            <label>Format Shipping Prices</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>90</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[Format shipping price to current store locale. e.g. for fr_FR 1,000,000.99 will be 1.000.000,99]]></comment>
+                        </format_prices_locale>
+                        
+                        <cache_enabled translate="label">
+                            <label>Cache Shipping</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>100</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[Cache shipping data for every product.]]></comment>
+                        </cache_enabled>
+                        
+                        <ttl translate="label">
+                            <label>Shipping Cache Expire</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>110</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[hours]]></comment>
+		                    <depends><cache_enabled>1</cache_enabled></depends>
+                        </ttl>
+                	</fields>
+                </shipping>
+                
+                <apparel>
+                	<label>Apparels</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>150</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <comment>
+                     <![CDATA[
+                        <a target="_blank" href="http://www.google.com/support/merchants/bin/answer.py?hl=en&answer=188494#other">Google Shopping Specifications - Apparels</a><br /><a target="_blank" href="http://www.google.com/support/merchants/bin/answer.py?answer=1347943">Google Shopping Specifications - Apparels Examples</a><br /><br />All apparel columns used must be added to 'Feed Columns' > 'Feed's Columns Map' too.<br />Apparel products are identified by Google Category of the Item: 'Apparel &amp; Accessories' (including all subcategories).<br />Clothing products are identified by Google Category of the Item: 'Apparel &amp; Accessories > Clothing' (including all subcategories).<br />Shoes products are identified by Google Category of the Item: 'Apparel &amp; Accessories > Shoes' (including all subcategories).<br /><br /><br />
+                        <script type="text/javascript">
+                        var el = document.getElementById('rocketweb_googlebasefeedgenerator_settings_locale');
+                        var translate = [];
+                        translate['en_US'] = [/Apparel &amp; Accessories/g,/&gt; Clothing/g,/&gt; Shoes/g];
+                        translate['en_GB'] = [/Clothing &amp; Accessories/g,/&gt; Clothing/g,/&gt; Shoes/g];
+						translate['en_AU'] = [/Clothing &amp; Accessories/g,/&gt; Clothing/g,/&gt; Shoes/g];
+                        translate['nl_NL'] = [/Kleding en accessoires/g,/&gt; Kleding/g,/&gt; Schoenen/g];
+                        translate['pt_BR'] = [/Vestuário e acessórios/g,/&gt; Roupas/g,/&gt; Sapatos/g];
+                        translate['cs_CZ'] = [/Oblečení a doplňky/g,/&gt; Oblečení/g,/&gt; Obuv/g];
+                        translate['de_DE'] = [/Bekleidung &amp; Accessoires/g,/&gt; Bekleidung/g,/&gt; Schuhe/g];
+                        translate['fr_FR'] = [/Vêtements et accessoires/g,/&gt; Vêtements/g,/&gt; Chaussures/g];
+                        translate['ja_JP'] = [/ファッション、アクセサリー/g,/&gt; ファッション/g,/&gt; 靴/g];
+                        translate['ru_RU'] = [/Предметы одежды и аксессуары/g,/&gt; Одежда/g,/&gt; Обувь/g];
+                        translate['da_DK'] = [/Tøj og tilbehør/g,/&gt; Tøj/g,/&gt; Sko/g];
+						translate['no_NO'] = [/Klær og tilbehør/g,/&gt; Klær/g,/&gt; Sko/g];
+						translate['sv_SE'] = [/Kläder och accessoarer/g,/&gt; Kläder/g,/&gt; Skor/g];
+                        var currentNation = 'en_US';
+                        el.addEventListener("change", function() {
+                                translator(this.value);
+                            }, false);
+                         function translator(nation){
+                            var comments = document.getElementsByClassName('comment');
+                            var notes = document.getElementsByClassName('note');
+                            for(var j in translate[currentNation]){
+                                for(var i in comments){
+                                    if(comments[i].innerHTML != undefined)
+                                        comments[i].innerHTML = comments[i].innerHTML.replace(translate[currentNation][j],translate[nation][j].toString().replace('/g','').replace('/',''));
+                                }
+                                for(var i in notes){
+                                    if(notes[i].innerHTML != undefined)
+                                        notes[i].innerHTML = notes[i].innerHTML.replace(translate[currentNation][j],translate[nation][j].toString().replace('/g','').replace('/',''));
+                                }
+                            }
+                            currentNation = nation;
+                         }
+                         
+                         window.onload = translator(el.value);
+                        </script>
+                    ]]>
+                    </comment>
+                    
+                    
+                	<fields>
+                		<is_turned_on translate="label">
+                            <label>Enabled</label>
+                            <config_path>rocketweb_googlebasefeedgenerator/apparel/is_turned_on</config_path>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[Products with Google Category: 'Apparel &amp; Accessories' (including all subcategories) will be skipped if this option is set to 'No'.]]></comment>
+                        </is_turned_on>
+
+                        <associated_products_mode translate="label">
+                            <label>How to add associated products</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>googlebasefeedgenerator/source_apparel_assocprodsmode</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Apparels are added in the feed a separated associated items, but it can also be set to add the parent configurable item.]]></comment>
+                        </associated_products_mode>
+
+                        <attribute_overwrites translate="label">
+                            <label>Configurable attribute overwrites</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>googlebasefeedgenerator/source_productattributescodes</source_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Select the attributes of configurable product to be used for all associated simple product in the feed as apparel variants. <BR />Overwrite of configurable options attribute like 'size' will be ignored because overwriting it will ignore apparel detection.]]></comment>
+                        </attribute_overwrites>
+                        
+                        <submit_no_img>
+                        	<label>Submit Apparel Products Without Images</label>
+                        	<frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>40</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[Google Shopping Feed Specification states 'No'.]]></comment>
+                        </submit_no_img>
+                        
+                        <variants_submit_no_img>
+                        	<label>Submit Apparel Variants Without Images</label>
+                        	<frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>50</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[Google Shopping Feed Specification states 'No'. When set to 'Yes', if there is no image available for an associated product than it will use configurable's product image.]]></comment>
+                        </variants_submit_no_img>
+                        
+                        <allow_empty_color_size translate="label">
+                            <label>Allow Apparel without Color or Size</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>60</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[When set to NO, the functionality applies to all other apparels than configurable ones, where products with missing color or size are skipped. Configurable apparels are not been skipped but instead, they are been replaced with the valid associated product having minimal price.]]></comment>
+                        </allow_empty_color_size>
+
+                        <associated_products_link_add_unique translate="label">
+                            <label>Associated products - Form unique urls for not visible associated products</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>90</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[The new unique url will be formed from configurable product url and the configurable attributes values of the associated product.<br />e.g http://example.com/configuable.html?color=123&size=99]]></comment>
+                        </associated_products_link_add_unique>
+
+                        <color_attribute_code translate="label">
+                            <label>Color Attributes</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>googlebasefeedgenerator/source_productattributescodes</source_model>
+                            <sort_order>100</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </color_attribute_code>
+
+                        <size_attribute_code translate="label">
+                            <label>Size Attributes</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>googlebasefeedgenerator/source_productattributescodes</source_model>
+                            <sort_order>120</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Size column has relevance only for Google Categories of the Item 'Apparel &amp; Accessories > Clothing' and 'Apparel &amp; Accessories > Shoes'.]]></comment>
+                        </size_attribute_code>
+
+                        <age_group_attribute_code translate="label">
+                            <label>Age Group Attributes</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>googlebasefeedgenerator/source_productattributescodes</source_model>
+                            <sort_order>130</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[To fill age_group. The attributes' values can be: 'Kids', 'Adult'. Other values will be replaced by empty string.]]></comment>
+                        </age_group_attribute_code>
+
+                        <age_group_not_req_categories translate="label">
+                            <label>Age Group - Not required for categories</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>140</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Google category words that should make 'Age Group Attribute' not required when "Allow Apparel without Color or Size" is ON]]></comment>
+                            <depends><allow_empty_color_size>1</allow_empty_color_size></depends>
+                        </age_group_not_req_categories>
+
+                        <gender_attribute_code translate="label">
+                            <label>Gender Attributes</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>googlebasefeedgenerator/source_productattributescodes</source_model>
+                            <sort_order>150</sort_order>
+		                    <show_in_default>1</show_in_default>
+		                    <show_in_website>1</show_in_website>
+		                    <show_in_store>1</show_in_store>
+		                    <comment><![CDATA[To fill gender. The attributes' values can be: 'Male', 'Female', 'Unisex'. Other values will be replaced by empty string.]]></comment>
+                        </gender_attribute_code>
+
+                        <gender_not_req_categories translate="label">
+                            <label>Gender - Not required for categories</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>160</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Google category words that should make 'Gender Attribute' not required when "Allow Apparel without Color or Size" is ON]]></comment>
+                            <depends><allow_empty_color_size>1</allow_empty_color_size></depends>
+                        </gender_not_req_categories>
+
+                        <variant_pattern_attribute_code translate="label">
+                            <label>Pattern Attributes</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>googlebasefeedgenerator/source_productattributescodes</source_model>
+                            <sort_order>170</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </variant_pattern_attribute_code>
+
+                        <variant_material_attribute_code translate="label">
+                            <label>Material Attributes</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>googlebasefeedgenerator/source_productattributescodes</source_model>
+                            <sort_order>180</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </variant_material_attribute_code>
+
+                        <variant_additional_columns translate="label">
+                            <label>Additional Variant Columns</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>190</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Comma separated values. Ex: type,compression,toe. Additional columns that could vary, besides: color, size, pattern, material]]></comment>
+                        </variant_additional_columns>
+
+                        <attribute_merge_value_separator translate="label">
+                            <label>Associated Product Attribute Value Separator</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>200</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Variant attributes values like color and size, defined above, are been merged together for each item using the separator defined here.]]></comment>
+                        </attribute_merge_value_separator>
+                	</fields>
+                </apparel>
+            </groups>
+        </rocketweb_googlebasefeedgenerator>
+    </sections>
+</config>

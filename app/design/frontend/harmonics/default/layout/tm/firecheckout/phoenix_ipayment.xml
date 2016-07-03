@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <reference name="head">
+            <action method="addJs"><script>phoenix/ipayment/processing.js</script></action>
+        </reference>
+        <reference name="content">
+            <block type="ipayment/jsinclude" name="ipayment_jsinclude" template="ipayment/jsinclude.phtml"/>
+        </reference>
+    </firecheckout_index_index>
+</layout>

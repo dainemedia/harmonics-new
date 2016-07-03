@@ -1,0 +1,60 @@
+<?php /* @var $this Mage_Core_Block_Template */?>
+<?php $currentAction = $this->getAction()->getFullActionName('/');?>
+<div id="unirgy-giftcert" class="firecheckout-section">
+    <div class="block-title"><span><?php echo $this->__('Gift cards') ?></span></div>
+    <div class="discount-form">
+        <?php
+            echo $this->getMessagesBlock()->getGroupedHtml();
+            $this->getMessagesBlock()->getMessageCollection()->clear();
+        ?>
+        <label for="cert_code"><?php echo $this->__('Redeem gift card if you have one.') ?></label>
+        <input type="hidden" value="<?php echo $currentAction;?>" name="current_action"/>
+        <div class="input-box">
+            <div class="input-field-wrapper">
+                <input class="input-text" id="cert_code" name="cert_code" value="" />
+            </div>
+            <button type="button" id="cert-apply" title="<?php echo $this->__('Apply Card') ?>" class="button"
+                    value="<?php echo $this->__('Apply Card') ?>">
+                <span><span><?php echo $this->__('Apply Card') ?></span></span></button>
+        </div>
+    </div>
+    <script type="text/javascript">
+    //<![CDATA[
+    $('cert-apply') && $('cert-apply').observe('click', function(e) {
+        var code = $('cert_code');
+        if (!code.value.length) {
+            code.addClassName('required-entry');
+            Validation.validate(code);
+            code.removeClassName('required-entry');
+            return;
+        }
+        // $('coupon-remove').value = "0";
+        checkout.update(checkout.urls.coupon, {
+            'review': 1
+        });
+    });
+    // $('coupon-cancel') && $('coupon-cancel').observe('click', function(e) {
+    //     $('coupon-remove').value = "1";
+    //     checkout.update(checkout.urls.coupon, {
+    //         'review': 1
+    //     });
+    // });
+    $('cert_code').observe('keydown', function(e) {
+        if (e.keyCode != 13) {
+            return;
+        }
+        var code = $('cert_code');
+        if (!code.value.length) {
+            code.addClassName('required-entry');
+            Validation.validate(code);
+            code.removeClassName('required-entry');
+            return;
+        }
+        // $('coupon-remove').value = "0";
+        checkout.update(checkout.urls.coupon, {
+            'review': 1
+        });
+    });
+    //]]>
+    </script>
+</div>

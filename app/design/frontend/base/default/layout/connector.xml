@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+<layout version="0.1.0"> 
+    <!-- Overriding Template File -->
+	<default>
+		<reference name="head">
+            <action method="addLinkRel">
+                <rel>mbiz_store_js_url</rel>
+                <href helper="core/js/getJsUrl"/>
+            </action>
+            <block type="core/text" name="connector_js" as="connectorJs" after="-">
+                <action method="setText">
+                    <text>
+                        <![CDATA[
+                        <script type="text/javascript">
+                            if (typeof jQuery == 'undefined') {
+                            jqueryUrl = document.querySelector('link[rel="mbiz_store_js_url"]').href;
+                            document.write('<script type="text/javascript" src="'+jqueryUrl+'jquerylib/jquery-1.11.0.min.js"><\/script>')
+                            }
+                        </script>
+                        <script type="text/javascript">
+				if (typeof jQuery.ui == 'undefined') {
+			 jqueryUrl = document.querySelector('link[rel="mbiz_store_js_url"]').href;
+                                document.write('<script type="text/javascript" src="'+jqueryUrl+'jquerylib/js/jquery-ui-1.10.4.custom.js"><\/script>')
+}
+
+                       </script>
+                        ]]>
+                    </text>
+                </action>
+            </block>
+            <block type="page/html_head" name="extra_js" as="extraJs" after="-" template="connector/jqueryLibrary.phtml">
+                <!--<action method="addJs"><file>jquerylib/jquery-1.7.2.min.js</file></action>-->
+                <action method="addJs"><file>jquerylib/noconflict.js</file></action>
+                <action method="addJs"><file>jquerylib/mbizgiftcardsale.js</file></action>
+                <action method="addJs"><file>jquerylib/mbizdiscounts.js</file></action>
+                <!--<action method="addJs"><file>jquerylib/js/jquery-ui-1.10.4.custom.js</file></action>-->
+                <action method="addItem"><type>js_css</type><name>jquerylib/css/ui-lightness/jquery-ui-1.10.4.custom.css</name></action>
+                <action method="addItem"><type>js_css</type><name>jquerylib/css/mbizgiftcardsale.css</name></action>
+            </block>
+        </reference>
+        <reference name="right">
+            <block type="microbiz_connector/giftcardsell" name="right.microbiz.connector.giftcarsell">
+                <action method="setTemplate" ifconfig="connector/settings/showright">
+                    <template>connector/giftcardsell.phtml</template>
+                </action>
+            </block>
+        </reference>
+        <reference name="left">
+            <block type="microbiz_connector/giftcardsell" name="left.microbiz.connector.giftcarsell">
+                <action method="setTemplate" ifconfig="connector/settings/showleft">
+                    <template>connector/giftcardsell.phtml</template>
+                </action>
+            </block>
+        </reference>
+
+    </default>
+    <cms_index_index>
+        <reference name="content">
+            <block type="microbiz_connector/giftcardsell" name="home.microbiz.connector.giftcarsell">
+                <action method="setTemplate" ifconfig="connector/settings/showhome">
+                    <template>connector/giftcardsell.phtml</template>
+                </action>
+            </block>
+        </reference>
+    </cms_index_index>
+
+    <checkout_onepage_review translate="label">
+        <reference name="root">
+            <reference name="checkout.onepage.review.button">
+               <action method="setTemplate"><template>connector/checkout/onepage/review/button.phtml</template></action>
+            </reference>
+            <reference name="checkout.onepage.review.info.totals">
+                <action method="setTemplate"><template>connector/checkout/onepage/review/totals.phtml</template></action>
+            </reference>
+        </reference>
+    </checkout_onepage_review>
+    <!-- For Shipping Methods Overriding template files -->
+    <checkout_multishipping_shipping>
+        <reference name="content">
+            <reference name="checkout_shipping">
+                <action method="setTemplate"><template>connector/checkout/multishipping/shipping.phtml</template></action>
+            </reference>
+        </reference>
+    </checkout_multishipping_shipping>
+    <checkout_multishipping_billing>
+        <reference name="content">
+            <reference name="checkout_billing">
+                <action method="setTemplate"><template>connector/checkout/multishipping/billing.phtml</template></action>
+            </reference>
+        </reference>
+    </checkout_multishipping_billing>
+    <checkout_multishipping_overview>
+        <reference name="content">
+            <reference name="checkout_overview">
+                <action method="setTemplate"><template>connector/checkout/multishipping/overview.phtml</template></action>
+            </reference>
+        </reference>
+    </checkout_multishipping_overview>
+    <checkout_onepage_index>
+        <reference name='available'>
+            <action method='setTemplate'><template>connector/checkout/onepage/shipping_method/available.phtml</template></action>
+        </reference>
+    </checkout_onepage_index>
+    <checkout_onepage_shippingmethod>
+        <reference name='root'>
+            <action method='setTemplate'><template>connector/checkout/onepage/shipping_method/available.phtml</template></action>
+        </reference>
+    </checkout_onepage_shippingmethod>
+    <checkout_onepage_paymentmethod>
+        <reference name='root'>
+            <action method='setTemplate'><template>connector/checkout/onepage/payment/methods.phtml</template></action>
+        </reference>
+        <!--<reference name="methods">
+            <block type="microbiz_connector/giftcardpayment" name="microbiz_connector.giftcardpayment" as="giftcardpayment" template="connector/checkout/onepage/payment/giftcardpayment.phtml" />
+        </reference>-->
+    </checkout_onepage_paymentmethod>
+    <!-- For Shipping Methods Overriding template files End -->
+
+
+    <checkout_cart_index translate="label">
+        <reference name="root">
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
+        </reference>
+        <reference name="content">
+            <reference name="checkout.cart">
+                <block type="microbiz_connector/storecredits" name="microbiz_connector.storecredits" as="storecredit" after="coupon" template="connector/checkout/cart/storecredits.phtml" />
+                <block type="microbiz_connector/giftcards" name="microbiz_connector.giftcards" as="giftcard" after="storecredit" template="connector/checkout/cart/giftcards.phtml" />
+                <action method="setCartTemplate"><template>connector/checkout/cart.phtml</template></action>
+                <action method="setEmptyTemplate"><value>connector/checkout/cart/noItems.phtml</value></action>
+                <action method="chooseTemplate"/>
+                <!--<block type="microbiz_connector/total_default" name="checkout.total.default" template="connector/checkout/cart/total/default.phtml" />-->
+                <!--<reference name="checkout.total.default">
+                    <action method="setTemplate"><template>connector/checkout/cart/total/default.phtml</template></action>
+                </reference>-->
+                <block type="microbiz_connector/cart_totals" name="checkout.cart.totals" as="totals" template="connector/checkout/cart/totals.phtml"/>
+
+                <action method="addItemRender"><type>default</type><block>checkout/cart_item_renderer</block><template>connector/checkout/cart/item/default.phtml</template></action>
+                <action method="addItemRender"><type>grouped</type><block>checkout/cart_item_renderer_grouped</block><template>connector/checkout/cart/item/default.phtml</template></action>
+                <action method="addItemRender"><type>configurable</type><block>checkout/cart_item_renderer_configurable</block><template>connector/checkout/cart/item/default.phtml</template></action>
+            </reference>
+        </reference>
+
+    </checkout_cart_index>
+    <!-- This code is added by KT174 for Gift Card Store Redemption-->
+    <sales_order_view>
+        <reference name="order_items">
+            <action method="addItemRender">
+                <arg1>default</arg1>
+                <arg2>sales/order_item_renderer_default</arg2>
+                <arg3>connector/sales/order/items/renderer/default.phtml</arg3>
+            </action>
+            <action method="addItemRender">
+                <arg1>grouped</arg1>
+                <arg2>sales/order_item_renderer_grouped</arg2>
+                <arg3>connector/sales/order/items/renderer/default.phtml</arg3>
+            </action>
+        </reference>
+    </sales_order_view>
+
+</layout>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <reference name="head">
+            <action method="addItem" ifconfig="opcsignature/general/jquery"><type>skin_js</type><name>js/signature/jquery-1.7.2.js</name></action>
+            <action method="addItem" ifconfig="opcsignature/general/enabled"><type>skin_css</type><name>css/signature/jquery.signaturepad.css</name></action>
+            <action method="addItem" ifconfig="opcsignature/general/enabled"><type>skin_js</type><name>js/signature/jquery.signaturepad.min.js</name></action>
+            <action method="addItem" ifconfig="opcsignature/general/enabled"><type>skin_js</type><name>js/signature/json2.min.js</name></action>
+            <action method="addItem" ifconfig="opcsignature/general/enabled"><type>skin_js</type><name>js/signature/signature.js</name></action>
+        </reference>
+        <reference name="checkout.onepage.review.after">
+            <block type="opcsignature/signature" name="opcsignature.signature" template="opcsignature/opc_signature.phtml"/>
+        </reference>
+    </firecheckout_index_index>
+</layout>

@@ -1,0 +1,21 @@
+<script type="text/javascript">
+    //<![CDATA[
+    jQuery(document).ready(function () {
+        IWD.ProductVideo.urlGetVideo = "<?php echo Mage::helper('adminhtml')->getUrl('iwd_productvideo/player/getvideo')?>?isAjax=true";
+        IWD.ProductVideo.updateVideoPositionUrl = '<?php echo Mage::helper('adminhtml')->getUrl('*/productvideo/update_video_position'); ?>?isAjax=true';
+        IWD.ProductVideo.init();
+    });
+    //]]>
+</script>
+
+<div id="iwd_product_video_popup_overlay">
+    <div class="video_popup">
+        <div id="iwd_video_popup_pre_loader"><div class="ajax-loader-gif"></div></div>
+        <a href="#" id="video_popup_close">X</a>
+        <div class="video-wrapper">
+            <h4></h4>
+            <div class="video-player"></div>
+            <p></p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,27 @@
+<?php
+    $nextUrlForm = $this->getNextUrlForm();
+    $isValidUrl = filter_var($nextUrlForm, FILTER_VALIDATE_URL);
+?>
+
+<?php
+$title = $this->helper('sagepayserver')->getIframeTitle();
+if (!empty($title)) : ?>
+    <div class="page-title">
+        <h1><?php echo $title; ?></h1>
+    </div>
+<?php endif; ?>
+
+<p id="sage-pay-server-error" style="display:none;">
+    <?php
+        if($isValidUrl === false):
+            echo $nextUrlForm;
+        endif;
+    ?>
+</p>
+<iframe frameborder="0" id="sage-pay-server-iframe" name="<?php echo $nextUrlForm; ?>"></iframe>
+
+<script type="text/javascript">
+   if(SAGE_PAY_SERVER_ASIFRAME){
+        sgps_placeOrder();
+   }
+</script>

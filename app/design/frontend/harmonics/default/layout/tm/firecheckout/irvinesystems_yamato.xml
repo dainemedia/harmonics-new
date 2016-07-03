@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <update handle="irvine_yamato_after_shipping_methods"/>
+    </firecheckout_index_index>
+    <firecheckout_index_updatecheckout>
+        <update handle="irvine_yamato_after_shipping_methods"/>
+    </firecheckout_index_updatecheckout>
+    <irvine_yamato_after_shipping_methods>
+        <reference name="shipping.methods.after">
+            <block type="core/template" name="irvine.yamato.yamato" template="yamato/yamato.phtml">
+                <block type="yamato/yamato" name="yamato.yamato">
+                    <block type="yamato/yamato_form" name="yamato.form"></block>
+                </block>
+            </block>
+        </reference>
+    </irvine_yamato_after_shipping_methods>
+</layout>

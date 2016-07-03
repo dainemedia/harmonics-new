@@ -1,0 +1,9 @@
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <reference name="checkout.onepage.billing">
+            <action method="setTemplate">
+                <template>tm/firecheckout/aicod_italy/billing.phtml</template>
+            </action>
+        </reference>
+    </firecheckout_index_index>
+</layout>

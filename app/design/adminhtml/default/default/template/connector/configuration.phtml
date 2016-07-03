@@ -1,0 +1,583 @@
+<?php
+//version 112
+?>
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td><h3 class="icon-head"><?php echo Mage::helper('microbiz_connector')->__('Configuration') ?></h3>
+                <button style="float:right;" class="scalable mbizform-testconnection" type="button" title="Test Connection" id=""><span><span><span>Test Connection</span></span></span></button>
+                <button style="float:right;" class="scalable mbizform" type="button" title="Save Config" id=""><span><span><span>Save Config</span></span></span></button>	</td>
+        </tr>
+    </table>
+</div>
+<div class="entry-edit">
+
+<form id="mbiz_form" action="<?php echo $this->getUrl('*/*/saveConfig') ?>" method="post" enctype="multipart/form-data">
+<?php echo $this->getBlockHtml('formkey')?>
+<div class="entry-edit-head collapseable">
+    <a>API Settings</a>
+</div>
+<fieldset id="connector_settings" class="config collapseable" style="">
+    <legend>API Settings</legend>
+    <table cellspacing="0" class="form-list">
+        <colgroup class="label"></colgroup>
+        <colgroup class="value"></colgroup>
+        <tbody>
+        <tr id="row_connector_settings_display_name">
+            <td class="label">
+                <label for="connector_settings_display_name"> Instance Name<em style="color:red;">*</em></label>
+            </td>
+            <td class="value">
+                <input type="text" class=" input-text required-entry" value="<?php echo Mage::getStoreConfig('connector/settings/display_name') ?>" name="display_name" id="connector_settings_display_name">
+            </td>
+        </tr>
+        <tr id="row_connector_settings_instance_id">
+            <td class="label">
+                <label for="connector_settings_instance_id"> Instance Id</label>
+            </td>
+            <td class="value">
+                <input type="text" class=" input-text" value="<?php echo Mage::getStoreConfig('connector/settings/instance_id') ?>" name="instance_id" id="connector_settings_instance_id" readonly>
+            </td>
+        </tr>
+        <tr id="row_connector_settings_api_server">
+            <td class="label">
+                <label for="connector_settings_api_server"> API Server<em style="color:red;">*</em></label>
+            </td>
+            <td class="value">
+                <input type="text" class=" input-text required-entry api_input" value="<?php echo Mage::getStoreConfig('connector/settings/api_server') ?>" name="api_server" id="connector_settings_api_server">
+            </td>
+            <input type='hidden' id='urlvalue' value='<?php echo Mage::helper("adminhtml")->getUrl("connector/index/checkAppConnection/"); ?>'>
+
+        </tr>
+        <tr id="row_connector_settings_api_path">
+            <td class="label">
+                <label for="connector_settings_api_path"> API User<em style="color:red;">*</em></label>
+            </td>
+            <td class="value">
+                <input type="text" class=" input-text required-entry api_input" value="<?php echo Mage::getStoreConfig('connector/settings/api_user') ?>" name="api_path" id="connector_settings_api_path" readonly onfocus="this.removeAttribute('readonly');">
+            </td>
+        </tr>
+        <tr id="row_connector_settings_api_password">
+            <td class="label">
+                <label for="connector_settings_api_password"> API Key<em style="color:red;">*</em></label>
+            </td>
+            <td class="value">
+                <input type="password" class=" input-text required-entry api_input" value="<?php echo Mage::getStoreConfig('connector/settings/api_key') ?>" name="api_password" id="connector_settings_api_password" readonly onfocus="this.removeAttribute('readonly');">
+            </td>
+        </tr>
+        <?php $syncstatus=Mage::getStoreConfig('connector/settings/syncstatus') ?>
+        <tr id="row_connector_settings_syncstatus">
+            <td class="label">
+                <label for="connector_settings_syncstatus"> Sync Status</label>
+            </td>
+            <td class="value">
+                <select class="select" name="syncstatus" id="connector_settings_syncstatus">
+                    <option <?php if($syncstatus==0) { ?> selected="selected" <?php } ?> value="0">Inactive</option>
+                    <option <?php if($syncstatus==1) { ?> selected="selected" <?php } ?> value="1">Active</option>
+                </select>
+            </td>
+        </tr>
+        <tr><div id='connection-result'></div></tr>
+        </tbody>
+    </table>
+    <?php
+    $isSecure = Mage::app()->getStore()->isCurrentlySecure();
+    $magentoBaseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, $isSecure);
+    $mage_url = $magentoBaseUrl;
+    $mage_url_domain = explode('://',Mage::getBaseUrl());
+    //print_r($mage_url_domain[1]);
+    ?>
+    <input type="hidden" id="mage_url" name="mage_url" value="<?php echo $mage_url_domain[1]; ?>">
+</fieldset>
+<div class="entry-edit-head collapseable"><a>Order Sync Settings</a></div>
+<fieldset id="connector_frontendsettings" class="config collapseable">
+    <legend>Order Sync Settings</legend>
+    <table cellspacing="0" class="form-list">
+        <colgroup class="label"></colgroup>
+        <colgroup class="value"></colgroup>
+        <tbody>
+        <?php $allownegativeinv= Mage::getStoreConfig('connector/settings/allownegativeinv') ?>
+        <tr id="row_connector_settings_allownegativeinv">
+            <td class="label">
+                <label for="connector_settings_allownegativeinv"> Allow Negative Quantity In Shipment from MicroBiz Stores</label>
+            </td>
+            <td class="value">
+                <select class="select" name="allownegativeinv" id="connector_settings_allownegativeinv">
+                    <option <?php if($allownegativeinv==0) { ?> selected="selected" <?php } ?> value="0">No</option>
+                    <option <?php if($allownegativeinv==1) { ?> selected="selected" <?php } ?> value="1">Yes</option>
+                </select>
+            </td>
+        </tr>
+        <?php $allowStoreSelection= Mage::getStoreConfig('connector/settings/allowstoreselection') ?>
+        <tr id="row_connector_settings_allownegativeinv">
+            <td class="label">
+                <label for="connector_settings_allowstoreselection"> Allow Store Selection During Shipment for  Reduce Inventory From MicroBiz</label>
+            </td>
+            <td class="value">
+                <select class="select" name="allowstoreselection" id="connector_settings_allowstoreselection">
+                    <option <?php if($allowStoreSelection==0) { ?> selected="selected" <?php } ?> value="0">No</option>
+                    <option <?php if($allowStoreSelection==1) { ?> selected="selected" <?php } ?> value="1">Yes</option>
+                </select>
+            </td>
+        </tr>
+        <?php $syncorders= Mage::getStoreConfig('connector/settings/syncorders') ?>
+        <tr id="row_connector_settings_syncorders">
+            <td class="label">
+                <label for="connector_settings_syncorders"> Sync Orders To MicroBiz</label>
+            </td>
+            <td class="value">
+                <select class="select" name="syncorders" id="connector_settings_syncorders">
+                    <option <?php if($syncorders==0) { ?> selected="selected" <?php } ?> value="0">No</option>
+                    <option <?php if($syncorders==1) { ?> selected="selected" <?php } ?> value="1">Yes</option>
+                </select>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</fieldset>
+<div class="entry-edit-head collapseable"><a>Front-end Customer Sync Settings</a></div>
+<fieldset id="connector_frontendsettings" class="config collapseable">
+    <legend>Front-end Customer Sync Settings</legend>
+    <table cellspacing="0" class="form-list">
+        <colgroup class="label"></colgroup>
+        <colgroup class="value"></colgroup>
+
+        <tbody>
+        <?php $customerupdate=Mage::getStoreConfig('connector/frontendsettings/customer_update') ?>
+        <?php $customercreate=Mage::getStoreConfig('connector/frontendsettings/customer_create') ?>
+        <tr id="row_connector_frontendsettings_customer_update">
+            <td class="label">
+                <label for="connector_frontendsettings_customer_update"> Sync Customers data to MBiz When Updating  Customer</label>
+            </td>
+            <td class="value">
+                <select class=" select" name="customer_update" id="connector_frontendsettings_customer_update">
+                    <option <?php if($customerupdate==1) { ?> selected="selected" <?php } ?> value="1">Yes</option>
+                    <option <?php if($customerupdate==0) { ?> selected="selected" <?php } ?> value="0">No</option>
+                </select>
+            </td>
+
+        </tr>
+        <tr id="row_connector_frontendsettings_customer_create">
+            <td class="label">
+                <label for="connector_frontendsettings_customer_create"> Sync Customers to MBiz When Creating New Customer</label>
+            </td>
+            <td class="value">
+                <select class=" select" name="customer_create" id="connector_frontendsettings_customer_create">
+                    <option <?php if($customercreate==1) { ?> selected="selected" <?php } ?> value="1">Yes</option>
+                    <option <?php if($customercreate==0) { ?> selected="selected" <?php } ?> value="0">No</option>
+                </select>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+</fieldset>
+<div class="entry-edit-head collapseable"><a>Products and Customers Sync Settings</a></div>
+<fieldset id="connector_frontendsettings" class="config collapseable">
+    <legend> Products and Customers Sync Settings</legend>
+    <table cellspacing="0" class="form-list">
+        <colgroup class="label"></colgroup>
+        <colgroup class="value"></colgroup>
+
+        <tbody>
+        <?php $defaultwebsiteproduct=Mage::getStoreConfig('connector/defaultwebsite/product') ?>
+        <?php $defaultwebsitecustomer=Mage::getStoreConfig('connector/defaultwebsite/customer') ?>
+        <tr id="row_connector_defaultwebsite_customer">
+            <td class="label">
+                <label for="connector_defaultwebsite_customer">Default Website to Sync Customers</label>
+            </td>
+            <td class="value">
+                <select class=" select" name="defaultwebsite_customer" id="connector_defaultwebsite_customer">
+                    <?php
+                    $customerAssociatedWebsites=Mage_Customer_Model_Customer_Attribute_Source_Website::getAllOptions();
+                    unset($customerAssociatedWebsites[0]);
+                    foreach ($customerAssociatedWebsites as $customerwebsite) {
+                        ?>
+                        <option <?php if($defaultwebsitecustomer==$customerwebsite['value']) { ?> selected="selected" <?php } ?> value="<?php echo $customerwebsite['value']; ?>"><?php echo $customerwebsite['label']; ?></option>
+                    <?php
+                    }
+                    ?>
+                </select>
+            </td>
+
+        </tr>
+        <tr id="row_connector_defaultwebsite_product">
+            <td class="label">
+                <label for="connector_defaultwebsite_product">Default Website to Sync Products</label>
+            </td>
+            <td class="value">
+                <select class=" select" name="defaultwebsite_product" id="connector_defaultwebsite_customer_create">
+                    <?php
+                    foreach (Mage::app()->getWebsites() as $website) {
+                        $websiteinfo=$website->getData();
+                        ?>
+                        <option <?php if($defaultwebsiteproduct==$websiteinfo['website_id']) { ?> selected="selected" <?php } ?> value="<?php echo $websiteinfo['website_id']; ?>"><?php echo $websiteinfo['name']; ?></option>
+                    <?php
+                    }
+                    ?>
+                </select>
+            </td>
+
+        </tr>
+        <?php //$manageStock=Mage::getStoreConfig('connector/configproduct/managestock'); ?>
+        <!-- <tr id="row_connector_configproduct_managestock">
+                        <td class="label">
+                            <label for="connector_configproduct_managestock">Manage Stock for Configurable Products on Sync</label>
+                        </td>
+                        <td class="value">
+                            <select class=" select" name="configproduct_managestock" id="connector_configproduct_managestock">
+                                    <option <?php if($manageStock == 2) { ?> selected="selected" <?php } ?> value="2">Use Magento Config Settings</option>
+                                    <option <?php if($manageStock == 1) { ?> selected="selected" <?php } ?> value="1">Yes</option>
+                                    <option <?php if($manageStock == 0) { ?> selected="selected" <?php } ?> value="0">No</option>
+
+                            </select>
+                        </td>
+
+                    </tr>-->
+        </tbody>
+    </table>
+</fieldset>
+<div class="entry-edit-head collapseable"><a>AttributeSet Sync Settings</a></div>
+<fieldset id="connector_defaultattributeset" class="config collapseable">
+    <legend>AttributeSet Sync Settings</legend>
+    <table cellspacing="0" class="form-list">
+        <colgroup class="label"></colgroup>
+        <colgroup class="value"></colgroup>
+
+        <tbody>
+        <?php $defaultattributeset=Mage::getStoreConfig('connector/settings/defaultattributeset') ?>
+
+        <tr id="row_connector_settings_defaultattributeset">
+            <td class="label">
+                <label for="connector_settings_defaultattributeset">Create New AttributeSet Based On</label>
+            </td>
+            <td class="value">
+                <select class=" select" name="defaultattributeset" id="connector_settings_defaultattributeset">
+                    <?php
+                    if(!$defaultattributeset) {
+                        $defaultattributeset =  Mage::getModel('catalog/product')->getDefaultAttributeSetId();
+                    }
+
+                    $entityType = Mage::getModel('catalog/product')->getResource()->getTypeId();
+                    $attributeSetCollection = Mage::getResourceModel('eav/entity_attribute_set_collection')->setEntityTypeFilter($entityType);
+                    foreach($attributeSetCollection as $attributeSet){
+
+                        ?>
+                        <option <?php if($defaultattributeset==$attributeSet->getAttributeSetId()) { ?> selected="selected" <?php } ?> value="<?php echo $attributeSet->getAttributeSetId(); ?>"><?php echo $attributeSet->getAttributeSetName(); ?></option>
+
+                    <?php
+                    }
+                    ?>
+                </select>
+            </td>
+
+        </tr>
+
+        </tbody>
+    </table>
+</fieldset>
+<div class="entry-edit-head collapseable"><a>Connector Sync Batch Size Settings</a></div>
+<fieldset id="connector_batchsize" class="config collapseable">
+    <legend>Connector Sync Batch Size Settings</legend>
+    <table cellspacing="0" class="form-list">
+        <colgroup class="label"></colgroup>
+        <colgroup class="value"></colgroup>
+
+        <tbody>
+        <?php $batchsize=Mage::getStoreConfig('connector/batchsizesettings/batchsize') ?>
+
+        <tr id="row_connector_settings_batchsize">
+            <td class="label">
+                <label for="connector_settings_batchsize"> Batch Size<em style="color:red;">*</em></label>
+            </td>
+            <td class="value">
+                <input type="text" class="input-text required-entry validate-digits" value="<?php echo Mage::getStoreConfig('connector/batchsizesettings/batchsize') ?>" name="batchsize" id="connector_settings_batchsize">
+            </td>
+
+        </tr>
+
+        </tbody>
+    </table>
+</fieldset>
+<div class="entry-edit-head collapseable"><a>Debug Settings</a></div>
+<fieldset id="connector_frontendsettings" class="config collapseable">
+    <legend>Debug Settings</legend>
+    <table cellspacing="0" class="form-list">
+        <colgroup class="label"></colgroup>
+        <colgroup class="value"></colgroup>
+
+        <tbody>
+        <?php $connectorDebug=Mage::getStoreConfig('connector/settings/connectordebug') ?>
+
+        <tr id="row_connector_settings_connectordebug">
+            <td class="label">
+                <label for="connector_settings_connectordebug"> Display Debug Menu Items</label>
+            </td>
+            <td class="value">
+                <select class=" select" name="connectordebug" id="connector_settings_connectordebug">
+                    <option <?php if($connectorDebug==1) { ?> selected="selected" <?php } ?> value="1">Yes</option>
+                    <option <?php if($connectorDebug==0) { ?> selected="selected" <?php } ?> value="0">No</option>
+                </select>
+            </td>
+
+        </tr>
+
+        </tbody>
+    </table>
+</fieldset>
+<!-- This code is added by KT-174 for gift cards sale-->
+<div class="entry-edit-head collapseable"><a>Gift Card Settings</a></div>
+<fieldset id="connector_giftcardsettings" class="config collapseable">
+    <legend>Store Credits / Gift Card Settings</legend>
+    <table cellspacing="0" class="form-list">
+        <colgroup class="label"></colgroup>
+        <colgroup class="value"></colgroup>
+
+        <tbody>
+        <?php $storeCredit = Mage::getStoreConfig('connector/settings/storecredit'); ?>
+        <tr id="row_connector_settings_storecredit">
+            <td class="label">
+                <label for="connector_settings_storecredit"> Store Credit Redemption</label>
+            </td>
+            <td class="value">
+                <select class=" select" name="storecredit" id="connector_settings_storecredit">
+                    <option <?php if($storeCredit==1) { ?> selected="selected" <?php } ?> value="1">Enable</option>
+                    <option <?php if($storeCredit==0) { ?> selected="selected" <?php } ?> value="0">Disable</option>
+                </select>
+            </td>
+
+        </tr>
+        <?php $storeCreditPayment = Mage::getStoreConfig('connector/settings/storecreditpayment'); ?>
+        <tr id="row_connector_settings_storecreditpayment">
+            <td class="label">
+                <label for="connector_settings_storecredit"> Store Credit Redemption in Payment Method</label>
+            </td>
+            <td class="value">
+                <select class=" select" name="storecreditpayment" id="connector_settings_storecreditpayment">
+                    <option <?php if($storeCreditPayment==1) { ?> selected="selected" <?php } ?> value="1">Enable</option>
+                    <option <?php if($storeCreditPayment==0) { ?> selected="selected" <?php } ?> value="0">Disable</option>
+                </select>
+            </td>
+
+        </tr>
+        <?php $giftCard = Mage::getStoreConfig('connector/settings/giftcard'); ?>
+        <tr id="row_connector_settings_giftcard">
+            <td class="label">
+                <label for="connector_settings_giftcard"> Gift Card Redemption</label>
+            </td>
+            <td class="value">
+                <select class=" select" name="giftcard" id="connector_settings_giftcard">
+                    <option <?php if($giftCard==1) { ?> selected="selected" <?php } ?> value="1">Enable</option>
+                    <option <?php if($giftCard==0) { ?> selected="selected" <?php } ?> value="0">Disable</option>
+                </select>
+            </td>
+
+        </tr>
+        <?php $giftCardPayment = Mage::getStoreConfig('connector/settings/giftcardpayment'); ?>
+        <tr id="row_connector_settings_giftcardpayment">
+            <td class="label">
+                <label for="connector_settings_giftcardpayment"> Gift Card Redemption in Payment Method</label>
+            </td>
+            <td class="value">
+                <select class=" select" name="giftcardpayment" id="connector_settings_giftcardpayment">
+                    <option <?php if($giftCardPayment==1) { ?> selected="selected" <?php } ?> value="1">Enable</option>
+                    <option <?php if($giftCardPayment==0) { ?> selected="selected" <?php } ?> value="0">Disable</option>
+                </select>
+            </td>
+
+        </tr>
+        <?php $sellGiftCard = Mage::getStoreConfig('connector/settings/sellgiftcard'); ?>
+        <tr id="row_connector_settings_sellgiftcard">
+            <td class="label">
+                <label for="connector_settings_sellgiftcard"> Sell GiftCards on Website</label>
+            </td>
+            <td class="value">
+                <select class=" select" name="sellgiftcard" id="connector_settings_sellgiftcard">
+                    <option <?php if($sellGiftCard==1) { ?> selected="selected" <?php } ?> value="1">Enable</option>
+                    <option <?php if($sellGiftCard==0) { ?> selected="selected" <?php } ?> value="0">Disable</option>
+                </select>
+            </td>
+
+        </tr>
+
+        <?php $giftcardDisplayName = Mage::getStoreConfig('connector/settings/giftcard_displayname'); ?>
+        <tr id="row_connector_settings_giftcard_displayname">
+            <td class="label">
+                <label for="connector_settings_giftcard_displayname"> Gift Card Display Name</label>
+            </td>
+            <td class="value">
+                <input type="text" name="giftcard_displayname" class="input-text" id="connector_settings_giftcard_displayname" value="<?php echo $giftcardDisplayName; ?>" />
+            </td>
+
+        </tr>
+
+        <?php $giftCardImage = Mage::getStoreConfig('connector/settings/giftcardimage'); ?>
+        <tr id="row_connector_settings_giftcardimage">
+            <td class="label">
+                <label for="connector_settings_giftcardimage"> Gift Card Image  </label>
+            </td>
+            <td class="value">
+                <input type="file" class="input-file" value="<?php echo Mage::getStoreConfig('connector/settings/giftcardimage') ?>" name="giftcardimage" id="connector_settings_giftcardimage">
+                <?php
+                if($giftCardImage!=0 || $giftCardImage!='')
+                {
+                    ?>
+                    <img src="<?php echo Mage::getBaseUrl('media').'configuration/'.$giftCardImage; ?>" width="15" height="20" />
+                <?php
+
+                }
+                ?>
+            </td>
+
+        </tr>
+
+
+
+        <tr id="row_connector_settings_giftcardheader">
+            <td class="label">
+                <label for="connector_settings_giftcardheader"> Gift Card Snippet Header  </label>
+            </td>
+            <td class="value">
+                <input type="text" class="input-text" value="<?php echo Mage::getStoreConfig('connector/settings/giftcardheader') ?>" name="giftcardheader" id="connector_settings_giftcardheader">
+            </td>
+
+        </tr>
+
+        <tr id="row_connector_settings_giftcardtext">
+            <td class="label">
+                <label for="connector_settings_giftcardtext"> Gift Card Snippet Text  </label>
+            </td>
+            <td class="value">
+                <textarea rows="12" cols="15" class="input-text"  name="giftcardtext" id="connector_settings_giftcardtext" ><?php echo Mage::getStoreConfig('connector/settings/giftcardtext') ?></textarea>
+            </td>
+
+        </tr>
+        <tr id="row_connector_settings_giftcardsku">
+            <td class="label">
+                <label for="connector_settings_giftcardsku"> Gift Card Product Sku </label>
+            </td>
+            <td class="value">
+                <input class="input-text"  name="giftcardsku" disabled="disabled" id="connector_settings_giftcardsku" value="<?php echo Mage::getStoreConfig('connector/settings/giftcardsku') ?>" />
+            </td>
+
+        </tr>
+        <?php $syncgiftranges = Mage::getStoreConfig('connector/settings/syncgiftranges');?>
+        <tr id="row_connector_settings_syncgiftranges">
+            <td class="label">
+                <label for="connector_settings_syncgiftranges">Sync Gift Card Ranges From Microbiz to Magento</label>
+            </td>
+            <td class="value">
+                <select class=" select" name="syncgiftranges" id="connector_settings_syncgiftranges">
+                    <option <?php if($syncgiftranges==1) { ?> selected="selected" <?php } ?> value="1">Enable</option>
+                    <option <?php if($syncgiftranges==0) { ?> selected="selected" <?php } ?> value="0">Disable</option>
+                </select>
+            </td>
+
+        </tr>
+
+        <?php
+        $showHomePage = Mage::getStoreConfig('connector/settings/showhome');
+        $showLeft = Mage::getStoreConfig('connector/settings/showleft');
+        $showRight = Mage::getStoreConfig('connector/settings/showright');
+        ?>
+        <tr id="row_connector_settings_showgiftcard">
+            <td class="label">
+                <label for="connector_settings_showgiftcard">Display Gift Card Snippet In </label>
+            </td>
+            <td class="value">
+                <select class=" select" multiple="multiple" name="showgiftcard[]" id="connector_settings_showgiftcard">
+                    <option <?php if($showHomePage==1) { ?> selected="selected" <?php }  ?> value="home" >Homepage</option>
+                    <option <?php if($showLeft==1) { ?> selected="selected" <?php }  ?> value="left" >Left Side Bar</option>
+                    <option <?php if($showRight==1) { ?> selected="selected" <?php }  ?> value="right" >Right Side Bar</option>
+
+                </select>
+            </td>
+
+        </tr>
+
+        <tr id="row_connector_settings_giftcardtext">
+            <td class="label">
+                <label for="connector_settings_giftcardtext"> To Display Snippet In Template Files  </label>
+            </td>
+            <td class="value">
+                <textarea rows="8" cols="15" readonly><?php echo "<?php echo \$this->getLayout()->createBlock('microbiz_connector/giftcardsell')->setTemplate('connector/giftcardsell.phtml')->toHtml();?>"; ?></textarea>
+            </td>
+
+        </tr>
+        <tr id="row_connector_settings_giftcardtext">
+            <td class="label">
+                <label for="connector_settings_giftcardtext"> To Display Snippet In Cms Pages  </label>
+            </td>
+            <td class="value">
+                <textarea rows="8" cols="15" readonly><?php echo "{{block type='microbiz_connector/giftcardsell' template='connector/giftcardsell.phtml' }}"; ?></textarea>
+            </td>
+
+        </tr>
+        </tbody>
+
+    </table>
+</fieldset>
+<!-- This code is added by KT-174 for gift cards sale ends here-->
+</form>
+<script type="text/javascript">
+    var importForm = new varienForm('mbiz_form');
+    jQuery('.mbizform').live('click',function(){
+        var validated=importForm.validate();
+        if(validated){
+            importForm.submit();
+        }
+    });
+</script>
+
+</div>
+<script>
+    jQuery(document).ready(function(){
+        jQuery('.api_input').keyup(function(){
+//jQuery('#mbizform').hide();
+        });
+        jQuery(".api_input").bind('paste', function(event) {
+            //jQuery('#mbizform').hide();
+        });
+        jQuery('.mbizform-testconnection').live('click',function(){
+            var validated=importForm.validate();
+            if(validated) {
+                jQuery("#loading-mask").show();
+                var apiserver=jQuery('#connector_settings_api_server').val();
+                var apipath=jQuery('#connector_settings_api_path').val();
+                var apipassword=jQuery('#connector_settings_api_password').val();
+                var mageurl=jQuery('#mage_url').val();
+                var url = jQuery('#urlvalue').val();
+                jQuery.ajax({
+                    url: url,
+                    dataType: 'json',
+                    type : 'post',
+                    // datatype:"json",
+                    data:{ apiserver: apiserver,apipath: apipath,apipassword: apipassword,magentourl:mageurl},
+                    success: function(data){
+                        alert(data.status+" : "+data.message);
+                        if(data.status=='SUCCESS') {
+                            jQuery("#loading-mask").hide();
+                            jQuery('#connection-result').css('color','green');
+                            jQuery('#connection-result').css('font-weight','bold');
+                            jQuery('#connection-result').text(data.message);
+                            jQuery('#connector_settings_instance_id').val(data.instance_id);
+                            //jQuery('#connector_settings_syncstatus').val(data.syncstatus);
+                            jQuery('#mbizform').show();
+                        }
+                        else {
+                            jQuery("#loading-mask").hide();
+                            jQuery('#connection-result').css('color','red');
+                            jQuery('#connection-result').css('font-weight','bold');
+                            jQuery('#connection-result').text(data.message);
+                            //jQuery('#mbizform').hide();
+                        }
+                        setInterval(function() {
+                            jQuery('#connection-result').hide();
+
+                        },  5000);
+                    }
+                });
+            }
+        });
+    });
+</script>

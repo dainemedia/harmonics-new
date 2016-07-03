@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <reference name="head">
+            <action method="addItem"><type>skin_js</type><script>js/icirelais.js</script></action>
+            <action method="addJs"><script>prototype/window.js</script></action>
+            <action method="addItem"><type>js</type><name>prototype/window_effects.js</name><params/><if>lt IE 7</if></action>
+            <action method="addJs"><script>prototype/debug.js</script></action>
+            <action method="addItem"><type>skin_css</type><name>css/alphacube.css</name><params/></action>
+            <action method="addItem"><type>skin_css</type><name>css/icirelais.css</name><params/></action>
+            <action method="addItem"><type>skin_css</type><name>css/default.css</name><params/></action>
+            <action method="addItem"><type>skin_css</type><name>css/mac_os_x_dialog.css</name><params/></action>
+            <block type="core/text" name="map.js">
+                <action method="setText"><text><![CDATA[<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&region=FR"></script>]]></text></action>
+            </block>
+        </reference>
+    </firecheckout_index_index>
+</layout>

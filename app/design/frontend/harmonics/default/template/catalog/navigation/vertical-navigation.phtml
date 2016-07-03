@@ -1,0 +1,21 @@
+<?php
+/**
+ * HTML5 Template - Vertical Navigation
+ */
+?>
+<?php $_menu = $this->renderCategoriesMenuHtml( 0, 'level-top' ) ?>
+<?php if($_menu): ?>
+	<div class="block vertical-menu">
+		<div class="block-title">
+			<h2>Browse By</h2>
+	    </div>
+	    <div class="block-content">
+			<nav class="product-categories">
+			    <ul id="accordion">
+			        <?php echo $_menu ?>
+			    </ul>
+			</nav>
+		</div>
+	</div>
+
+<?php endif ?>

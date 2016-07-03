@@ -1,0 +1,94 @@
+<?php
+/**
+ * @var TM_CheckoutFields_Helper_Data
+ */
+$checkoutfields = Mage::helper('checkoutfields');
+$quote = Mage::getSingleton('adminhtml/session_quote')->getQuote();
+$order = Mage::getSingleton('adminhtml/session_quote')->getOrder();
+?>
+<?php if ($fields = $checkoutfields->getEnabledFields()) : ?>
+
+<div id="form_checkoutfields" class="box-left">
+    <div class="entry-edit">
+        <div class="entry-edit-head">
+            <h4 class="fieldset-legend head-shipping-method icon-head"><?php echo $this->__('Checkout Fields') ?></h4>
+        </div>
+        <div class="fieldset">
+            <table cellspacing="0" class="form-list">
+                <tbody>
+                <?php foreach ($fields as $fieldName => $fieldConfig) : ?>
+                    <tr>
+                    <?php
+                        $required = ('req' === $fieldConfig['status']);
+                        $value    = $this->escapeHtml($quote->getData($fieldName));
+                    ?>
+                        <td class="label">
+                            <label for="order-<?php echo $fieldName ?>"
+                            class="<?php echo $required ? 'required' : '' ?>"
+                            ><?php if ($required): ?><em>*</em><?php endif; ?><?php echo $this->escapeHtml($fieldConfig['label']) ?></label>
+                            <?php if ($fieldConfig['description']) : ?>
+                                <small class="checkoutfield-note"><?php echo $this->escapeHtml($fieldConfig['description']) ?></small>
+                            <?php endif; ?>
+                        </td>
+                        <td class="value">
+                            <?php switch ($fieldConfig['type']) :
+                                case 'checkbox': ?>
+                                    <input type="checkbox"
+                                        name="<?php echo $fieldName ?>"
+                                        id="order-<?php echo $fieldName ?>"
+                                        value="<?php echo $this->escapeHtml($fieldConfig['label']) ?>"
+                                        class="checkbox<?php echo $required ? ' required-entry' : '' ?>"
+                                    />
+                                <?php break; ?>
+                                <?php /*case 'multiselect': ?>
+                                    <select type="text"
+                                        size="4"
+                                        multiple="multiple"
+                                        name="<?php echo $fieldName ?>"
+                                        id="order-<?php echo $fieldName ?>"
+                                        class="<?php echo $required ? ' required-entry' : '' ?>"
+                                    >
+                                        <?php foreach($fieldConfig['options'] as $option) : ?>
+                                            <?php $option = $this->escapeHtml($option); ?>
+                                            <option value="<?php echo $option ?>"<?php echo $value === $option ? ' selected="selected"' : '' ?>><?php echo $option ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                <?php break;*/ ?>
+                                <?php case 'text': ?>
+                                    <input type="text"
+                                        name="<?php echo $fieldName ?>"
+                                        id="order-<?php echo $fieldName ?>"
+                                        value="<?php echo $value ?>"
+                                        class="input-text<?php echo $required ? ' required-entry' : '' ?>"
+                                    />
+                                <?php break; ?>
+                                <?php case 'textarea': ?>
+                                    <textarea type="text"
+                                        name="<?php echo $fieldName ?>"
+                                        id="order-<?php echo $fieldName ?>"
+                                        class="input-text<?php echo $required ? ' required-entry' : '' ?>"
+                                    ><?php echo $value ?></textarea>
+                                <?php break; ?>
+                                <?php case 'select': ?>
+                                    <select type="text"
+                                        name="<?php echo $fieldName ?>"
+                                        id="order-<?php echo $fieldName ?>"
+                                        value=""
+                                        class="input-text<?php echo $required ? ' required-entry' : '' ?>"
+                                    >
+                                        <?php foreach($fieldConfig['options'] as $option) : ?>
+                                            <?php $option = $this->escapeHtml($option); ?>
+                                            <option value="<?php echo $option ?>"<?php echo $value === $option ? ' selected="selected"' : '' ?>><?php echo $option ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                <?php break; ?>
+                            <?php endswitch; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<?php endif; ?>

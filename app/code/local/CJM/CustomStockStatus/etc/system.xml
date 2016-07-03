@@ -1,0 +1,722 @@
+<?xml version="1.0"?>
+<config>
+    <tabs>
+        <chadjmorgan translate="label" module="customstockstatus">
+            <label>CJM Extensions</label>
+            <sort_order>210</sort_order>
+        </chadjmorgan>
+    </tabs>    
+    <sections>
+        <custom_stock translate="label" module="customstockstatus">
+            <label>Custom Stock Status</label>
+            <header_css>customstockstatus-header</header_css>
+            <class>customstockstatus-section</class>
+            <tab>chadjmorgan</tab>
+			<frontend_type>text</frontend_type>
+            <sort_order>130</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+				<about>
+                    <frontend_model>CustomStockStatus/system_config_about</frontend_model>
+                    <sort_order>0</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                </about>
+				<general>
+					<label>General Options</label>
+					<expanded>1</expanded>
+					<frontend_type>text</frontend_type>
+                    <sort_order>2</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+					<fields>
+                        <outofstock translate="label">
+                            <label>Show Stock Status When Out Of Stock?</label>
+                            <frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Do you want to show custom stock status instead of 'Out of stock' when product is not in stock?</comment>
+                        </outofstock>
+                        <expecdateformat translate="label">
+                            <label>Expected Date Format</label>
+                            <tooltip><![CDATA[
+								Please enter a code using the following options:<br><br>
+								%A = Textual representation of day of week (Sunday through Saturday) based on Magento locale setting.<br><br>
+								%B = Full month name based on Magento locale setting.<br><br>
+								%b = Abbreviated month name based on Magento locale setting.<br><br>
+								%Y = Four-digit year.<br><br>
+								%e = Day of month (1 to 31).<br><br>
+								For example, "%A %B %e" will display "Monday May 1" and "%b %e %Y" will display "May 1 2011."]]>
+							</tooltip>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>7</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Hover here for more info.</comment>
+                        </expecdateformat>
+                       	<predateformat translate="label">
+                            <label>Pre-order Date Format</label>
+                            <tooltip><![CDATA[
+								Please enter a code using the following options:<br><br>
+								%A = Textual representation of day of week (Sunday through Saturday) based on Magento locale setting.<br><br>
+								%B = Full month name based on Magento locale setting.<br><br>
+								%b = Abbreviated month name based on Magento locale setting.<br><br>
+								%Y = Four-digit year.<br><br>
+								%e = Day of month (1 to 31).<br><br>
+								For example, "%A %B %e" will display "Monday May 1" and "%b %e %Y" will display "May 1 2011."]]>
+							</tooltip>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>8</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Hover here for more info.</comment>
+                        </predateformat>
+                        <hideexpiredexpec translate="label">
+                            <label>Hide Expired Expected Dates?</label>
+                            <frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>9</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Hide the expected date if it has passed?</comment>
+                        </hideexpiredexpec>
+						<restrictions translate="label">
+                            <label>Show Stock Info Link?</label>
+                            <frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Shows an information link below the stock status which links to a specified CMS page.</comment>
+                        </restrictions>
+						<restrictionstext translate="label">
+                            <label>Stock Info Link Text</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>11</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><restrictions>1</restrictions></depends>
+							<comment>What you want the stock info link to say.</comment>
+                        </restrictionstext>
+						<cmspage translate="label">
+                            <label>CMS Page</label>
+                            <frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_cms_page</source_model>
+                            <sort_order>12</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+							<depends><restrictions>1</restrictions></depends>
+                            <comment>Select CMS page to link to.</comment>
+                        </cmspage>
+                        <showonlist translate="label">
+                            <label>Show On Catalog Page?</label>
+                            <frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>13</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Show stock info on category list pages?</comment>
+                        </showonlist>
+                        <showcustomonlist translate="label">
+                            <label>Show Custom Availability Text On Catalog Page?</label>
+                            <frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>14</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><showonlist>1</showonlist></depends>
+                            <comment>Choose "No" to hide availability text on category list pages. All other stock status is still shown, like In Stock or expected dates.</comment>
+                        </showcustomonlist>
+                        <showhighstock translate="label">
+                            <label>Show More Than -- In Stock?</label>
+                            <frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>15</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Choose yes to show "More Than -threshold value- In Stock" if quantity is greater than the threshold.</comment>
+                        </showhighstock>
+                       	<highstock translate="label">
+                            <label>High Stock Threshold</label>
+                            <frontend_type>text</frontend_type>
+							<validate>validate-greater-than-zero</validate>
+                            <sort_order>16</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><showhighstock>1</showhighstock></depends>
+                            <comment>Quantity at which "More Than -threshold value- In Stock" is displayed.</comment>
+                        </highstock>
+					</fields>
+				</general>
+				<shipoptions>
+					<label>Shipping Options</label>
+					<expanded>1</expanded>
+					<frontend_type>text</frontend_type>
+                    <sort_order>3</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+					<fields>
+						<theholidays>
+                    		<frontend_model>CustomStockStatus/system_config_holidays</frontend_model>
+                    		<sort_order>0</sort_order>
+                    		<show_in_default>1</show_in_default>
+                    		<show_in_website>1</show_in_website>
+                    		<show_in_store>1</show_in_store>
+                		</theholidays>
+                		<info>
+                    		<frontend_model>CustomStockStatus/system_config_info</frontend_model>
+                    		<sort_order>1</sort_order>
+                    		<show_in_default>1</show_in_default>
+                    		<show_in_website>1</show_in_website>
+                    		<show_in_store>1</show_in_store>
+                		</info>
+						<shipstyle translate="label">
+                            <label>Shipping Message Style</label>
+                            <frontend_type>select</frontend_type>
+							<source_model>customstockstatus/style</source_model>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Select the style of shipping message to display.</comment>
+                        </shipstyle>
+                        <dateformat translate="label">
+                            <label>Shipping Date Format</label>
+                           	<tooltip><![CDATA[
+								Please enter a code using the following options:<br><br>
+								%A = Textual representation of day of week (Sunday through Saturday) based on Magento locale setting.<br><br>
+								%B = Full month name based on Magento locale setting.<br><br>
+								%b = Abbreviated month name based on Magento locale setting.<br><br>
+								%Y = Four-digit year.<br><br>
+								%e = Day of month (1 to 31).<br><br>
+								For example, "%A %B %e" will display "Monday May 1" and "%b %e %Y" will display "May 1 2011."]]>
+							</tooltip>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Hover here for more info.</comment>
+                        </dateformat>
+                        <cutofftime translate="label">
+                            <label>Processing Cut-Off Time</label>
+                            <frontend_type>time</frontend_type>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Time a customer has to order by to start processing that day. If ordered after this time, processing will start next day.</comment>
+                        </cutofftime>
+                        <saturday translate="label">
+                            <label>Saturday Processing?</label>
+                            <frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Select yes if you process and ship orders on Saturdays.</comment>
+                        </saturday>
+                        <defaultdays translate="label">
+                            <label>Default Order Processing Time</label>
+                            <frontend_type>text</frontend_type>
+							<validate>validate-greater-than-zero</validate>
+                            <sort_order>6</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>How many days it takes until product ships. Enter 1 for same day shipping if ordered by cut-off time.</comment>
+                        </defaultdays>
+                        <enableholidays translate="label">
+                            <label>No Shipping On Holidays?</label>
+                            <frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>7</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Select "Yes" to enter dates such as holidays when you do not ship. The ship date will calculate accordingly.</comment>
+                        </enableholidays>
+                        <holidays translate="label">
+                            <label>Holidays</label>
+                            <frontend_type>text</frontend_type>
+							<validate>validate-greater-than-zero</validate>
+                            <sort_order>8</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><enableholidays>1</enableholidays></depends>
+                            <comment>Enter days you do not ship on, followed by a comma. Use the format "month-day." For example, "05-03" for May 3rd.</comment>
+                        </holidays>
+                        <movingholidays translate="label">
+                            <label>Dynamic Holidays</label>
+                            <frontend_type>text</frontend_type>
+							<validate>validate-greater-than-zero</validate>
+                            <sort_order>9</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><enableholidays>1</enableholidays></depends>
+                            <comment>Enter the dates you don't ship that change every year, like Thanksgiving. Enter the date as "day of week(1 = Monday through 7 = Sunday)-which week it occurs-month". So for Presidents Day which is the 3rd Monday of Feb, you would enter "1-3-2". Separate dates with a comma.</comment>
+                        </movingholidays>
+					</fields>
+				</shipoptions>
+				<simpleproducts translate="label">
+                    <label>Simple Products</label>
+					<expanded>0</expanded>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>4</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+						<simpleshowstocklevel translate="label">
+                            <label>Show Stock Level?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Show the actual quantity in stock?</comment>
+                        </simpleshowstocklevel>
+                        <limited translate="label">
+                            <label>Limited Stock Threshold</label>
+                            <frontend_type>text</frontend_type>
+							<validate>validate-greater-than-zero</validate>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+							<depends><simpleshowstocklevel>0</simpleshowstocklevel></depends>
+                            <comment>Quantity at which "Limited Stock" is displayed.</comment>
+                        </limited>
+						<simplecustomtext translate="label">
+                            <label>Use Custom Availability Text?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Displays text in "Custom Availability" field, if available.</comment>
+                        </simplecustomtext>
+						<simpleshowshipdate translate="label">
+                            <label>Show Ship Date?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Set to Yes to show shipping date on product page.</comment>
+                        </simpleshowshipdate>
+						<simpleshipdatetext translate="label">
+                            <label>Ship Date Text</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+							<depends><simpleshowshipdate>1</simpleshowshipdate></depends>
+                        </simpleshipdatetext>
+                    </fields>
+					<comment><![CDATA[<div><ul class="messages"><li class="notice-msg"><ul><li>These options affect simple products (including the child products of configurable products) only.</li></ul></li></ul></div>]]></comment>
+				</simpleproducts>
+                <configurableproducts translate="label">
+                    <label>Configurable Products</label>
+					<expanded>0</expanded>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>5</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <configoutofstock translate="label">
+                            <label>Show Un-Orderable Products In Dropdown?</label>
+                            <frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>0</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Do you want to show products that can't be ordered in the drop-downs (products that can't be backordered and are out of stock)?</comment>
+                        </configoutofstock>
+                        <alerts translate="label">
+                            <label>Allow In-Stock Alerts?</label>
+                            <frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>0</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Select yes to allow customers to sign up for in stock alerts for options on a configurable product that are currently out of stock. Note: This will not allow customer to add the out of stock option to cart.</comment>
+                        </alerts>
+                        <dynamics translate="label">
+                            <label>Change Stock Info Dynamically?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>If set to 'Yes' the availability and shipping text will change dynamically based on which option is chosen.</comment>
+                        </dynamics>
+                        <bottomavail translate="label">
+                            <label>Show Stock Status Above Add To Cart?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><dynamics>1</dynamics></depends>
+                            <comment>If set to yes, product stock status and shipping date will be shown below configurable options also.</comment>
+                        </bottomavail>
+                        <configurablecustomtext translate="label">
+                            <label>Use Custom Availability Text?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Displays text in "Custom Availability" field of parent product, if available.</comment>
+                        </configurablecustomtext>
+                        <configurableshowshipdate translate="label">
+                            <label>Show Ship Date?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Set to Yes to show shipping date on product page.</comment>
+                        </configurableshowshipdate>
+                        <configurableshipdatetext translate="label">
+                            <label>Ship Date Text</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+							<depends><configurableshowshipdate>1</configurableshowshipdate></depends>
+                        </configurableshipdatetext>
+                       	<configurablepre translate="label">
+                            <label>Pre-Order In Drop-Down?</label>
+                            <frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Do you want to show the product is a pre-order in the configurable dropdowns? This overrides all other custom and stock text in dropdowns.</comment>
+                        </configurablepre>
+                        <configurablechildcustomtext translate="label">
+                            <label>Availability Text In Drop-Down?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>6</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Displays text in "Custom Availability" field of child product in dropdown and overrides quantity and ship date text, if available.</comment>
+                        </configurablechildcustomtext>
+                       	<configurablechildoutofstock translate="label">
+                            <label>Show Stock Status When Out Of Stock?</label>
+                            <frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>7</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><configchildcustomtext>1</configchildcustomtext></depends>
+                            <comment>Do you want to show custom stock status instead of 'Out of stock' when product is not in stock?</comment>
+                        </configurablechildoutofstock>
+                        <configurableshipby translate="label">
+                            <label>Ship By Date In Drop-Down?</label>
+                            <frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>8</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Do you want to show the ship by date in the configurable dropdowns? This overrides quantity in dropdowns.</comment>
+                        </configurableshipby>
+                        <configurableshipbyformat translate="label">
+                            <label>Ship-By Dropdown Date Format</label>
+                           	<tooltip><![CDATA[
+								Please enter a code using the following options:<br><br>
+								%A = Textual representation of day of week (Sunday through Saturday) based on Magento locale setting.<br><br>
+								%B = Full month name based on Magento locale setting.<br><br>
+								%b = Abbreviated month name based on Magento locale setting.<br><br>
+								%Y = Four-digit year.<br><br>
+								%e = Day of month (1 to 31).<br><br>
+								For example, "%A %B %e" will display "Monday May 1" and "%b %e %Y" will display "May 1 2011."]]>
+							</tooltip>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>9</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><configshipby>1</configshipby></depends>
+                            <comment>Hover here for more info.</comment>
+                        </configurableshipbyformat>
+                        <configurableshowstocklevel translate="label">
+                            <label>Stock Level In Drop-Downs?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Shows the actual quantity in stock in drop-downs.</comment>
+                        </configurableshowstocklevel>
+					</fields>
+					<comment><![CDATA[<div><ul class="messages"><li class="notice-msg"><ul><li>These options affect configurable products only.</li></ul></li></ul></div>]]></comment>
+				</configurableproducts>	
+				<bundleproducts translate="label">
+                    <label>Bundle Products</label>
+					<expanded>0</expanded>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>6</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+						<enabled translate="label">
+                            <label>Enable?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Enable module for bundle products?</comment>
+                        </enabled>
+						<bundleshowstocklevel translate="label">
+                            <label>Show Stock Level?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Show the actual quantity in stock?</comment>
+                        </bundleshowstocklevel>
+						<bundlecustomtext translate="label">
+                            <label>Use Custom Availability Text?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Displays text in "Custom Availability" field, if available.</comment>
+                        </bundlecustomtext>
+						<bundleshowshipdate translate="label">
+                            <label>Show Ship Date?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Set to Yes to show shipping date on product page.</comment>
+                        </bundleshowshipdate>
+						<bundleshipdatetext translate="label">
+                            <label>Ship Date Text</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+							<depends><bundleshowshipdate>1</bundleshowshipdate></depends>
+                        </bundleshipdatetext>
+                    </fields>
+					<comment><![CDATA[<div><ul class="messages"><li class="notice-msg"><ul><li>These options affect bundle products only.</li></ul></li></ul></div>]]></comment>
+				</bundleproducts>
+				<groupedproducts translate="label">
+                    <label>Grouped Products</label>
+					<expanded>0</expanded>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>6</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+						<enabled translate="label">
+                            <label>Enable?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Enable module for grouped products?</comment>
+                        </enabled>
+                        <groupedcustomtext translate="label">
+                            <label>Use Custom Availability Text?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Displays text in "Custom Availability" field of parent product, if available.</comment>
+                        </groupedcustomtext>
+                        <groupedshowshipdate translate="label">
+                            <label>Show Ship Date?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Set to Yes to show shipping date on product page.</comment>
+                        </groupedshowshipdate>
+                        <groupedshipdatetext translate="label">
+                            <label>Ship Date Text</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+							<depends><groupedshowshipdate>1</groupedshowshipdate></depends>
+                        </groupedshipdatetext>
+                       	<groupedpre translate="label">
+                            <label>Pre-Order In Options?</label>
+                            <frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Do you want to show the product is a pre-order on the individual products? This overrides all other custom and stock text.</comment>
+                        </groupedpre>
+                        <groupedchildcustomtext translate="label">
+                            <label>Availability Text In Options?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>6</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Displays text in "Custom Availability" field of child product in options and overrides quantity and ship date text, if available.</comment>
+                        </groupedchildcustomtext>
+                       	<groupedchildoutofstock translate="label">
+                            <label>Show Stock Status When Out Of Stock?</label>
+                            <frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>7</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><groupedchildcustomtext>1</groupedchildcustomtext></depends>
+                            <comment>Do you want to show custom stock status instead of 'Out of stock' when product is not in stock?</comment>
+                        </groupedchildoutofstock>
+                        <groupedshipby translate="label">
+                            <label>Ship By Date In Options?</label>
+                            <frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>8</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Do you want to show the ship by date in the options? This overrides quantity in options.</comment>
+                        </groupedshipby>
+                        <groupedshipbyformat translate="label">
+                            <label>Ship-By Dropdown Date Format</label>
+                           	<tooltip><![CDATA[
+								Please enter a code using the following options:<br><br>
+								%A = Textual representation of day of week (Sunday through Saturday) based on Magento locale setting.<br><br>
+								%B = Full month name based on Magento locale setting.<br><br>
+								%b = Abbreviated month name based on Magento locale setting.<br><br>
+								%Y = Four-digit year.<br><br>
+								%e = Day of month (1 to 31).<br><br>
+								For example, "%A %B %e" will display "Monday May 1" and "%b %e %Y" will display "May 1 2011."]]>
+							</tooltip>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>9</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><configshipby>1</configshipby></depends>
+                            <comment>Hover here for more info.</comment>
+                        </groupedshipbyformat>
+                        <groupedshowstocklevel translate="label">
+                            <label>Stock Level In Options?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Shows the actual quantity in stock in options.</comment>
+                        </groupedshowstocklevel>
+                    </fields>
+					<comment><![CDATA[<div><ul class="messages"><li class="notice-msg"><ul><li>These options affect grouped products only.</li></ul></li></ul></div>]]></comment>
+				</groupedproducts>
+				<virtualproducts translate="label">
+                    <label>Virtual Products</label>
+					<expanded>0</expanded>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>7</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+						<virtualcustomtext translate="label">
+                            <label>Use Custom Availability Text?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Displays text in "Custom Availability" field, if available.</comment>
+                        </virtualcustomtext>
+						<virtualshowshipdate translate="label">
+                            <label>Show Ship Date?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Set to Yes to show shipping date on product page.</comment>
+                        </virtualshowshipdate>
+						<virtualshipdatetext translate="label">
+                            <label>Ship Date Text</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>3</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+							<depends><virtualshowshipdate>1</virtualshowshipdate></depends>
+                        </virtualshipdatetext>
+                    </fields>
+					<comment><![CDATA[<div><ul class="messages"><li class="notice-msg"><ul><li>These options affect virtual products only.</li></ul></li></ul></div>]]></comment>
+				</virtualproducts>
+            </groups>
+        </custom_stock>
+    </sections>
+</config>

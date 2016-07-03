@@ -1,0 +1,52 @@
+.float-clearer{ clear:both; }
+
+/* Stock Message Styles For Category (list.phtml) View */
+
+.stock-availability { font-size:11px; float:left; position: relative; margin-bottom: 0px; margin-top: 3px; }
+
+.stock-availability span { font-size:11px; }
+
+.stock-availability span.restrictions-link { font-size:9px; }
+
+.stock-availability span.expected { color:#930; font-size:10px; }
+
+.stock-availability span.instock { color:#063; }
+
+.stock-availability span.outofstock { color:#900; }
+
+.stock-availability span.backorder { color:#C00; }
+
+.stock-availability span.expected { color:#930; font-size:10px; }
+
+.stock-availability span.preorder { color:#666; font-size:10px; }
+
+.stock-availability span.customstatus { color:#063; }
+
+.stock-availability span.limited { color:#F90; }
+
+
+/* Stock Message Styles For Product Page View */
+
+.shipsin { color:#666; font-size:10px; }
+
+.product-options-bottom .shipsin { color:#666; font-size:9px; padding-bottom: 10px; border-bottom: 1px solid #E4E4E4; }
+
+p.alert-link { font-size: 11px; text-align: right; }
+
+.product-view .out-of-stock-alert-links { font-size: 11px; }
+
+.availability span.restrictions-link { font-size:9px; }
+
+.availability span.instock { color:#063; }
+
+.availability span.outofstock { color:#900; }
+
+.availability span.backorder { color:#C00; }
+
+.availability span.expected { color:#930; font-size:10px; }
+
+.availability span.preorder { font-size:10px; color:#06F; }
+
+.availability span.customstatus { color:#666; }
+
+.availability span.limited { color:#F90; }

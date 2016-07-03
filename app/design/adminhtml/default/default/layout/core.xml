@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <default>
+        <reference name="notifications">
+            <block type="microbiz_core/adminhtml_notifications" name="microbiz_core_notifications" template="core/notifications.phtml"></block>
+        </reference>
+    </default>
+    <!-- Overriding Template File -->
+    <mbizcore_adminhtml_mbizcore_index>
+        <reference name="head">
+            <action method="addJs"><file>mbizinstallation/jquery-1.7.2.min.js</file></action>
+            <action method="addJs"><file>mbizinstallation/noconflict.js</file></action>
+	        <action method="addJs"><file>mbizinstallation/script.js</file></action>
+            <action method="addItem"><type>js_css</type><name>mbizinstallation/style.css</name></action>
+        </reference>
+    </mbizcore_adminhtml_mbizcore_index>
+    <mbizcore_adminhtml_mbizcore_installplugin>
+        <reference name="head">
+            <action method="addJs"><file>mbizinstallation/jquery-1.7.2.min.js</file></action>
+            <action method="addJs"><file>mbizinstallation/noconflict.js</file></action>
+	        <action method="addJs"><file>mbizinstallation/script.js</file></action>
+            <action method="addItem"><type>js_css</type><name>mbizinstallation/style.css</name></action>
+        </reference>
+    </mbizcore_adminhtml_mbizcore_installplugin>
+</layout>
+

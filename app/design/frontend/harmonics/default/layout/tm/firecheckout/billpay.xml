@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <reference name="head">
+            <action method="addJs" ifconfig="payment/billpay_rec/active"><script>billpay/payment.js</script></action>
+            <action method="addJs" ifconfig="payment/billpay_elv/active"><script>billpay/payment.js</script></action>
+            <action method="addJs" ifconfig="payment/billpay_rat/active"><script>billpay/payment.js</script></action>
+        </reference>
+    </firecheckout_index_index>
+</layout>

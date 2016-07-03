@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Microbiz_Core>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Microbiz_Core>
+    </modules>
+</config> 
+

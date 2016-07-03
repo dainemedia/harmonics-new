@@ -1,0 +1,81 @@
+/* Ajax reload rules */
+#firecheckout_ajax .chosen-results li { float: left; margin: 2px; }
+#firecheckout_ajax .chosen-results .group-result {
+    float: none;
+    clear: both;
+    background: #f5f5f5;
+    margin: 0;
+}
+#firecheckout_ajax .chosen-container .chosen-results li.group-option {
+    padding-right: 10px;
+    padding-left: 10px;
+}
+#firecheckout_ajax .chosen-container .chosen-results li.highlighted {
+    background-color: #d6d6d6;
+    background-image: none;
+    border-radius: 11px;
+    color: #444;
+}
+#firecheckout_ajax .chosen-container-multi .chosen-drop .result-selected {
+  background-color: #3e81ea;
+  border-radius: 11px;
+  color: #fff;
+}
+
+/* Address fields sort order */
+#firecheckout_address_form_order #address_form_order_dragdrop { zoom: 1; margin-top: 3px; }
+#firecheckout_address_form_order #address_form_order_dragdrop:after {
+    content: '.';
+    visibility: hidden;
+    clear: both;
+    font-size: 0;
+    height: 0;
+    display: block;
+}
+#firecheckout_sort_order_wrapper {
+    position: relative;
+}
+#firecheckout_address_form_order #address_form_order_dragdrop_overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #fff;
+}
+#firecheckout_address_form_order .address-field {
+    background: #eaeaea;
+    float: left;
+    margin: 0 5px 5px 0;
+    padding: 4px 15px 4px 22px;
+    position: relative;
+    width: 220px;
+}
+#address_form_order_dragdrop .firecheckout_address_form_order_name {
+    width: 482px;
+}
+#firecheckout_address_form_order .move-handle {
+    background: url(images/file_move.png) no-repeat 50% 50%;
+    cursor: move;
+    height: 20px;
+    margin-top: -10px;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 22px;
+}
+#firecheckout_address_form_order .new-line-trigger {
+    background: url(images/key_enter.png) no-repeat 50% 50%;
+    cursor: pointer;
+    height: 20px;
+    margin-top: -10px;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 20px;
+}
+#firecheckout_address_form_order .newline {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.firecheckout-sort-order-mode .use-default {
+    margin: 0 4px 0 25px;
+}

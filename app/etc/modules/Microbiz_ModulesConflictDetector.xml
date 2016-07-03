@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author    Marcin Frymark
+ * @email     contact@microbiz.com
+ * @company   Microbiz
+ * @website   www.microbiz.com
+ */
+-->
+<config>
+    <modules>
+        <Microbiz_ModulesConflictDetector>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Microbiz_ModulesConflictDetector>
+    </modules>
+</config>

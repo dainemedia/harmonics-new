@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <update handle="irvine_japanpost_after_shipping_methods"/>
+    </firecheckout_index_index>
+    <firecheckout_index_updatecheckout>
+        <update handle="irvine_japanpost_after_shipping_methods"/>
+    </firecheckout_index_updatecheckout>
+    <irvine_japanpost_after_shipping_methods>
+        <reference name="shipping.methods.after">
+            <block type="core/template" name="irvine.japan.post" template="japanpost/japanpost.phtml">
+                <block type="japanpost/japanpost" name="japanpost.japanpost">
+                    <block type="japanpost/japanpost_form" name="japanpost.form"></block>
+                </block>
+            </block>
+        </reference>
+    </irvine_japanpost_after_shipping_methods>
+</layout>

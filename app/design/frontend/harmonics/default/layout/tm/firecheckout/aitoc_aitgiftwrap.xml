@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <reference name="shipping.methods.after">
+            <block type="aitgiftwrap/giftwrap_onepage" name="checkout.onepage.shipping_giftwrap" as="shipping_giftwrap" template="aitgiftwrap/giftwrap.phtml"/>
+        </reference>
+    </firecheckout_index_index>
+    <firecheckout_index_updatecheckout>
+        <reference name="shipping.methods.after">
+            <block type="aitgiftwrap/giftwrap_onepage" name="checkout.onepage.shipping_giftwrap" as="shipping_giftwrap" template="aitgiftwrap/giftwrap.phtml"/>
+        </reference>
+    </firecheckout_index_updatecheckout>
+</layout>

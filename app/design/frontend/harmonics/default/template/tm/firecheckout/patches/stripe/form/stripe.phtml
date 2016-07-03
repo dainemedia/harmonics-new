@@ -1,0 +1,294 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     default_default
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php $_code=$this->getMethodCode() ?>
+<?php if ($this->getIsStripeCustomer()) : ?>
+    <a id="stripe-update-payment" class="use"><?php echo $this->__("Change payment information") ?></a>
+<?php endif; ?>
+<ul id="payment_form_<?php echo $_code ?>" class="form-list" style="display:none">
+        <li id="stripe-change-payment-form" <?php if ($this->getIsStripeCustomer()): ?> style="display: none;"<?php endif; ?>>
+            <fieldset>
+                <ul>
+                <?php if ($this->getIsCustomerLoggedIn()||$this->getIsCustomerRegistering()) : ?>
+                    <?php if ($this->getAlwaysCreateStripeCustomer()) : ?>
+                        <input type="hidden" name="payment[create_stripe_customer]" value="1" />
+                    <?php else : ?>
+                        <li>
+                            <label for="<?php echo $_code ?>_create_stripe_customer"><?php echo Mage::helper('payment')->__("Save card for later use?")?></label>
+                            <input type="checkbox" value="1" name="payment[create_stripe_customer]" id="<?php echo $_code ?>_create_stripe_customer" />
+                        </li>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <?php if ($this->getAlwaysCreateStripeCustomer()) : ?>
+                        <input type="hidden" name="payment[create_stripe_customer]" value="1" id="<?php echo $_code ?>_create_stripe_customer" />
+                    <?php else : ?>
+                        <input type="hidden" name="payment[create_stripe_customer]" value="0" id="<?php echo $_code ?>_create_stripe_customer" />
+                    <?php endif; ?>
+                <?php endif; ?>
+                <li>
+                    <input type="hidden" name="payment[<?php echo $_code ?>_token]" value="<?php echo $this->getInfoData('stripe_token') ?>" id="<?php echo $_code?>_token" />
+                </li>
+                <li>
+                    <label for="<?php echo $_code ?>_cc_number"><?php echo Mage::helper('payment')->__('Credit Card Number') ?> <span class="required">*</span></label>
+                    <div class="input-box">
+                        <input type="text" id="<?php echo $_code ?>_cc_number" name="payment[cc_number]" title="<?php echo Mage::helper('payment')->__('Credit Card Number') ?>" class="input-text validate-cc-number" value="<?php echo $this->getInfoData('cc_number')?>"/>
+                    </div>
+                </li>
+                <li>
+                    <label for="<?php echo $_code ?>_expiration"><?php echo Mage::helper('payment')->__('Expiration Date') ?> <span class="required">*</span></label>
+                    <div class="input-box">
+                        <div class="v-fix">
+                            <select id="<?php echo $_code ?>_expiration" name="payment[cc_exp_month]" class="month validate-cc-exp required-entry">
+                            <?php $_ccExpMonth = $this->getInfoData('cc_exp_month') ?>
+                            <?php foreach ($this->getCcMonths() as $k=>$v): ?>
+                                <option value="<?php echo $k ?>" <?php if($k==$_ccExpMonth): ?>selected="selected"<?php endif ?>><?php echo $v ?></option>
+                            <?php endforeach ?>
+                            </select>
+                        </div>
+                        <div class="v-fix">
+                            <?php $_ccExpYear = $this->getInfoData('cc_exp_year') ?>
+                            <select id="<?php echo $_code ?>_expiration_yr" name="payment[cc_exp_year]" class="year required-entry">
+                            <?php foreach ($this->getCcYears() as $k=>$v): ?>
+                                <option value="<?php echo $k ? $k : '' ?>" <?php if($k==$_ccExpYear): ?>selected="selected"<?php endif ?>><?php echo $v ?></option>
+                            <?php endforeach ?>
+                            </select>
+                        </div>
+                    </div>
+                </li>
+                <?php if($this->hasVerification()): ?>
+                <li>
+                   <label for="<?php echo $_code ?>_cc_cid"><?php echo Mage::helper('payment')->__('Card Verification Number') ?> <span class="required">*</span></label>
+                   <div class="input-box">
+                        <div class="v-fix">
+                            <input type="text" title="<?php echo Mage::helper('payment')->__('Card Verification Number') ?>" class="input-text cvv required-entry validate-cc-cvn" id="<?php echo $_code ?>_cc_cid" name="payment[cc_cid]" value="<?php echo $this->getInfoData('cc_cid')?>"/>
+                        </div>
+                        <a href="#" class="cvv-what-is-this"><?php echo $this->__('What is this?') ?></a>
+                    </div>
+                </li>
+                <?php endif; ?>
+                </ul>
+            </fieldset>
+        </li>
+        <?php if ($this->getIsStripeCustomer()) : ?>
+            <li id="stripe-payment-details"<?php if (!$this->getIsStripeCustomer()) : ?> style="display: none;"<?php endif; ?>>
+                <fieldset>
+                    <ul>
+                        <li>
+                            <input type="hidden" name="payment[stripe_customer_id]" value="<?php echo $this->getStripeCustomerId() ?>" id="<?php echo $_code?>_stripe_customer_id" />
+                        </li>
+                        <li>
+                            <?php echo $this->getPaymentHtml(); ?>
+                        </li>
+                    </ul>
+                </fieldset>
+            </li>
+        <?php else: ?>
+            <input type="hidden" name="payment[stripe_customer_id]" value="" id="<?php echo $_code?>_stripe_customer_id" />
+        <?php endif; ?>
+</ul>
+<script type="text/javascript">
+//<![CDATA[
+    Stripe.setPublishableKey('<?php echo $this->getPublishableKey() ?>');
+
+    <?php if ($this->getIsStripeCustomer()) : ?>
+        $('stripe-update-payment').observe('click',function(event){
+            Event.stop(event);
+            if ($('stripe-change-payment-form').visible()) {
+                $('stripe-change-payment-form').hide();
+                $('stripe-payment-details').show();
+                $('stripe_create_stripe_customer').value = '0';
+                $(this).update("Change payment information");
+            } else {
+                $(this).update("Use existing payment information");
+                $('stripe-change-payment-form').show();
+                $('stripe-payment-details').hide();
+                $('stripe_create_stripe_customer').value = "1";
+            }
+        });
+    <?php endif; ?>
+
+<?php if (!(bool)Mage::getStoreConfig('onestepcheckout/general/rewrite_checkout_links') && !Mage::getStoreConfigFlag('firecheckout/general/enabled')) : ?>
+
+Object.extend(Payment.prototype, {
+    save: function()
+    {
+        if (this.currentMethod == "stripe") {
+               if (checkout.loadWaiting!=false) return;
+               var validator = new Validation(this.form);
+               if (this.validate() && validator.validate()) {
+                   checkout.setLoadWaiting('payment');
+                   if ($F('stripe_stripe_customer_id') == ""||$F("stripe_create_stripe_customer")=="1") {
+                       Stripe.createToken({
+                           <?php if ($this->sendAddressData()) : ?>
+                               name: $F("billing:firstname") + " " +  $F("billing:lastname"),
+                              address_line1: $F("billing:street1"),
+                              address_line2: $F("billing:street2"),
+                              address_state: $F("billing:region"),
+                              address_zip: $F("billing:postcode"),
+                              address_country: $F('billing:country_id'),
+                           <?php endif; ?>
+                           number: $F('<?php echo $_code?>_cc_number'),
+                           <?php if ($this->hasVerification()) : ?>
+                           cvc: $F('<?php echo $_code?>_cc_cid'),
+                           <?php endif; ?>
+                           exp_month: $F('<?php echo $_code?>_expiration'),
+                           exp_year: $F('<?php echo $_code?>_expiration_yr')
+                       }, stripeResponseHandler.bind(this));
+                   } else {
+                       var request = new Ajax.Request(
+                               payment.saveUrl,
+                               {
+                                   method:'post',
+                                   onComplete: payment.onComplete,
+                                   onSuccess: payment.onSave,
+                                   onFailure: checkout.ajaxFailure.bind(checkout),
+                                   parameters: Form.serialize(payment.form)
+                               }
+                           );
+                   }
+               }
+          } else {
+              if (checkout.loadWaiting!=false) return;
+              var validator = new Validation(this.form);
+              if (this.validate() && validator.validate()) {
+                  checkout.setLoadWaiting('payment');
+                  var request = new Ajax.Request(
+                      this.saveUrl,
+                      {
+                          method:'post',
+                          onComplete: this.onComplete,
+                          onSuccess: this.onSave,
+                          onFailure: checkout.ajaxFailure.bind(checkout),
+                          parameters: Form.serialize(this.form)
+                      }
+                  );
+              }
+          }
+    }
+});
+
+function stripeResponseHandler(status, response) {
+    if (response.error) {
+        alert(response.error.message);
+    } else {
+        var token = response['id'];
+        $('<?php echo $_code?>_token').value = token;
+        var request = new Ajax.Request(
+             payment.saveUrl,
+             {
+                 method:'post',
+                 onComplete: payment.onComplete,
+                 onSuccess: payment.onSave,
+                 onFailure: checkout.ajaxFailure.bind(checkout),
+                 parameters: Form.serialize(payment.form)
+             }
+         );
+    }
+}
+
+<?php else : ?>
+
+    Event.observe(window, 'load', function(e)    {
+        if ($('onestepcheckout-form')) {
+            $$('.onestepcheckout-place-order-wrapper').each(function(elem){$(elem).replace('<div class="onestepcheckout-place-order-wrapper"><button type="button" title="Place order now" id="onestepcheckout-check-order" class="large orange onestepcheckout-button onestepcheckout-check-order" onclick="javascript:void(0);"><span><span>Place order now</span></span></button></div>')});
+            $('onestepcheckout-check-order').observe('click',createStripeToken);
+        }
+    });
+
+
+    function createStripeToken() {
+        var form = payment.form;
+        var validator = new Validation(form);
+        if (validator.validate()) {
+            if ($F('stripe_stripe_customer_id') == ""||$F("stripe_create_stripe_customer")=="1") {
+                checkout.setLoadWaiting('payment');
+                Stripe.createToken({
+                     <?php if ($this->sendAddressData()) : ?>
+                         name: $F("billing:firstname") + " " +  $F("billing:lastname"),
+                        address_line1: $F("billing:street1"),
+                        address_line2: $F("billing:street2"),
+                        address_state: $F("billing:region"),
+                        address_zip: $F("billing:postcode"),
+                        address_country: $F('billing:country_id'),
+                     <?php endif; ?>
+                    number: $F('<?php echo $_code?>_cc_number'),
+                    <?php if ($this->hasVerification()) : ?>
+                    cvc: $F('<?php echo $_code?>_cc_cid'),
+                    <?php endif; ?>
+                    exp_month: $F('<?php echo $_code?>_expiration'),
+                    exp_year: $F('<?php echo $_code?>_expiration_yr')
+                }, stripeResponseHandler);
+            } else {
+                obj = {error:false};
+                stripeResponseHandler(200,obj);
+            }
+        }
+    }
+
+    function stripeResponseHandler(status,response) {
+        checkout.setLoadWaiting(false);
+        if (response.error) {
+            alert(response.error.message);
+        } else {
+            if ($F('stripe_stripe_customer_id')=="") {
+                token = response['id'];
+                $('<?php echo $_code ?>_token').value = token;
+            }
+             // First validate the form
+              var form = new VarienForm('onestepcheckout-form');
+              if ($('onestepcheckout-form')) {
+                  if(form.validator.validate())  {
+                      if(!already_placing_order && $$('.loading-ajax').length <= 0 ) {
+                          already_placing_order = true;
+                          var submitelement = $('onestepcheckout-check-order');
+
+                          var loaderelement = new Element('div').
+                              addClassName('onestepcheckout-place-order-loading').
+                              update('<img src="<?php echo $this->getSkinUrl("images/opc-ajax-loader.gif") ?>" />&nbsp;&nbsp;Please wait, processing your order...');
+
+                          submitelement.parentNode.appendChild(loaderelement);
+
+                          /* Disable button to avoid multiple clicks */
+                          submitelement.removeClassName('orange').addClassName('grey');
+                          submitelement.disabled = true;
+
+                          /* Submit the form */
+                          $('onestepcheckout-form').submit();
+                      }
+                  }
+              } else if ($('firecheckout-form')) {
+                  checkout.save('', true);
+              }
+        }
+    }
+
+<?php endif; ?>
+
+
+
+
+//]]>
+</script>

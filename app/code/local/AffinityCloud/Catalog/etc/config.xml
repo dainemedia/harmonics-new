@@ -1,0 +1,11 @@
+<config>
+    <global>
+       <models>
+          <catalog_resource>
+              <rewrite>
+                  <product_collection>AffinityCloud_Catalog_Model_Resource_Product_Collection</product_collection>
+              </rewrite>
+          </catalog_resource>
+       </models>
+    </global>
+</config>

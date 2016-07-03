@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <reference name="head">
+            <action method="addJs"><script>payone/core/client_api.js</script></action>
+            <action method="addJs"><script>payone/core/creditcard.js</script></action>
+            <action method="addJs"><script>payone/core/onlinebanktransfer.js</script></action>
+            <action method="addJs"><script>payone/core/wallet.js</script></action>
+            <action method="addJs" ifconfig="payone_protect/general/enabled">
+                <script>payone/core/addresscheck.js</script>
+            </action>
+        </reference>
+        <reference name="head">
+            <block type="core/template" name="payone_core_clientapi" template="payone/core/client_api.phtml" />
+            <block type="core/template" name="payone_core_protect" template="payone/core/checkout/protect.phtml" />
+            <block type="core/template" name="payone_core_payment" template="payone/core/checkout/onepage/init.phtml" />
+        </reference>
+        <reference name="checkout.payment.methods">
+            <block type="core/template" name="additional" as="additional">
+                <block type="payone_core/checkout_onepage_payment_additional"
+                       name="payone_core_payment_additional"
+                       template="payone/core/checkout/onepage/payment/additional.phtml" />
+            </block>
+        </reference>
+    </firecheckout_index_index>
+    <firecheckout_index_updatecheckout>
+        <reference name="checkout.payment.method">
+            <block type="core/template" name="additional" as="additional">
+                <block type="payone_core/checkout_onepage_payment_additional"
+                       name="payone_core_payment_additional"
+                       template="payone/core/checkout/onepage/payment/additional.phtml" />
+            </block>
+        </reference>
+    </firecheckout_index_updatecheckout>
+</layout>

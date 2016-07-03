@@ -1,0 +1,313 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+//version 103
+?>
+<?php
+$isSecure = Mage::app()->getStore()->isCurrentlySecure();
+$magentoBaseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, $isSecure);
+    $quoteModel = Mage::getModel('checkout/cart')->getQuote();
+//$arrQuoteCreditDiscountData = $quoteModel->getCreditDiscountData();
+$arrQuoteCreditDiscountData = Mage::getSingleton('checkout/session')->getCreditDiscountData();
+$arrQuoteCreditDiscountData = unserialize($arrQuoteCreditDiscountData);
+
+$checkout = Mage::getSingleton('checkout/session')->getQuote()->getData();
+$relationData = Mage::getModel('mbizcustomer/mbizcustomer')
+    ->getCollection()
+    ->addFieldToFilter('magento_id', $checkout['customer_id'])
+    ->setOrder('id', 'asc')
+    ->getFirstItem();
+
+$isDiscountApplied=0;
+if(count($arrQuoteCreditDiscountData)>0)
+{
+    foreach($arrQuoteCreditDiscountData as $data)
+    {
+        if(array_key_exists('credit_no',$data))
+        {
+            $isDiscountApplied=1;
+        }
+    }
+}
+
+$arrProcessPayment = array();
+$arrUnProcessPayment = array();
+if(count($arrQuoteCreditDiscountData)>0)
+{
+    $x=0;
+    $y=0;
+    foreach($arrQuoteCreditDiscountData as $data)
+    {
+        if($data['credit_type']==1)
+        {
+            $arrProcessPayment['storecredits'][$x]['scr_unique_num'] = $data['credit_no'];
+            $arrProcessPayment['storecredits'][$x]['customer_id'] =  $relationData['mbiz_id'];
+            $arrProcessPayment['storecredits'][$x]['applied_amount'] = $data['credit_amt'];
+            $arrProcessPayment['storecredits'][$x]['movement_indigator'] = '-';
+
+            $arrUnProcessPayment['storecredits'][$x]['scr_unique_num'] = $data['credit_no'];
+            $arrUnProcessPayment['storecredits'][$x]['customer_id'] =  $relationData['mbiz_id'];
+            $arrUnProcessPayment['storecredits'][$x]['applied_amount'] = $data['credit_amt'];
+            $arrUnProcessPayment['storecredits'][$x]['movement_indigator'] = '+';
+            $x++;
+        }
+        else
+        {
+            $arrProcessPayment['giftcards'][$y]['gcd_unique_num'] = $data['credit_no'];
+            $arrProcessPayment['giftcards'][$y]['applied_amount'] = $data['credit_amt'];
+            $arrProcessPayment['giftcards'][$y]['gcd_pin'] = $data['credit_pin'];
+            $arrProcessPayment['giftcards'][$y]['movement_indigator'] = '-';
+
+            $arrUnProcessPayment['giftcards'][$y]['gcd_unique_num'] = $data['credit_no'];
+            $arrUnProcessPayment['giftcards'][$y]['applied_amount'] = $data['credit_amt'];
+            $arrUnProcessPayment['giftcards'][$y]['gcd_pin'] = $data['credit_pin'];
+            $arrUnProcessPayment['giftcards'][$y]['movement_indigator'] = '+';
+            $y++;
+
+        }
+    }
+}
+
+
+//get giftcard sale data from the session variable.
+$arrGiftBuyData = array();
+$arrGiftBuyData = Mage::getSingleton('checkout/session')->getGiftBuyData();
+$arrGiftBuyData = unserialize($arrGiftBuyData);
+$arrUnsGiftBuyData = unserialize($arrGiftBuyData);
+$isGiftCardSaleExists = 0;
+if(count($arrGiftBuyData)>0)
+{
+    foreach($arrGiftBuyData as $data)
+    {
+        if(array_key_exists('gcd_type',$data))
+        {
+            $isGiftCardSaleExists = 1;
+            //$arrUnsGiftBuyData['movement_indigator']='-';
+            //$arrGiftBuyData['movement_indigator'] = '+';
+        }
+    }
+}
+
+
+
+?>
+<input type="hidden" class="is_discount_applied" value="<?php echo $isDiscountApplied;?>" />
+<input type="hidden" class="is_gift_sale_exists" value="<?php echo $isGiftCardSaleExists;?>" />
+<input type="hidden" class="process_payment_data" name="discount_data[]" value="<?php echo htmlspecialchars(json_encode($arrProcessPayment)); ?>" />
+<input type="hidden" class="gift_sale_data" name="giftcard_data[]" value="<?php echo htmlspecialchars(json_encode($arrGiftBuyData));  ?>" />
+<input type="hidden" class="mbiz_base_url" value="<?php echo  $magentoBaseUrl; ?>" />
+<img src="<?php echo Mage::getBaseUrl('skin').'adminhtml/default/default/images/ajax-loader-tr.gif'?>"
+     alt="NOT FOUND" style="display:none;" width="20px" id="load-img"/>
+<button type="button" title="<?php echo $this->__('Place Order') ?>" class="button btn-checkout" id="checkout_submit"><span><span><?php echo $this->__('Place Order') ?></span></span></button>
+<script type="text/javascript">
+
+
+Review.prototype.nextStep = Review.prototype.nextStep.wrap(function(callOriginal,transport){
+    response = eval('(' + transport.responseText + ')');
+    if(response.error) {
+        var isDiscountApplied = jQuery('.is_discount_applied').val();
+        if(isDiscountApplied==1) {
+            var unProcessData = {};
+            unProcessData = <?php echo json_encode($arrUnProcessPayment)?>;
+            var url = '<?php echo $magentoBaseUrl ?>'+'connector/index/mbizProcessPayment';
+
+            jQuery.ajax({
+                url: url,
+                dataType:'json',
+                type: 'post',
+                data: { payment_data:unProcessData},
+                success: function(data){
+                    //console.log(data);
+                    if(data.status=='SUCCESS') {
+                        jQuery("#load-img").hide();
+                        jQuery("#checkout_submit").show();
+
+                    }
+                    else {
+                        jQuery("#load-img").hide();
+                        jQuery("#checkout_submit").show();
+                        alert(data.status_msg);
+                        return data;
+                        //shippingMethod.save();
+                    }
+                }
+            });
+        }
+
+    }
+
+    return callOriginal(transport);
+});
+
+</script>
+<script>
+
+jQuery('#checkout_submit').click(function(){
+    if(jQuery("#checkout-step-review form").length) {
+        var formId = jQuery("#checkout-step-review form").attr('id');
+        var contactForm = new  VarienForm(formId);
+        if(contactForm.validator && !contactForm.validator.validate()) {
+            return false;
+        }
+    }
+<?php if($isDiscountApplied==1 || $isGiftCardSaleExists==1) {?>
+
+    <?php if(count($arrProcessPayment)>0) {?>
+
+    var processData = {};
+    processData = <?php echo json_encode($arrProcessPayment)?>;
+
+        jQuery("#load-img").show();
+        jQuery("#checkout_submit").hide();
+    var url = '<?php echo $magentoBaseUrl ?>'+'connector/index/mbizProcessPayment';
+
+       jQuery.ajax({
+            url: url,
+            dataType:'json',
+            type: 'post',
+            data: { payment_data:processData},
+            success: function(data){
+                //console.log(data);
+                if(data.status=='SUCCESS') {
+                    jQuery("#load-img").hide();
+                    jQuery("#checkout_submit").show();
+                    review.save();
+                }
+                else {
+                    jQuery("#load-img").hide();
+                    jQuery("#checkout_submit").show();
+                    alert(data.status_msg);
+                    //shippingMethod.save();
+                }
+            }
+            });
+
+
+
+
+
+        <?php } ?>
+
+    <?php if($isGiftCardSaleExists==1) {
+
+    ?>
+            jQuery("#load-img").show();
+            jQuery("#checkout_submit").hide();
+          var validateGiftCardRangeUrl = '<?php echo $magentoBaseUrl?>'+'connector/index/mbizValidateGiftCardRange';
+          var   GiftCardRanges = {};
+          GiftCardRanges = <?php echo json_encode($arrGiftBuyData);?>;
+
+                jQuery.ajax({
+                    url: validateGiftCardRangeUrl,
+                    dataType: 'json',
+                    type: 'post',
+                    data: { gift_ranges: GiftCardRanges},
+                    success: function(result){
+                        if(result.status=='SUCCESS') {
+                            jQuery("#load-img").hide();
+                            //jQuery("#checkout_submit").show();
+                            review.save();
+                        }
+                        else {
+                            jQuery("#load-img").hide();
+                            jQuery("#checkout_submit").show();
+                            alert(result.status_msg);
+                            //shippingMethod.save();
+                            //review.save();
+                        }
+                    }
+                });
+         <?php } ?>
+<?php } else {?>
+
+    review.save();
+<?php }?>
+    });
+</script>
+<script>
+
+/*jQuery('#checkout_submit').click(function(){
+
+	if(jQuery('#p_method_giftcardpay').is(':checked')) 
+		{
+				var url = jQuery('#processgiftcard').val();
+				var gcd_unique_num = jQuery('#giftcardpay_giftcard_no').val();
+				var password = jQuery('#giftcardpay_password').val();
+				jQuery.ajax({
+					url: url,
+					dataType: 'json',
+					type : 'post',
+					data:{ gcd_unique_num: gcd_unique_num,password: password},
+					success: function(data){
+							
+							if(data.status=='SUCCESS') {
+								if(data.gcd_status) {
+									review.save();
+								}
+								else {
+									alert(data.status_msg);
+									shippingMethod.save();
+								}
+							}
+							else {
+								alert(data.status_msg);
+								shippingMethod.save();
+							}
+					}
+				});
+		}
+		else if(jQuery('#p_method_storecreditpay').is(':checked')) 
+		{ 
+			var url = jQuery('#processstorecredit').val();
+				var scr_unique_num = jQuery('#storecreditpay_storecredit_no').val();
+				jQuery.ajax({
+					url: url,
+					dataType: 'json',
+					type : 'post',
+					data:{scr_unique_num: scr_unique_num},
+					success: function(data){
+							
+							if(data.status=='SUCCESS') {
+								if(data.scr_status) {
+									review.save();
+								}
+								else {
+									alert(data.status_msg);
+									shippingMethod.save();
+								}
+							}
+							else {
+								alert(data.status_msg);
+								shippingMethod.save();
+							}
+					}
+				});
+		
+		}
+		else {
+			review.save();
+		}
+});*/
+</script>

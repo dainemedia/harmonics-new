@@ -1,0 +1,143 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+
+<footer>
+	<div class="container-fluid">
+		<div class="inner-wrapper">
+			<div class="row info">
+			    <div class="col-md-3">
+			    	<div class="footer-info">
+				    	<h4>Information</h4>
+				    	<ul>
+				    		<li><a href="<?php echo $this->getUrl( 'about-us' ); ?>" title="About Us">About Us</a></li>
+				    		<li><a href="<?php echo $this->getUrl( 'customer-service' ); ?>" title="Customer Service">Customer Service</a></li>
+				    		<li><a href="<?php echo $this->getUrl( 'privacy-policy' ); ?>" title="Privacy Policy">Privacy Policy</a></li>
+				    		<li><a href="<?php echo $this->getUrl( 'catalog/seo_sitemap/category/' ); ?>" title="Site Map">Site Map</a></li>
+				    		<li><a href="<?php echo $this->getUrl( 'catalogsearch/advanced/' ); ?>" title="Advanced Search">Advanced Search</a></li>
+				    		<li><a href="<?php echo $this->getUrl( 'delivery-and-returns' ); ?>" title="Delivery and Returns">Delivery and Returns</a></li>
+				    		<li><a href="<?php echo $this->getUrl( 'contacts' ); ?>" title="Contact Us">Contact Us</a></li>
+				    	</ul>
+				    </div>
+			    </div>
+			    <div class="col-md-5">
+
+			    </div>
+			    <div class="col-md-4">
+			    	<div class="footer-info">
+				    	<h4>Contact</h4>
+					    <div itemscope itemtype="http://schema.org/LocalBusiness">
+							<div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+								<span itemprop="streetAddress">51/55 Crosby Road North</span>,<br />
+								<span itemprop="streetAddress">Waterloo</span>,<br />
+								<span itemprop="addressLocality">Liverpool</span>,<br />
+								<span itemprop="addressRegion">Merseyside</span><span itemprop="postalCode"> L22 4QD</span>
+							</div>
+					    	<span itemprop="telephone"><a class="telephone" href="tel:+44-844-318-8999" title="0844-318-8999">0844 318 8999</a></span>
+					    </div>
+					    <?php
+					    	$currentURL = $this->helper( 'core/url' )->getCurrentUrl();
+							$currentTitle =$this->getLayout()->getBlock( 'head' )->getTitle();
+							$chars = array( '™' => '', '®' => '', ' ' => '%20' );
+					    ?>
+				    	<ul class="social">
+							<li><a class="facebook" href="http://www.facebook.com/sharer.php?u=<?php echo urlencode($currentURL); ?>" title="Share on Facebook">&nbsp;</a></li>
+							<li><a class="twitter" href="http://twitter.com/share?text=<?php echo urlencode(strtr( $currentTitle, $chars )); ?>&amp;url=<?php echo $currentURL; ?>" title="Share on Twitter">&nbsp;</a></li>
+							<li><a class="google-plus" href="https://plus.google.com/share?url=<?php echo urlencode($currentURL); ?>" title="Share on Google+">&nbsp;</a></li>
+							<li><a class="pinterest" href="http://pinterest.com/pin/create/button/?url=<?php echo urlencode($currentURL); ?>&amp;description=<?php echo urlencode(strtr( $currentTitle, $chars )); ?>" title="Share on Pinterest">&nbsp;</a></li>
+						</ul>
+					</div>
+			    </div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="payment">
+						<img class="payment-options" src="<?php echo $this->getSkinUrl( 'images/payment-logos.png' ); ?>" alt="Payment Options" />
+				    	<span class="copyright"><?php echo $this->getCopyright(); ?></span>
+				    </div>
+		    	</div>
+				<div class="col-md-6">
+					<div class="ssl">
+						<img class="rapid-ssl" src="<?php echo $this->getSkinUrl( 'images/rapid-ssl-logo.png' ); ?>" alt="Rapid SSL Secure" />
+					</div>
+		    	</div>
+		    </div>
+		    <div class="row">
+		    	<div class="col-md-12">
+		    		<div class="brands">
+				    	<a class="fender" href="#" title="Fender">&nbsp;</a>
+				    	<a class="squier" href="#" title="Sqier">&nbsp;</a>
+				    	<a class="gretsch" href="#" title="Gretch">&nbsp;</a>
+				    	<!-- <a class="guild" href="#" title="Guild">&nbsp;</a>
+				    	<a class="takamine" href="#" title="Takamine">&nbsp;</a> -->
+				    	<a class="martin" href="#" title="Martin $amp; Co">&nbsp;</a>
+				    	<a class="aer" href="#" title="AER">&nbsp;</a>
+				    	<a class="ibanez" href="#" title="Ibanez">&nbsp;</a>
+				    	<a class="laney" href="#" title="Laney">&nbsp;</a>
+				    	<a class="blackstar" href="#" title="Blackstar">&nbsp;</a>
+				    </div>
+			    </div>
+		    </div>
+		</div>
+	</div>
+</footer>
+
+<script>
+	jQuery.noConflict();
+</script>
+<script src="<?php echo $this->getSkinUrl(); ?>js/compressed.js"></script>
+<?php if (getCurrentPath( $_SERVER['REQUEST_URI'] ) == 'contacts') { ?>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwIBCPMbg_i6SVBNczvqT3OgCxLP7PQ00&amp;sensor=false"></script>
+	<script>
+			initialise();
+
+			function initialise() {
+				var latLong = new google.maps.LatLng(53.4799782, -3.0235283);
+				var mapOptions = {
+					center: latLong,
+					zoom: 12,
+					mapTypeId: google.maps.MapTypeId.ROADMAP
+				};
+				var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+				
+				var marker = new google.maps.Marker({
+					position: latLong,
+					map: map,
+					title: "Harmonics Music"
+				});
+				
+				var contentString = '<div id="info-window">'+'<h4>Harmonics Music</h4>'+'<p>Harmonics is a specialist music shop based in Liverpool with the intimate product knowledge to assist you; our stock includes a range of Fender UK guitars.</p>'+'</div>';
+				
+				var infowindow = new google.maps.InfoWindow({
+				    content: contentString
+				});
+				
+				google.maps.event.addListener(marker, 'click', function() {
+					infowindow.open(map, marker);
+				});
+			}
+	</script>
+<?php } ?>

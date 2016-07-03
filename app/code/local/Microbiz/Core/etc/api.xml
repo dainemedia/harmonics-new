@@ -1,0 +1,31 @@
+<config>
+	<api>
+            <resources>
+		<coremicrobizinstall>
+			<model>Microbiz_Core_Model_Api</model>
+	                <title>Ktree ExtendedMbizCore Api</title>
+			<methods>
+				<mbizInstallPlugin translate="title" module="microbiz_core">
+					<title>Install MicroBiz Connector Plugin</title>
+                    <method>mbizInstallConnPlugin</method>
+		            <acl>extendedmbizcore/mbizInstallPlugin</acl>
+				</mbizInstallPlugin>
+			</methods>
+            <methods>
+                <mbizUpgradePlugin translate="title" module="microbiz_core">
+                    <title>Upgrade MicroBiz Connector Plugin</title>
+                    <method>mbizUpgradeConnPlugin</method>
+                    <acl>extendedmbizcore/mbizUpgradePlugin</acl>
+                </mbizUpgradePlugin>
+            </methods>
+            <methods>
+                <mbizUpgradeAvailable translate="title" module="microbiz_core">
+                    <title>Upgrade Available Notification</title>
+                    <method>mbizUpgradeNotification</method>
+                    <acl>extendedmbizcore/mbizUpgradeAvailable</acl>
+                </mbizUpgradeAvailable>
+            </methods>
+		</coremicrobizinstall>
+            </resources>		
+	</api>
+</config>

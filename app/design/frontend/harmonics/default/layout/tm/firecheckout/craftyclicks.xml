@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <reference name="head">
+            <action method="addJs"><script>craftyclicks/crafty_postcode.class.js</script></action>
+            <action method="addJs"><script>craftyclicks/craftyclicks_onepagecheckout.js</script></action>
+            <block type="page/html" name="craftyclicks_config" template="craftyclicks/common_config.phtml"/>
+        </reference>
+    </firecheckout_index_index>
+</layout>

@@ -1,0 +1,29 @@
+<?php
+/**
+ * HTML5 Template - Header Basket
+ */
+?>
+<div class="mini-basket">
+	<div class="mini-basket-inner">
+		<a href="<?php echo $this->getUrl( 'checkout/cart' )?>" title="My Basket" class="bag">Shopping Basket</a>
+		<div class="basket-details">
+			<?php
+				$_cartQty = (int)$this->helper( 'checkout/cart' )->getSummaryCount();
+				if ( $_cartQty > 0 ) {
+					if ( $_cartQty == 1 ) {
+						echo $this->__( '<a href="%s">1 Item</a>', $this->getUrl( 'checkout/cart' ) );
+					} else {
+						echo $this->__( '<a href="%s">%s Items</a>', $this->getUrl( 'checkout/cart' ), $_cartQty );
+					}
+				} else {
+					echo $this->__( 'Basket Empty' );
+				}
+			?>
+			<?php
+				$total = $this->helper( 'checkout/cart' )->getQuote()->getGrandTotal();
+				$total = $this->helper( 'checkout' )->formatPrice( $total );
+				echo $this->__( ' - ' ), $total;
+			?>
+		</div>
+	</div>
+</div>

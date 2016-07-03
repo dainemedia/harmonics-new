@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Microbiz_Connector>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Microbiz_Connector>
+    </modules>
+</config> 

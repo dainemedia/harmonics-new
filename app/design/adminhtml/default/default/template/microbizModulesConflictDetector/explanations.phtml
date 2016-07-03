@@ -1,0 +1,9 @@
+<div class="box box-right">
+    <b><?php echo $this->__('Rewrites Explanations:') ?></b>
+    <ul class="note-list">
+        <li><span style="color:<?php echo $this->getNoConflictColor() ?>"><?php echo $this->__('Green class name') ?></span> <?php echo $this->__('means that this class is currently used instead of initial class.') ?></li>
+        <li><span style="color:<?php echo $this->getConflictResolvedColor() ?>"><?php echo $this->__('Gray class name') ?></span> <?php echo $this->__('means that currently used class (\'green one\') extends this class.') ?></li>
+        <li><span style="color:<?php echo $this->getConflictColor() ?>"><?php echo $this->__('Red class name') ?></span> <?php echo $this->__('means that probably there is conflict, initial class has been overwritten by this class, but this class is not used. You should check if this class doesn\'t contain any important methods or changes, which should be used.') ?></li>
+    </ul>
+</div>
+<div class="clear"></div>

@@ -1,0 +1,514 @@
+<?php
+//version 108
+$isSecure = Mage::app()->getStore()->isCurrentlySecure();
+$magentoBaseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, $isSecure);
+$magentoCurrencyCode = Mage::app()->getStore()->getCurrentCurrencyCode();
+$magentoCurrentStoreId = Mage::app()->getStore()->getStoreId();
+$mbizStoreId = Mage::getModel('Microbiz_Connector_Model_Observer')->getDefaulrStoreIdFromMbiz($magentoCurrentStoreId);
+$mbizStoreCurrencyCode = Mage::helper('microbiz_connector')->getMbizStoreCurrency($mbizStoreId);
+if(Mage::getStoreConfig('connector/settings/giftcardpayment') && $magentoCurrencyCode == $mbizStoreCurrencyCode) {
+
+?>
+    <div class="mbizGiftCardBlock" style="display: none;">
+<?php
+    $cart_qty = (int) Mage::getModel('checkout/cart')->getQuote()->getItemsQty();
+    if($cart_qty==0 || $cart_qty=='')
+    {
+        Mage::getSingleton('checkout/session')->unsMultiData();
+        Mage::getSingleton('core/session')->unsCreditData();
+        Mage::getSingleton('checkout/session')->unsCreditData();
+        Mage::getSingleton('checkout/session')->unsCreditFinalData();
+        Mage::getSingleton('checkout/session')->unsCreditDiscountData();
+        Mage::getSingleton('checkout/session')->unsGiftBuyData();
+    }
+    ?>
+    <?php
+    //Mage::getSingleton('checkout/session')->unsCreditData();
+    //Mage::getSingleton('checkout/session')->unsCreditFinalData();
+    $creditData = Mage::getSingleton('checkout/session')->getCreditData();
+    $arrCreditData = unserialize($creditData);
+    $isCredit = 0;
+    $creditNo = 0;
+    $creditAmt = 0;
+    if(count($arrCreditData>0))
+    {
+        foreach($arrCreditData as $key=>$data)
+        {
+            if($data['credit_type']==2)
+            {
+                $isCredit = 1;
+                $creditNo = $data['credit_no'];
+                $creditAmt = $data['credit_amt'];
+                $creditPin = $data['credit_pin'];
+            }
+        }
+    }
+    ?>
+    <?php
+    if($isCredit==1)
+    {
+        $actionUrl = $this->getUrl('connector/index/mbizUpdateDiscountAmount',array('_secure'=>true));
+    }
+    else
+    {
+        $actionUrl = $this->getUrl('connector/index/mbizValidateGiftCard',array('_secure'=>true));
+    }
+    ?>
+    <div class="cart">
+        <form id="discount-giftcard-form" postUrl="<?php echo $actionUrl ?>" method="post" autocomplete="off">
+            <input type="hidden" class="base_url" value="<?php echo $magentoBaseUrl; ?>" />
+            <div class="discount">
+                <h2 class="pay-with"><?php echo $this->__('Pay with Gift Card') ?></h2>
+                <h2 class="apply-with" style="display: none;"><?php echo $this->__('Apply Gift Card') ?></h2>
+                <div class="mbizvalidate_info" style="display:none;">
+                    <?php
+                    $creditData = Mage::getSingleton('checkout/session')->getCreditData();
+                    $arrCreditData = unserialize($creditData);
+                    if(count($arrCreditData>0))
+                    {
+                        foreach($arrCreditData as $key=>$data)
+                        {
+                            if($data['credit_type']==1)
+                            {
+                                $isCredit = 1;
+                                $creditNo = $data['credit_no'];
+                                $creditAmt = $data['credit_amt'];
+                            }
+                        }
+                    }
+                    ?>
+
+                </div>
+                <div class="load-cancel-gift-img">
+                    <img src="<?php echo Mage::getBaseUrl('skin').'adminhtml/default/default/images/ajax-loader-tr.gif'?>"
+                         alt="NOT FOUND" style="display:none;" width="20px" class="mbiz_cancelgift_load_img"/>
+                </div>
+                <div class="mbizvalidateblock">
+                    <label for="gift_no"><?php echo $this->__('Enter your gift card no.') ?></label>
+                    <input type="hidden" name="remove" id="remove-coupone" value="0" />
+                    <div class="input-box">
+                        <input type="text" placeholder="Enter Gift Card Number" autocomplete="off" class="gift_no" value="" />
+                    </div>
+
+                    <label for="gift_pin"><?php echo $this->__('Enter your gift card pin.') ?></label>
+                    <div class="input-box">
+                        <input type="password" autocomplete="off" placeholder="Enter Pin" class="gift_pin" value="" />
+                    </div>
+                    <div class="buttons-set">
+                        <button type="button" title="<?php echo $this->__('Validate Gift Card') ?>" class="mbizgiftcard_validate button"
+                                value="<?php echo $this->__('Validate Gift Card') ?>" >
+                            <span><span><?php echo $this->__('Validate Gift Card') ?></span></span>
+                        </button>
+                    </div>
+                    <img src="<?php echo Mage::getBaseUrl('skin').'adminhtml/default/default/images/ajax-loader-tr.gif'?>"
+                         alt="NOT FOUND" style="display:none;" width="20px" class="mbiz_validategift_load_img"/>
+                </div>
+                <div class="mbizapplyblock" style="display: none;">
+                    <?php
+                        $quote = Mage::getModel('checkout/cart')->getQuote();
+                        $cartTotal = $quote->getGrandTotal();
+                    ?>
+
+                    <label for="credit_amt"><?php echo $this->__('Amount.') ?></label>
+                    <div class="input-box">
+                        <input class="input-text" id="credit_amt" name="credit_amt" value="<?php echo $amount ?>" class="required-entry validate-num"/>
+                        <input type="hidden" id="credit_no" value="<?php echo $creditNo ?>" />
+                        <input type="hidden" id="credit_type" value="2" />
+                        <input type="hidden" id="current_bal" value="<?php echo $creditAmt; ?>" />
+                        <input type="hidden" id="credit_pin" value="<?php echo $creditPin;?>" />
+                        <input type="hidden" class="cart_total" value="<?php echo $cartTotal; ?>" />
+                    </div>
+                    <div class="buttons-set">
+                        <button type="button" title="<?php echo $this->__('Ok') ?>" class="mbizgiftcard_apply button"
+                                value="<?php echo $this->__('Ok') ?>" >
+                            <span><span><?php echo $this->__('Ok') ?></span></span>
+                        </button>
+                    </div>
+                    <img src="<?php echo Mage::getBaseUrl('skin').'adminhtml/default/default/images/ajax-loader-tr.gif'?>"
+                         alt="NOT FOUND" style="display:none;" width="20px" class="mbiz_applygift_load_img"/>
+                </div>
+                <div class="mbizgifthistoryblock">
+                    <div class="mbizgifthistoryblock_info">
+                    <?php
+                    $quote = Mage::getModel('checkout/cart')->getQuote();
+                    $quoteCreditDiscountData = $quote->getCreditDiscountData();
+                    $quoteCreditDiscountData = unserialize($quoteCreditDiscountData);
+                    if($quote->getIsMultiShipping())
+                    {
+                        $quoteCreditDiscountData = Mage::getModel('checkout/session')->getCreditDiscountData();
+                        $quoteCreditDiscountData = unserialize($quoteCreditDiscountData);
+                    ?>
+                     <input type="hidden" class="is_multiship" value="1" />
+                    <?php
+                    }else{
+                        $isShippable=0;
+                        $quote = Mage::getModel('checkout/session')->getQuote();
+                        $Items = $quote->getAllItems();
+                        foreach ($Items as $item)
+                        {
+                            $isVirtual = $item->getIsVirtual();
+                            if(!$isVirtual)
+                            {
+                                $isShippable=1;
+                            }
+
+                            // Do something
+                        }
+                    ?>
+                        <input type="hidden" class="is_multiship" value="0" />
+                        <input type="hidden" class="is_shippable" value="<?php echo $isShippable;?>" />
+                    <?php
+                    }
+                    if(count($quoteCreditDiscountData)>0)
+                    {
+                        ?>
+                        <br/>
+                        <?php
+                        if(is_array($quoteCreditDiscountData))
+                        {
+
+                            foreach($quoteCreditDiscountData as $data)
+                            {
+                                if($data['credit_type']==2){
+                                    ?>
+                                    <p id="history_<?php echo $data['credit_no']; ?>">Gift Card (<?php echo $data['credit_no']; ?>) - Amount <?php echo $this->helper('checkout')->formatPrice(-$data['credit_amt']); ?>
+                                        <a class="mbizremovegiftcard btn-remove btn-remove2" remove_url="connector/index/mbizRemoveCreditPost/id/<?php echo $data['credit_no']; ?>" href="javascript:void(1)"> Remove</a></p>
+                                <?php
+                                }
+
+                            }
+
+                        }
+                        ?>
+
+
+
+                    <?php
+                    }
+                    ?>
+                        <img src="<?php echo Mage::getBaseUrl('skin').'adminhtml/default/default/images/ajax-loader-tr.gif'?>"
+                             alt="NOT FOUND" style="display:none;" width="20px" class="mbiz_removegift_load_img"/>
+                    </div>
+                </div>
+
+
+            </div>
+            <input type="hidden" class="current_store_currency_symbol" value="<?php echo Mage::app()->getLocale()->currency(Mage::app()->getStore()->getCurrentCurrencyCode())->getSymbol(); ?> " />
+        </form>
+    </div>
+    </div>
+<?php } ?>
+
+<script type="text/javascript">
+    /*
+    jQuery(document).ready(function(){
+
+        jQuery('#mbiz_gift_payment').live('click',function($this){
+
+            if(jQuery(this).attr('checked'))
+            {
+                jQuery('.mbizGiftCardBlock').show();
+            }
+            else
+            {
+                jQuery('.mbizGiftCardBlock').hide();
+                jQuery('.mbizvalidate_info').html('');
+                jQuery('.gift_no').val('');
+                jQuery('.gift_pin').val('');
+                jQuery('#credit_amt').val('');
+                jQuery('#credit_no').val('');
+                jQuery('#current_bal').val('');
+                jQuery('#credit_pin').val('');
+            }
+        });
+
+        jQuery('.mbizgiftcard_validate').live('click',function($this){
+            //jQuery('.mbizgiftcard_validate').hide();
+            var postUrl = jQuery('.base_url').val();
+            postUrl = postUrl+'connector/index/mbizValidateGiftCard';
+            var gcdNo = jQuery('.gift_no').val();
+            if(gcdNo!='' || gcdNo!=0)
+            {
+                var gcdPin = jQuery('.gift_pin').val();
+                var isPayment = 1;
+
+                var data = {gift_no:gcdNo,gift_pin:gcdPin,is_payment:isPayment};
+                console.log(data);
+                jQuery('.mbizgiftcard_validate').hide();
+                jQuery('.mbiz_validategift_load_img').show();
+                jQuery.ajax({
+                    url: postUrl,
+                    type: "POST",
+                    dataType: "json",
+                    data: data,
+                    success: function(data)
+                    {
+                        console.log(data);
+                        var status = data.status;
+                        if(status=='SUCCESS')
+                        {
+                            alert(data.message);
+                            var availableAmt = data.available_amt;
+                            jQuery('.mbizvalidate_info').html('');
+                            jQuery('.mbizvalidate_info').append('<p style="font-size: 10px;">***'+gcdNo+' Current Balance is '+
+                                availableAmt+'<a class="mbizcancelgiftcard" href="javascript:void(1)" cancel_url="connector/index/mbizCancelCreditPost/id/'+gcdNo+'" >Cancel</a> </p>');
+                            jQuery('.mbizvalidate_info').show();
+                            jQuery('.mbizvalidateblock').hide();
+                            var cartTotal = jQuery('.cart_total').val();
+                            if(cartTotal>=availableAmt)
+                            {
+                                var amount = availableAmt;
+                            }
+                            else
+                            {
+                                var amount = cartTotal;
+                            }
+                            //alert(amount+'$$'+cartTotal+'$$'+availableAmt);
+                            jQuery('.mbizgiftcard_validate').show();
+                            jQuery('.mbiz_validategift_load_img').hide();
+                            jQuery('#credit_amt').val(amount);
+                            jQuery('#credit_no').val(gcdNo);
+                            jQuery('#credit_pin').val(gcdPin);
+                            jQuery('#current_bal').val(availableAmt);
+                            jQuery('.mbizapplyblock').show();
+                        }
+                        else
+                        {
+                            alert(data.message);
+                            jQuery('.mbizgiftcard_validate').show();
+                            jQuery('.mbiz_validategift_load_img').hide();
+                        }
+                        jQuery('.mbizgiftcard_validate').die('click');
+                    },
+                    error: function(e)
+                    {
+                        alert("error Occured"+ e.message)
+                        jQuery('.mbizgiftcard_validate').show();
+                        jQuery('.mbiz_validategift_load_img').hide();
+                        jQuery('.mbizgiftcard_validate').die('click');
+                    }
+                });
+            }
+            else {
+                alert('Please enter gift card number.')
+                jQuery('.gift_no').focus();
+            }
+        });
+
+        jQuery(".mbizgiftcard_apply").live('click',function($this){
+            var applyAmt = jQuery('#credit_amt').val();
+            var cartTotal = jQuery('#cart_total').val();
+            var creditNo = jQuery('#credit_no').val();
+            var currentBal = jQuery('#current_bal').val();
+            var creditPin = jQuery('#credit_pin').val();
+            var baseUrl = jQuery('.base_url').val();
+            var creditType = jQuery('#credit_type').val();
+            var applyUrl = baseUrl+'connector/index/mbizUpdateDiscountAmount'
+            var data = {credit_no:creditNo,credit_type:creditType,credit_amt:applyAmt,current_bal:currentBal,credit_pin:creditPin,is_payment:1}
+            if(applyAmt>0)
+            {
+               console.log(data)
+                jQuery('.mbizgiftcard_apply').hide();
+                jQuery('.mbiz_applygift_load_img').show();
+                jQuery.ajax({
+                    url: applyUrl,
+                    type: "POST",
+                    dataType: "json",
+                    data: data,
+                    success: function(data)
+                    {
+                        console.log(data);
+                        alert(data.message);
+                        if(data.status=='SUCCESS')
+                        {
+
+                            jQuery('.mbizgiftcard_apply').show();
+                            jQuery('.mbizgifthistoryblock_info').append('<p id="history_'+creditNo+'">Gift Card ('+creditNo+') - Amount '+applyAmt
+                                +'<a href="javascript:void(1)" class="mbizremovegiftcard" remove_url="connector/index/mbizRemoveCreditPost/id/'+creditNo+'" >Remove</p');
+                            jQuery('.mbizapplyblock').hide();
+                            jQuery('.mbizvalidateblock').show();
+                            jQuery('.mbizvalidate_info').html('')
+                            jQuery('.mbizvalidate_info').hide();
+                            jQuery('.gift_no').val('');
+                            jQuery('.gift_pin').val('');
+                            jQuery('#credit_amt').val('');
+                            jQuery('#credit_no').val('');
+                            jQuery('#current_bal').val('');
+                            jQuery('#credit_pin').val('');
+                            var isMultiship = jQuery('.is_multiship').val();
+                            if(isMultiship==1)
+                            {
+                                //window.location.href = jQuery('#connector_multishipping_shipping').attr('href');
+                                jQuery.ajax({
+                                    url: baseUrl+'connector/index/getPaymentMethodsList',
+                                    type:"POST",
+                                    success : function(data)
+                                    {
+                                        if(data.status=='SUCCESS')
+                                        {
+                                            console.log(data);
+                                            console.log(data.methods);
+                                            jQuery('.sp-methods').html(data.methods);
+                                        }
+                                        else {
+                                            alert("error Occurred Unable to Reload Payments");
+                                        }
+                                    },
+                                    error: function(e)
+                                    {
+                                        alert("error Occurred"+ e.message)
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                shippingMethod.save();
+                            }
+                            jQuery('.mbiz_applygift_load_img').hide();
+                        }
+                        else {
+                            alert(data.message);
+                            jQuery('.mbizgiftcard_apply').show();
+                            jQuery('.mbiz_applygift_load_img').hide();
+
+                        }
+                        jQuery('.mbizgiftcard_apply').die('click');
+
+                    },
+                    error: function(e)
+                    {
+                        alert("error Occured "+ e.message);
+                        jQuery('.mbizgiftcard_apply').show();
+                        jQuery('.mbiz_applygift_load_img').hide();
+                        jQuery('.mbizgiftcard_apply').die('click');
+                    }
+                });
+            }
+            else{
+                alert("Please enter a Valid Amount to Redeem GiftCard.")
+            }
+        });
+
+        jQuery(".mbizcancelgiftcard").live('click',function($this){
+            var postUrl = jQuery(".mbizcancelgiftcard").attr('cancel_url');
+
+            var newPostUrl = postUrl.split('/id/')
+            var creditId = newPostUrl[1];
+            var baseUrl = jQuery(".base_url").val();
+            var cancelUrl = baseUrl+newPostUrl[0];
+
+            if(cancelUrl)
+            {
+                jQuery('.mbizcancelgiftcard').hide();
+                jQuery('.mbiz_cancelgift_load_img').show();
+                jQuery.ajax({
+                    url: cancelUrl+"?id="+creditId+"&is_payment=1",
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data)
+                    {
+                        if(data.status=='SUCCESS')
+                        {
+                            alert(data.message);
+
+                            jQuery('.mbiz_cancelgift_load_img').hide();
+                            jQuery('.mbizapplyblock').hide();
+                            jQuery('.mbizvalidateblock').show();
+                            jQuery('.mbizvalidate_info').html('')
+                            jQuery('.mbizvalidate_info').hide();
+                            jQuery('.gift_no').val('');
+                            jQuery('.gift_pin').val('');
+                            jQuery('#credit_amt').val('');
+                            jQuery('#credit_no').val('');
+                            jQuery('#current_bal').val('');
+                            jQuery('#credit_pin').val('');
+                        }
+                        else {
+                            jQuery('.mbizcancelgiftcard').show();
+                            jQuery('.mbiz_cancelgift_load_img').hide();
+                        }
+                        jQuery('.mbizcancelgiftcard').die('click');
+
+                    },
+                    error: function(e)
+                    {
+                        alert("error Occured"+ e.message)
+                        jQuery('.mbizcancelgiftcard').show();
+                        jQuery('.mbiz_cancelgift_load_img').hide();
+                        jQuery('.mbizcancelgiftcard').die('click');
+                    }
+                })
+            }
+
+        });
+
+        jQuery(".mbizremovegiftcard").live('click',function(){
+            var removeUrl = jQuery(".mbizremovegiftcard").attr('remove_url');
+            removeUrl =  removeUrl.split('/id/');
+            var baseUrl = jQuery('.base_url').val();
+            var postUrl = baseUrl+removeUrl[0]+'?id='+removeUrl[1]+'&is_payment=1';
+            var creditId = removeUrl[1];
+            jQuery('.mbizremovegiftcard').hide();
+            jQuery('.mbiz_removegift_load_img').show()
+            jQuery.ajax({
+                url: postUrl,
+                type: "GET",
+                dataType: "json",
+                success: function(data)
+                {
+                    alert(data.message)
+                    if(data.status=='SUCCESS')
+                    {
+                        jQuery('#history_'+creditId).detach();
+
+                        var isMultiship = jQuery('.is_multiship').val();
+                        if(isMultiship==1)
+                        {
+                            //window.location.href = jQuery('#connector_multishipping_shipping').attr('href');
+                            jQuery.ajax({
+                                url: baseUrl+'connector/index/getPaymentMethodsList',
+                                type:"POST",
+                                success : function(data)
+                                {
+                                    if(data.status=='SUCCESS')
+                                    {
+                                        console.log(data);
+                                        console.log(data.methods);
+                                        jQuery('.sp-methods').html(data.methods);
+                                    }
+                                    else {
+                                        alert("error Occurred Unable to Reload Payments");
+                                    }
+                                },
+                                error: function(e)
+                                {
+                                    alert("error Occurred"+ e.message)
+                                }
+                            });
+                        }
+                        else
+                        {
+                            shippingMethod.save();
+                        }
+                        jQuery('.mbiz_removegift_load_img').hide();
+                    }
+                    else {
+                        alert(data.messsage);
+
+                        jQuery('.mbizremovegiftcard').show();
+                        jQuery('.mbiz_removegift_load_img').hide()
+                    }
+                    jQuery('.mbizremovegiftcard').die('click');
+
+                },
+                error: function(e)
+                {
+                    alert("error Occured"+e);
+                    jQuery('.mbizremovegiftcard').show();
+                    jQuery('.mbiz_removegift_load_img').hide()
+                    jQuery('.mbizremovegiftcard').die('click');
+                }
+            });
+        });
+    });*/
+</script>

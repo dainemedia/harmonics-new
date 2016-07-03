@@ -1,0 +1,173 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php
+/**
+ * Product list template
+ *
+ * @see Mage_Catalog_Block_Product_List
+ */
+?>
+<?php
+    $products = $this->getLoadedProductCollection();
+    $_helper = $this->helper('catalog/output');
+?>
+<?php if( ! $products->count()): ?>
+    <p class="note-msg"><?php echo $this->__('There are no products matching the selection.') ?></p>
+<?php else: ?>
+    <?php echo $this->getToolbarHtml() ?>
+    <?php if($this->getMode() != 'grid') { ?>
+        <?php foreach ($products as $product) { ?>
+            <div class="row list-view products-list" itemscope itemtype="http://schema.org/Product">
+                <div class="col-md-4 list-product">
+        		    <?php $productNameStripped = $this->stripTags($product->getName(), null, true); ?>
+                    <?php // Product Image ?>
+                    <a href="<?php echo $product->getProductUrl() ?>" title="<?php echo $productNameStripped ?>" class="product-image">
+                    	<?php if ( $product->getPrice() >= 149 ) { ?>
+        					<div class="free-delivery">&nbsp;</div>
+        					<div class="free-headphones">&nbsp;</div>
+        				<?php } ?>
+                    	<img itemprop="image" src="<?php echo $this->helper('catalog/image')->init($product, 'small_image')->resize(600); ?>" alt="<?php echo $productNameStripped ?>" />
+                    </a>
+                </div>
+                <div class="col-md-8 list-product">
+                    <?php // Product description ?>
+                    <div class="product-shop">
+                        <h2 class="product-name"><a href="<?php echo $product->getProductUrl() ?>" title="<?php echo $productNameStripped; ?>"><span itemprop="name"><?php echo $_helper->productAttribute($product, $product->getName() , 'name'); ?></span></a></h2>
+                        <p class="listing availability">
+                        <?php    
+                            $customStockStatus = Mage::helper('customstockstatus')->getListStatus($product->getId());
+                            if ( ! empty($customStockStatus))
+                            {
+                                echo $customStockStatus;
+                            }
+                        ?>
+                        </p>
+                        <div class="desc std">
+                            <?php echo $_helper->productAttribute($product, $product->getShortDescription(), 'short_description') ?>
+                            <a href="<?php echo $product->getProductUrl() ?>" title="<?php echo $productNameStripped ?>" class="link-learn"><?php echo $this->__('Learn More') ?></a>
+                        </div>
+                        <div class="utility">
+                        	<div class="offers" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+        	                    <span itemprop="price"><?php echo $this->getPriceHtml($product, true) ?></span>
+        	        			<?php
+        	        				$chars = array( '™' => '', '®' => '', ' ' => '%20' );
+        							$titleReplace = array( '™' => '&trade;', '®' => '$reg;' );
+        	        			?>
+        	        			<ul class="social">
+        	        				<li><a class="facebook" href="http://www.facebook.com/sharer.php?u=<?php echo urlencode($product->getProductUrl()); ?>" title="Share on Facebook">&nbsp;</a></li>
+        	        				<li><a class="twitter" href="http://twitter.com/share?text=<?php echo urlencode(strtr( $product->getName(), $chars )); ?>&amp;url=<?php echo urlencode($product->getProductUrl()); ?>" title="Share on Twitter">&nbsp;</a></li>
+        	        				<li><a class="google-plus" href="https://plus.google.com/share?url=<?php echo urlencode($product->getProductUrl()); ?>" title="Share on Google+">&nbsp;</a></li>
+        	        				<li><a class="pinterest" href="http://pinterest.com/pin/create/button/?url=<?php echo urlencode($product->getProductUrl()); ?>&amp;media=<?php echo urlencode($product->getImageUrl()); ?>&amp;description=<?php echo urlencode(strtr( $product->getName(), $chars )); ?>" title="Share on Pinterest">&nbsp;</a></li>
+        	        			</ul>
+        	                    <?php if($product->isSaleable()): ?>
+        	                        <button type="button" title="<?php echo $this->__('Add to Basket') ?>" class="button btn-cart add-to-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($product) ?>')"><?php echo $this->__('Add to Basket') ?></button>
+        	                    <?php else: ?>
+        	                        <p class="availability out-of-stock"><link itemprop="availability" href="http://schema.org/OutOfStock"><?php echo $this->__('Out of stock') ?></p>
+        	                    <?php endif; ?>
+                            </div>
+                            <ul class="add-to-links">
+                                <?php if ($this->helper('wishlist')->isAllow()) : ?>
+                                    <li><a href="<?php echo $this->helper('wishlist')->getAddUrl($product) ?>" class="link-wishlist" title="<?php echo $this->__('Add to Wishlist') ?>"><?php echo $this->__('Add to Wishlist') ?></a></li>
+                                <?php endif; ?>
+                                <?php if($_compareUrl=$this->getAddToCompareUrl($product)): ?>
+                                    <li><a href="<?php echo $_compareUrl ?>" class="link-compare" title="<?php echo $this->__('Add to Compare') ?>"><?php echo $this->__('Add to Compare') ?></a></li>
+                                <?php endif; ?>
+                            </ul>
+                            <?php if($product->getRatingSummary()): ?>
+                            	<?php echo $this->getReviewsSummaryHtml($product) ?>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php } ?>
+    <?php } else { ?>
+        <?php $i = 0; foreach ($products as $product) {
+            if ($i % 3 == 0)
+            {
+                echo '<div class="row grid-view products-grid">';
+            }
+
+        ?>
+        <?php $productNameStripped = $this->stripTags($product->getName(), null, true); ?>
+            <div class="col-md-4 product" itemscope itemtype="http://schema.org/Product">
+                <h2 class="product-name">
+	                <a href="<?php echo $product->getProductUrl() ?>" title="<?php echo $this->stripTags($product->getName(), null, true) ?>">
+	                	<span itemprop="name"><?php echo $_helper->productAttribute($product, $product->getName(), 'name') ?></span>
+	                </a>
+                </h2>
+                <a href="<?php echo $product->getProductUrl() ?>" title="<?php echo $productNameStripped ?>" class="product-image">
+					<?php if ( $product->getPrice() >= 149 ) { ?>
+						<div class="free-delivery">&nbsp;</div>
+						<div class="free-headphones">&nbsp;</div>
+					<?php } ?>
+                	<img itemprop="image" src="<?php echo $this->helper('catalog/image')->init($product, 'small_image')->resize(600); ?>" alt="<?php echo $productNameStripped ?>" />
+                </a>
+                <div class="offers" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+	                <span itemprop="price"><?php echo $this->getPriceHtml($product, true) ?></span>
+                    <ul class="add-to-links">
+                        <?php if ($this->helper('wishlist')->isAllow()) : ?>
+                            <li><a href="<?php echo $this->helper('wishlist')->getAddUrl($product) ?>" class="link-wishlist" title="<?php echo $this->__('Add to Wishlist') ?>"><?php echo $this->__('Add to Wishlist') ?></a></li>
+                        <?php endif; ?>
+                        <?php if($_compareUrl=$this->getAddToCompareUrl($product)): ?>
+                            <li><a href="<?php echo $_compareUrl ?>" class="link-compare" title="<?php echo $this->__('Add to Compare') ?>"><?php echo $this->__('Add to Compare') ?></a></li>
+                        <?php endif; ?>
+                    </ul>                    
+                    <div class="actions">
+	        			<?php
+	        				$chars = array( '™' => '', '®' => '', ' ' => '%20' );
+							$titleReplace = array( '™' => '&trade;', '®' => '$reg;' );
+	        			?>
+	                    <?php if($product->isSaleable()): ?>
+	                        <button type="button" title="<?php echo $this->__('Add to Basket') ?>" class="button btn-cart add-to-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($product) ?>')"><?php echo $this->__('Add to Basket') ?></button>
+	                    <?php else: ?>
+	                        <p class="availability out-of-stock"><link itemprop="availability" href="http://schema.org/OutOfStock"><?php echo $this->__('Out of stock') ?></p>
+	                    <?php endif; ?>
+
+	                </div>
+				</div>
+                <?php if($product->getRatingSummary()): ?>
+                	<?php echo $this->getReviewsSummaryHtml($product) ?>
+                <?php endif; ?>
+            </div>
+        <?php $i++;
+
+            if ($i % 3 == 0)
+            {
+                echo '</div>';
+                echo '<hr style="margin-right: 15px;">';
+            }
+        }
+
+        if ($i % 3 != 0)
+        {
+            echo '</div>';
+        } ?>
+    <?php } ?>
+    <?php echo $this->getToolbarHtml() ?>
+</div>
+<?php endif; ?>

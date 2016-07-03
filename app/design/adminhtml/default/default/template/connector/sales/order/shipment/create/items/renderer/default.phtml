@@ -1,0 +1,215 @@
+<?php 
+//version 105
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     default_default
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */ ?>
+<script>
+jQuery(document).ready(function(){
+// for disable shipment quantiti fields
+jQuery('.shipment-qty').attr("disabled", "disabled");
+//for removing zero value entry
+jQuery('.shipment-qty').keyup(function() {
+   if (jQuery(this).val() === '0')
+   {
+      jQuery(this).val('');
+   }  
+  
+});
+
+
+//for preventing special character entrys
+jQuery(".shipment-qty").keydown(function(event) {
+        // Allow: backspace, delete, tab, escape, and enter
+        if ( event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 ||
+             // Allow: Ctrl+A
+            (event.keyCode == 65 && event.ctrlKey === true) ||
+             // Allow: home, end, left, right
+            (event.keyCode >= 35 && event.keyCode <= 39)) {
+                 // let it happen, don't do anything
+                 return;
+        }
+        else {
+            // Ensure that it is a number and stop the keypress
+            if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105 )) {
+                event.preventDefault();
+            }   
+        }
+    });
+//for disable input boxes correspond to the checkbox
+jQuery('.shipment-check').click(function() {
+var checkbox = jQuery(this).attr('rel');
+var checkid= jQuery(this).attr('id');
+var arrCheckId = checkid.split('checkbox');
+var itemId = '';
+jQuery(checkbox).attr('disabled',! this.checked);
+if(! this.checked) {
+jQuery(checkbox).val('');
+}
+});
+
+});
+</script>
+<?php $_item = $this->getItem()?>
+<?php $itemdata=$_item->getData();  ?>
+<tr class="border">
+    <td><?php echo $this->getColumnHtml($_item, 'name'); ?></td>
+    
+    <td><?php echo $this->getColumnHtml($_item, 'qty'); ?></td>
+
+    <td class="<?php if ($this->isShipmentRegular()): ?>last<?php endif; ?> a-center">
+        <?php if ($this->canShipPartiallyItem()): ?>
+            <input type="text" class="input-text validate-maxval-number" id="<?php  echo $_item->getOrderItemId(); ?>" name="shipment[items][<?php  echo $_item->getOrderItemId(); ?>]" max="<?php  echo $_item->getQty() * 1; ?>" value="<?php  echo $_item->getQty() * 1; ?>"  />
+			
+        <?php else: ?>
+            <input type="hidden" class="input-text" id="<?php  echo $_item->getOrderItemId(); ?>" name="shipment[items][<?php  echo $_item->getOrderItemId(); ?>]" value="<?php  echo $_item->getQty() * 1; ?>" />
+			<?php  echo $_item->getQty() * 1; ?>
+        <?php endif; ?>
+    </td>
+	<td>
+
+        <?php
+        $salOderModelInfo = Mage::getModel('saleorderheader/saleorderheader')->getCollection()->addFieldToFilter('order_id', $_item->getOrderId())->setOrder('id','asc')->getData();
+
+        if($salOderModelInfo[0]['order_id'] && $salOderModelInfo[0]['order_type'] != 4) {
+            $shipmentInfo = Mage::getModel('pickup/pickup')->getCollection()->addFieldToFilter('order_id', $_item->getOrderId())->setOrder('id','asc')->getData();
+            if($shipmentInfo) {
+                $defaultStoreId=$shipmentInfo[0]['store'];
+
+            }
+            else {
+                $response = Mage::getModel('Microbiz_Connector_Model_Observer')->getDefaulrStoreIdFromMbiz($_item->getStoreId());
+                $defaultStoreId = $response['store_id'];
+            }
+            if(is_null($defaultStoreId) || $defaultStoreId == 0) {
+                $response = Mage::getModel('Microbiz_Connector_Model_Observer')->getDefaulrStoreIdFromMbiz($_item->getStoreId());
+                $defaultStoreId = $response['store_id'];
+            }
+            $storemodel         = Mage::getModel('connector/storeinventorytotal_storeinventorytotal')->getCollection()->addFieldToFilter('store_id', $defaultStoreId)->getFirstItem();
+            if(!$storemodel) {
+                $apiInformation=Mage::helper('microbiz_connector')->getApiDetails();
+                $url    =$apiInformation['api_server']; // get microbiz server details fron configuration settings.
+                $url    =$url . '/index.php/api/store?id='.$defaultStoreId; // prepare url for the rest call
+                $api_user = $apiInformation['api_user'];
+                $api_key = $apiInformation['api_key'];
+                $method ='POST';
+                // headers and data (this is API dependent, some uses XML)
+                $headers=array(
+                    'Accept: application/json',
+                    'Content-Type: application/json',
+                    'X-MBIZPOS-USERNAME: '.$api_user,
+                    'X-MBIZPOS-PASSWORD: '.$api_key
+                );
+                $handle=curl_init();
+                curl_setopt($handle, CURLOPT_URL, $url);
+                curl_setopt($handle, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($handle, CURLOPT_SSL_VERIFYHOST, false);
+                curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, false);
+                $response=curl_exec($handle);
+                $code    =curl_getinfo($handle);
+                $storesInformation=json_decode($response, true);
+                foreach($storesInformation as $storeInformation) {
+                    $storemodel = Mage::getModel('connector/storeinventorytotal_storeinventorytotal')->getCollection()->addFieldToFilter('company_id', $storeInformation['company_id'])->addFieldToFilter('store_id', $storeInformation['store_id'])->getData();
+
+                    if (!count($storemodel)) {
+
+                        $storeInformation['instance_id']      = Mage::helper('microbiz_connector')->getAppInstanceId();
+                        Mage::getModel('connector/storeinventorytotal_storeinventorytotal')->setData($storeInformation)->save();
+                    }
+                }
+                echo '<div style="width:200px">'.$storeInformation['store_short_name'].'</div></td>';
+            } else {
+                echo '<div style="width:200px">'.$storemodel['store_short_name'].'</div></td>';
+            }
+
+
+        }
+        else {
+            $itemId = $_item->getOrderItemId();
+            $mbizOrderItemId = Mage::getModel('syncorderitems/syncorderitems')->getCollection()
+                ->addFieldToFilter('order_item_id',$itemId)->getFirstItem()->getData();
+            $productid = $mbizOrderItemId['product_id'];
+        if(!$productid) {
+            $productSKU = $_item->getsku();
+            $product_id = Mage::getModel("catalog/product")->getIdBySku($productSKU );
+
+            $productid = (!$product_id) ? $_item->getProductId() : $product_id;
+        }
+            $productInventory = Mage::getModel('connector/storeinventory_storeinventory')->getCollection()->addFieldToFilter('material_id', $productid);
+
+
+
+        ?>
+	<?php $idcount = 1; ?>
+	<?php foreach ($productInventory as $stock) //loop for getting products
+		{
+		$id = $stock->getStoreinventoryId();
+		// if ($productid == $stock->getMaterialId()) { ?>
+	<div style="width:200px">
+	<input type="checkbox" id="<?php echo $_item->getOrderItemId(); ?>checkbox<?php echo $stock->getStoreId(); ?>" class="shipment-check validate-one-required-by-name" name="shipment[itemscheck][<?php echo $_item->getOrderItemId(); ?>]" rel="#<?php echo $_item->getOrderItemId(); ?>-shipment-qty-<?php echo $stock->getStoreId().'-'.$stock->getStockType(); ?>" <?php if($stock->getStockType() == '3') echo "disabled"; ?> />
+							
+	<?php   
+			$storeinfoid        = $stock->getStoreId();
+			$storeinfocompanyid = $stock->getCompanyId();
+			$storemodel         = Mage::getModel('connector/storeinventorytotal_storeinventorytotal')->getCollection()->addFieldToFilter('company_id', $storeinfocompanyid)->addFieldToFilter('store_id', $storeinfoid)->getFirstItem();
+			echo $storemodel['store_short_name']; ?>(<?php echo $stock->getQuantity(); ?>)
+			<?php if($stock->getStockType() == '3') echo "<div style='color:red'>(Comitted)</div>"; ?> 
+			<input type="hidden" id="<?php echo $_item->getOrderItemId(); ?><?php echo $idcount; ?>"  value="<?php echo $stock->getQuantity(); ?>" />
+			<input type="hidden" class="store-id"  value="<?php echo $stock->getStoreId(); ?>" />
+	</div>
+	<?php
+			$idcount++;
+		// }
+	} ?>
+	<div class="checkboxdiv validation-advice" style="display:none"></div>
+									
+
+	</td>
+    <td>
+<?php $productStoreCount=1;
+    foreach ($productInventory as $stock) //loop for getting products
+    {
+        $id = $stock->getStoreinventoryId();
+        ?>
+   
+   <input type="text" class="shipment-qty required-entry validate-number" id="<?php echo $_item->getOrderItemId(); ?>-shipment-qty-<?php echo $stock->getStoreId().'-'.$stock->getStockType(); ?>" value="" rel="#<?php echo $_item->getOrderItemId(); ?>" a="<?php echo $stock->getStoreId(); ?>" name="shipment[storeitems][<?php echo $stock->getStoreId(); ?>-<?php echo $productid; ?>-<?php echo $stock->getCompanyId(); ?>]"/>
+   <span id="<?php echo $_item->getOrderItemId().$productStoreCount; ?><?php echo $stock->getStoreId(); ?>" style="display:none" class="validation-advice"></span> 
+
+ <?php
+        $productStoreCount ++;
+    }
+ ?>
+	<div id="<?php echo $_item->getOrderItemId(); ?>ship-result" class="validation-advice" style="display:none"></div>  
+	</td>
+
+    <?php if (!$this->canShipPartiallyItem()): ?>
+    <td class="a-center last">
+        <input type="hidden" name="shipment[items][<?php  echo $_item->getOrderItemId(); ?>]" value="0" />
+        <input type="checkbox" name="shipment[items][<?php  echo $_item->getOrderItemId(); ?>]" value="<?php  echo $_item->getQty() * 1; ?>" checked />
+    </td>
+    <?php endif; ?>
+    <?php
+    }
+    ?>
+</tr>

@@ -1,0 +1,233 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     default_default
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<script>
+jQuery(document).ready(function(){
+// for disable shipment quantiti fields
+jQuery('.shipment-qty').attr("disabled", "disabled");
+//for removing zero value entry
+jQuery('.shipment-qty').keyup(function() {
+   if (jQuery(this).val() === '0')
+   {
+      jQuery(this).val('');
+   }  
+  
+});
+//for validating checkbox group
+/*jQuery('.submit-button').submit(function(){
+//jQuery(".submit-button").attr("disabled", "disabled");
+var checkname=jQuery(".shipment-qty").attr('name');
+var count=0;
+var fcount=0;
+alert(checkname);
+  jQuery('input[name='+checkname+']').each(function(){
+       var valid=jQuery("[name="+checkname+"]:checked").length > 0;
+       if(valid==false){ 
+           fcount+=1;
+          }
+   });
+  if(fcount > 0) { 
+    jQuery(".checkboxdiv").html('select atleast one checkbox');
+    jQuery(".checkboxdiv").show();
+   return false;
+  }
+ else
+ { 
+//jQuery(".submit-button").removeAttr("disabled", "disabled"); 
+  jQuery(".checkboxdiv").hide();
+ }
+});*/
+
+//for preventing special character entrys
+jQuery(".shipment-qty").keydown(function(event) {
+        // Allow: backspace, delete, tab, escape, and enter
+        if ( event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 ||
+             // Allow: Ctrl+A
+            (event.keyCode == 65 && event.ctrlKey === true) ||
+             // Allow: home, end, left, right
+            (event.keyCode >= 35 && event.keyCode <= 39)) {
+                 // let it happen, don't do anything
+                 return;
+        }
+        else {
+            // Ensure that it is a number and stop the keypress
+            if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105 )) {
+                event.preventDefault();
+            }   
+        }
+    });
+//for disable input boxes correspond to the checkbox
+jQuery('.shipment-check').click(function() {
+var checkbox = jQuery(this).attr('rel');
+var checkid= jQuery(this).attr('id');
+var arrCheckId = checkid.split('checkbox');
+var itemId = arrCheckId[0];
+var incremId = arrCheckId[1];
+var qtyToShip = jQuery('#'+itemId).val();
+var storeQty = jQuery('#'+itemId+incremId).val();
+
+    if(qtyToShip<=storeQty)
+    {
+        jQuery(checkbox).val(qtyToShip);
+    }
+    else
+    {
+        jQuery(checkbox).val(storeQty);
+    }
+jQuery(checkbox).attr('disabled',! this.checked);
+
+
+});
+jQuery('.shipment-qty').live('blur',function(){
+  
+  var maxfiled = jQuery(this).attr('rel');
+  var sumof = 0;
+  //alert(maxfiled);
+
+       var qty = parseInt(jQuery(maxfiled).val());
+ var storeid = jQuery(this).attr('name');
+//alert(storeid);
+var qtyid=maxfiled+"1";
+var totalqty=parseInt(jQuery(qtyid).val());
+   var current=parseInt(jQuery(this).val());
+var storespan=qtyid+storeid;
+var storediv=maxfiled+"ship-result";
+var inputid=maxfiled+"shipment-qty"+storeid;
+
+//alert(inputid);
+if(current > totalqty )
+{
+jQuery(".submit-button").attr("disabled", "disabled");
+//jQuery('.submit-button').hide();
+jQuery(storespan).show();
+jQuery(storespan).html('quantity should be less than or equal to the total quantity of a store');
+//alert(inputid);
+setTimeout( function() { jQuery(window).focus(); jQuery(inputid).focus() }, 1 ); return false; 
+//jQuery(inputid).focus();
+}
+else
+{
+jQuery(storespan).hide();
+//jQuery('.submit-button').show();
+ 
+    
+   jQuery('input[rel='+maxfiled+']').each(function(){
+var isDisabled = jQuery(this).prop('disabled');
+   
+    if (isDisabled)
+    {
+        sumof += 0;
+    }
+else {
+       sumof += parseInt(jQuery(this).val());
+
+}
+    });
+  //alert(sumof);
+if( sumof==qty) { 
+jQuery(storediv).hide();
+jQuery(".submit-button").removeAttr("disabled", "disabled");
+//jQuery('.submit-button').show();
+} else { 
+jQuery(".submit-button").attr("disabled", "disabled");
+//jQuery('.submit-button').hide();
+jQuery(storediv).html('Shipping quantity from stores should be equal to the Ordered quantity'); 
+jQuery(storediv).show();
+}
+}
+});
+});
+</script>
+<?php $_item = $this->getItem() ?>
+<?php //print_r($_item->getData()); ?>
+<tr class="border">
+    <td><?php echo $this->getColumnHtml($_item, 'name') ?></td>
+    
+    <td><?php echo $this->getColumnHtml($_item, 'qty') ?></td>
+
+    <td class="<?php if ($this->isShipmentRegular()): ?>last<?php endif; ?> a-center">
+        <?php if ($this->canShipPartiallyItem()): ?>
+            <input type="text" class="input-text" id="<?php echo $_item->getOrderItemId() ?>" name="shipment[items][<?php echo $_item->getOrderItemId() ?>]" value="<?php echo $_item->getQty()*1 ?>"  />
+        <?php else: ?>
+            <?php echo $_item->getQty()*1 ?>
+        <?php endif; ?>
+    </td>
+<td>
+<?php $productid=$_item->getProductId(); ?>
+<?php $model=Mage::getModel('connector_bkp/stockinventory_stockinventory')->getCollection();
+?>  
+                 <?php //print_r($model); ?>
+<?php foreach ($model as $stock) //loop for getting products
+  {                   
+$id=$stock->getStockinventoryId(); 
+if($productid==Mage::getModel('connector_bkp/stockinventory_stockinventory')->load($id)->getMaterialId()) {
+?>
+<div style="width:200px"><input type="checkbox" id="<?php echo $_item->getOrderItemId() ?>checkbox<?php
+echo Mage::getModel('connector_bkp/stockinventory_stockinventory')->load($id)->getStoreId();
+?>" class="shipment-check validate-one-required-by-name" name="shipment[itemscheck][<?php echo $_item->getOrderItemId() ?>]"   rel="#<?php echo $_item->getOrderItemId() ?>shipment-qty<?php echo Mage::getModel('connector_bkp/stockinventory_stockinventory')->load($id)->getStoreId()?>" />
+                        
+<?php
+echo Mage::getModel('connector_bkp/stockinventory_stockinventory')->load($id)->getStoreId();
+?>(<?php echo Mage::getModel('connector_bkp/stockinventory_stockinventory')->load($id)->getQuantity(); ?>)
+ <input type="hidden" id="<?php echo $_item->getOrderItemId() ?>1"  value="<?php echo Mage::getModel('connector_bkp/stockinventory_stockinventory')->load($id)->getQuantity(); ?>" />
+<input type="hidden" class="store-id"  value="<?php echo Mage::getModel('connector_bkp/stockinventory_stockinventory')->load($id)->getStoreId() ?>" />
+</div>
+<?
+} }
+?>
+<div class="checkboxdiv" style="color:red"></div>
+                                
+
+</td>
+    <td>
+<?php foreach ($model as $stock) //loop for getting products
+  {                   
+$id=$stock->getStockinventoryId(); 
+if($productid==Mage::getModel('connector_bkp/stockinventory_stockinventory')->load($id)->getMaterialId()) {
+?>
+   <input type="text" class="shipment-qty required-entry validate-number" id="<?php echo $_item->getOrderItemId() ?>shipment-qty<?php echo Mage::getModel('connector_bkp/stockinventory_stockinventory')->load($id)->getStoreId()?>" value="" rel="#<?php echo $_item->getOrderItemId() ?>" name="shipment[storeitems][<?php echo Mage::getModel('connector_bkp/stockinventory_stockinventory')->load($id)->getStoreId()?>-<?php echo $productid ?>]"/>
+<span id="<?php echo $_item->getOrderItemId() ?>1<?php echo Mage::getModel('connector_bkp/stockinventory_stockinventory')->load($id)->getStoreId()?>" style="color:red"></span>
+
+ <?
+} }
+?> 
+     
+<?php  /*
+$model = Mage::getModel('catalog/product'); //getting product model
+ 
+$_product = $model->load($product_id);
+print_r($_product->getData());
+*/?>  
+<div id="<?php echo $_item->getOrderItemId() ?>ship-result" style="color:red"></div>  
+</td>
+
+    <?php if (!$this->canShipPartiallyItem()): ?>
+    <td class="a-center last">
+        <input type="hidden" name="shipment[items][<?php echo $_item->getOrderItemId() ?>]" value="0" />
+        <input type="checkbox" name="shipment[items][<?php echo $_item->getOrderItemId() ?>]" value="<?php echo $_item->getQty()*1 ?>" checked />
+    </td>
+    <?php endif; ?>
+</tr>

@@ -1,0 +1,165 @@
+<?php // Version 101 ?>
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td><h3 class="icon-head"><?php echo Mage::helper('microbiz_connector')->__('Sync Inforamtion') ?></h3>
+			<button style="float:right;" class="scalable" type="button" title="Back" onclick="javascript:history.go(-1);"><span><span><span>Back</span></span></span></button>	</td>
+	   </tr>
+    </table>
+</div>
+<?php
+$id = $this->getRequest()->getParam('id');
+$headerdatacollection = Mage::getModel('extendedmbizconnector/extendedmbizconnector')->getCollection()->addFieldToFilter('header_id', $id)->getFirstItem()->getData();
+
+?>
+<div class="grid entry-edit">
+<?php
+    $header_id = $id;
+    $apiInformation=Mage::helper('microbiz_connector')->getApiDetails();
+    $instanceId = $apiInformation['instance_id'];
+    $collection = array();
+     $collection[$instanceId][$header_id]['HeaderDetails'] = array(
+        'model' => $headerdatacollection['model_name'],
+        'obj_id' => $headerdatacollection['obj_id'],
+        'mbiz_obj_id' => $headerdatacollection['mbiz_obj_id'],
+        'mbiz_ref_obj_id' => $headerdatacollection['mbiz_ref_obj_id'],
+        'ref_obj_id' => $headerdatacollection['ref_obj_id'],
+        'obj_status' => $headerdatacollection['obj_status']
+    );
+    if ($headerdatacollection['associated_configurable_products']) {
+        $collection[$instanceId][$header_id]['HeaderDetails']['associated_configurable_products'] = unserialize($headerdatacollection['associated_configurable_products']);
+    }
+    if($headerdatacollection['model_name'] == 'Orders') {
+        $collection[$instanceId][$header_id]['ItemDetails'] = Mage::getModel('Microbiz_Connector_Model_Api')->getOrderinformation($headerdatacollection['obj_id']);
+    }
+    else {
+    $itemdatacollection = Mage::getModel('syncitems/syncitems')->getCollection()->addFieldToFilter('header_id', $header_id)->getData();
+    $modifieddata       = array();
+    foreach ($itemdatacollection as $itemdata) {
+        $attribute_name                = $itemdata['attribute_name'];
+        $attribute_value               = (unserialize($itemdata['attribute_value'])) ? unserialize($itemdata['attribute_value']) : $itemdata['attribute_value'];
+        $modifieddata[$attribute_name] = $attribute_value;
+    }
+
+    $collection[$instanceId][$header_id]['ItemDetails'] = $modifieddata;
+    }
+//print_r($collection);
+
+    $url = $apiInformation['api_server']; // get microbiz server details fron configuration settings.
+    $url = $url . '/index.php/api/syncDetails'; // prepare url for the rest call
+    $api_user = $apiInformation['api_user'];
+    $api_key = $apiInformation['api_key'];
+
+    $method ='POST';
+    // headers and data (this is API dependent, some uses XML)
+    $headers = array(
+        'Accept: application/json',
+        'Content-Type: application/json',
+        'X-MBIZPOS-USERNAME: '.$api_user,
+        'X-MBIZPOS-PASSWORD: '.$api_key
+    );
+
+    $handle = curl_init();		//curl request to create the product
+    curl_setopt($handle, CURLOPT_URL, $url);
+    curl_setopt($handle, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($handle, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($handle, CURLOPT_POST, true);
+    curl_setopt($handle, CURLOPT_POSTFIELDS, json_encode($collection));
+
+     $response = curl_exec($handle);	// send curl request to microbiz
+
+    $code = curl_getinfo($handle);
+
+    if($code['content_type'] != 'application/json' || $code['http_code'] != 200) {
+        $origData = Mage::getModel('extendedmbizconnector/extendedmbizconnector')->getCollection()->addFieldToFilter('header_id', $header_id)->getData();
+        $origData[0]['status']         = 'Failed';
+        $headerdatacollection['status']         = 'Failed';
+        $origData[0]['exception_desc'] = $response;
+        $headerdatacollection['exception_desc'] = $response;
+        Mage::getModel('extendedmbizconnector/extendedmbizconnector')->load($origData[0]['header_id'])->setData($origData[0])->save();
+
+        echo '<div class="error">'.$response.'</div>';
+    }
+    else {
+      Mage::getModel('Microbiz_Connector_Model_Api')->extendedmbizupdateApi($response);
+        $response=json_decode($response,true);
+       // print_r($response);
+        $headerdatacollection['status']         =$response[$header_id]['sync_status'];
+        $headerdatacollection['exception_desc'] = $response[$header_id]['exception_desc'];
+        echo "<h1>Response From Microbiz</h1>";
+        echo "Record Status:  ".$response[$header_id]['sync_status'];
+        echo "<br>";
+        echo "Magento Id:  ".$response[$header_id]['obj_id'];
+        echo "<br>";
+        echo "MicroBiz Id:  ".$response[$header_id]['mbiz_obj_id'];
+
+
+//print_r($response[$header_id]['debugInfo']['Errors']);
+        if(isset($response[$header_id]['debugInfo']['Errors']) && count($response[$header_id]['debugInfo']['Errors'])) {
+            echo "<div class='error'>".implode('\n',$response[$header_id]['debugInfo']['Errors'])."</div>";
+        }
+    }
+if($headerdatacollection['model_name'] == 'SaleOrder') {
+    $itemdatacollection = Mage::getModel('Microbiz_Connector_Model_Api')->getOrderinformation($headerdatacollection['obj_id']);
+    //echo "<pre>";
+    foreach($itemdatacollection as $key=>$itemData){
+        echo "<h2>".$key."</h2>";
+        echo "<table class='data box-left'>";
+        foreach($itemData as $itemkey=>$value) {
+            if(!is_array($value)) {
+                echo "<tr><td>".$itemkey."</td><td>".$value."</td></tr>";
+            }
+            else {
+                echo '<h2>'.$itemkey.'</h2>';
+                echo "<table border=1>";
+                foreach($value as $keyval=>$val) {
+
+                    echo "<tr><td>".$keyval."</td><td>".$val."</td></tr>";
+                }
+                echo "</table>";
+            }
+        }
+        echo "</table>";
+    }
+}
+else {
+    echo "<h2>Header Information</h2>";
+    echo "<table class='data box-left'>";
+    foreach($headerdatacollection as $key => $value) {
+        echo "<tr><td>".$key."</td><td>".$value."</td></tr>";
+    }
+    echo "</table>";
+    echo "<h2>Items Information</h2>";
+   // $itemdatacollection = Mage::getModel('syncitems/syncitems')->getCollection()->addFieldToFilter('header_id', $headerdatacollection['header_id'])->getData();
+    echo "<table class='data box-left'><thead><tr class='headings'><td>Attribute Label</td><td>Attribute Code</td><td>Attribute Value</td></tr></thead>";
+    foreach($itemdatacollection as $itemdata) {
+        $attribute_details = Mage::getSingleton("eav/config")->getAttribute('catalog_product', $itemdata['attribute_name']);
+        $label = ($attribute_details->getFrontendLabel()) ? $attribute_details->getFrontendLabel() : $itemdata['attribute_name'];
+        echo "<tr><td>".$label."</td><td>".$itemdata['attribute_name']."</td><td>".$itemdata['attribute_value']."</td></tr>";
+    }
+    echo "</table>";
+}
+
+echo "<h2>Request Information</h2>";
+echo "<table class='data box-left'>";
+foreach($code as $itemkey=>$value) {
+    if(!is_array($value)) {
+        echo "<tr><td>".$itemkey."</td><td>".$value."</td></tr>";
+    }
+    else {
+        echo '<h2>'.$itemkey.'</h2>';
+        echo "<table border=1>";
+        foreach($value as $keyval=>$val) {
+
+            echo "<tr><td>".$keyval."</td><td>".$val."</td></tr>";
+        }
+        echo "</table>";
+    }
+}
+echo "</table>";
+	?>
+        
+    
+</div>

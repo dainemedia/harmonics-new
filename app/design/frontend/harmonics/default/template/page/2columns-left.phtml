@@ -1,0 +1,45 @@
+<?php
+/**
+ * HTML5 Template - 2 Columns Left
+ */
+?>
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+		<?php echo $this->getChildHtml('head') ?>
+	</head>
+	<body<?php echo $this->getBodyClass()?' class="'.$this->getBodyClass().'"':'' ?>>
+		<?php echo $this->getChildHtml('after_body_start') ?>
+	    <?php echo $this->getChildHtml('header') ?>
+		<div class="container-fluid">
+			<div class="inner-wrapper">
+			    <?php echo $this->getChildHtml( 'global_notices' ); ?>
+	            <?php echo $this->getChildHtml( 'breadcrumbs' ); ?>
+	            <?php echo $this->getChildHtml( 'global_messages' ); ?>
+				<div class="row">
+	            	<aside class="col-md-3 sidebar"><?php echo $this->getChildHtml('left') ?></aside>
+					<div class="col-md-9">
+						<?php $moduleName = $this->getRequest()->getModuleName(); ?>
+		            	<?php if( $moduleName == 'cms' ) : ?>
+		            		<div class="row">
+		            			<h1><?php echo $this->getLayout()->getBlock( 'head' )->getTitle(); ?></h1>
+		            		</div>
+		            	<?php endif; ?>
+						<?php echo $this->getChildHtml( 'content' ) ?>
+	        		</div>
+				</div>
+				<div class="row subscribe">
+					<?php echo $this->getLayout()->createBlock( 'newsletter/subscribe' )->setTemplate( 'newsletter/subscribe.phtml' )->toHtml(); ?>
+				</div>
+			</div>
+		</div>
+		<?php echo $this->getAbsoluteFooter() ?>
+        <?php echo $this->getChildHtml( 'footer' ) ?>
+        <?php echo $this->getChildHtml( 'before_body_end' ) ?>
+		<script src="<?php echo $this->getSkinUrl(); ?>js/plugins.js"></script>
+		<script src="<?php echo $this->getSkinUrl(); ?>js/global.js"></script>
+	</body>
+</html>

@@ -1,0 +1,149 @@
+<?php
+//version 100
+?>
+<?php
+$postData = $this->getInstallSignInData();
+
+if(!empty($postData)) {
+    $mbizSiteType = $postData['mbiz_sitetype'];
+
+    $mbizSiteName = $postData['mbiz_sitename'];
+    $mbizUname = $postData['mbiz_username'];
+    $mbizPwd = $postData['mbiz_password'];
+    $mageUrl = $postData['mage_url'];
+    $configData = new Mage_Core_Model_Config();
+    $configData->saveConfig('connector/installation/mbiz_sitetype',$mbizSiteType, 'default', 0);
+    //$configData->saveConfig('connector/installation/mbiz_sitename',$mbizSiteName, 'default', 0);
+    $configData->saveConfig('connector/installation/mbiz_username',$mbizUname, 'default', 0);
+    $configData->saveConfig('connector/installation/mbiz_password',$mbizPwd, 'default', 0);
+    $configData->saveConfig('connector/installation/mage_url',$mageUrl, 'default', 0);
+    /*
+    * Cleaning the configuration cache programatically
+    */
+    try {
+        $allTypes = Mage::app()->useCache();
+        foreach($allTypes as $type => $blah) {
+            //Mage::log($blah);
+            Mage::app()->getCacheInstance()->cleanType($type);
+        }
+    } catch (Exception $e) {
+        Mage::log($e->getMessage());
+    }
+}
+?>
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td><h3 class="icon-head"><?php echo Mage::helper('microbiz_connector')->__('Microbiz POS Plugin Install') ?></h3>
+
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="entry-edit">
+    <form id="mbiz_install_api_info_form" action="<?php echo Mage::helper("adminhtml")->getUrl("connector/adminhtml_connector/mbizvalidateapiuserdetails/");?>" method="post" enctype="multipart/form-data">
+        <?php echo $this->getBlockHtml('formkey')?>
+        <div class="entry-edit-head collapseable">
+            <a>Microbiz POS Plugin Install</a>
+        </div>
+        <fieldset id="connector_settings" class="config collapseable" style="background:none repeat scroll 0 0 #EEEEEE !important;">
+            <legend>Microbiz POS Plugin Install</legend>
+            <table cellspacing="0" class="form-list">
+                <colgroup class="label"></colgroup>
+                <colgroup class="value"></colgroup>
+                <colgroup class="scope-label"></colgroup>
+                <colgroup class=""></colgroup>
+                <tbody>
+                <tr>
+                    <div class="install_setup_img">
+                        <img src="<?php echo $this->getSkinUrl('images/connector/step1.png')?>" alt="Step1" />
+                    </div>
+                </tr>
+                <tr id="row_connector_install_mag_api_username">
+                    <td class="label">
+                        <label for="connector_install_mag_api_username">Magento Api Username<em style="color:red;">*</em></label>
+                    </td>
+                    <td class="value">
+                        <?php $magApiUserName = Mage::getStoreConfig('connector/installation/mag_api_username'); ?>
+                        <input type="text" placeholder="Magento Api Username" class=" input-text required-entry validate-length minimum-length-5 maximum-length-40 validate-alphanum" value="<?php echo $magApiUserName ?>" name="mag_api_username" id="connector_install_mag_api_username">
+                    </td>
+                </tr>
+                <tr id="row_connector_install_mag_api_email">
+                    <td class="label">
+                        <label for="connector_install_mag_api_email">Magento Api User Email<em style="color:red;">*</em></label>
+                    </td>
+                    <td class="value">
+                        <?php $magApiUserEmail = Mage::getStoreConfig('connector/installation/mag_api_email'); ?>
+                        <input type="text" placeholder="Magento Api User Email" class=" input-text required-entry validate-email" value="<?php echo $magApiUserEmail ?>" name="mag_api_email" id="connector_install_mag_api_email">
+                    </td>
+                </tr>
+                <?php
+                $formKey = Mage::getSingleton('core/session')->getFormKey();
+                ?>
+                <tr>
+                    <td colspan="2">
+                        <?php $secretKey = Mage::getSingleton('adminhtml/url')->getSecretKey();?>
+                        <button class="scalable back" id="back_to" type="button" title="Back" ><span><span><span>Back</span></span></span></button>
+                        <!--<button class="scalable mbizform-cancelinstallpos" type="button" title="Cancel" ><span><span><span>Cancel</span></span></span></button>-->
+                        <button class="scalable mbiz_install_save_api_info_form" type="button" title="Save and Continue" ><span><span><span>Save and Continue</span></span></span></button>
+
+
+
+                    </td>
+                </tr>
+                <?php
+                $isSecure = Mage::app()->getStore()->isCurrentlySecure();
+                $magentoBaseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_LINK, $isSecure);
+                $mage_url = $magentoBaseUrl;
+                //$mage_url_domain = explode('://',Mage::getBaseUrl());
+                //print_r($mage_url_domain[1]);
+                $formKey = $this->getBlockHtml('formkey');
+                $mage_api_url = explode("/index.php/",$mage_url);
+                Mage::helper('microbiz_connector')->RemoveCaching();
+                $siteType = $mbizSiteType;
+                $sitename = Mage::getStoreConfig('connector/installation/mbiz_sitename');
+                $username = Mage::getStoreConfig('connector/installation/mbiz_username');
+                $password = Mage::getStoreConfig('connector/installation/mbiz_password');
+                if($siteType=='') {
+                    Mage::helper('microbiz_connector')->RemoveCaching();
+                    $siteType = Mage::getStoreConfig('connector/installation/mbiz_sitetype');
+                }
+
+                ?>
+                <input type="hidden" id="mage_url" name="mage_url" value="<?php echo $mage_api_url[0]; ?>">
+                <input type="hidden" id="mbiz_back_url" name="mbiz_back_url" value="<?php echo Mage::helper("adminhtml")->getUrl("connector/adminhtml_connector/mbizinstallsignin/"); ?>" />
+                <input type="hidden" id="mbiz_sitetype" name="mbiz_sitetype" value="<?php echo $siteType ?>" />
+                <input type="hidden" id="mbiz_sitename" name="mbiz_sitename" value="<?php echo $postData['mbiz_sitename'] ?>" />
+                <input type="hidden" id="mbiz_username" name="mbiz_username" value="<?php echo $postData['mbiz_username'] ?>" />
+                <input type="hidden" id="mbiz_password" name="mbiz_password" value="<?php echo $postData['mbiz_password'] ?>" />
+                <input type="hidden" id="mbiz_posted_apiusers" name="mbiz_posted_apiusers" value="1" />
+                </tbody>
+            </table>
+        </fieldset>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var mbizApiInfoForm = new varienForm('mbiz_install_api_info_form');
+    jQuery('.mbiz_install_save_api_info_form').live('click',function(){
+
+        Validation.add('validate-length','Oops! API User Name must be greater than 4 and less than 40 characters', function(v) {
+            if(v.length<5 || v.length>40){
+                //alert('validate failed');
+                return false;
+            }
+            return true;
+        })
+        var validated=mbizApiInfoForm.validate();
+        if(validated){
+            mbizApiInfoForm.submit();
+        }
+    });
+    jQuery('#back_to').click(function(){
+        //alert("came to f mbiz_back_url");
+        var $mbizBackUrl = jQuery('#mbiz_back_url').val();
+        //alert(mbizBackUrl);
+        jQuery("#mbiz_install_api_info_form").attr('action',$mbizBackUrl);
+        jQuery("#mbiz_install_api_info_form").submit();
+    });
+</script>

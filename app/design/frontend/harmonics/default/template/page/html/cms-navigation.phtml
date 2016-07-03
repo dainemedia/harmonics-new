@@ -1,0 +1,71 @@
+<?php
+/**
+ * HTML5 Template - CMS Navigation
+ */
+?>
+<nav class="cms">
+	<?php
+	    $store = Mage::app()->getStore( 'default' )->getCode();
+	    
+	    $cmsPages = Mage::getModel( 'cms/page' )->getCollection();
+	    // $cmsPages->addStoreFilter( $store );
+	    $cmsPages->load();
+	
+	    echo '<ul>' . "\n";
+	    $first = 0;
+	    $ctr = 0;
+		
+		$basename = Mage::helper('core/url')->getCurrentUrl();
+		$basename = basename( $basename );
+	    foreach( $cmsPages as $_page )
+	    {
+	        $data = $_page->getData();
+	        $stepText = '';
+	        if (isset($last)) {
+	        	if ( $ctr == $last  ) $stepText = ' last';
+	        }
+	        
+	        if ( $ctr == $first ) $stepText = ' first';
+	        $ctr++;
+	        if( $data['identifier'] == 'home' ) {
+	            $first++;
+	            continue;
+	        }
+	        if( $data['identifier'] == 'no-route' ) {
+	            $first++;
+	            continue;
+	        }
+			if( $data['identifier'] == 'terms-conditions' ) {
+	            $first++;
+	            continue;
+	        }
+			if( $data['identifier'] == 'enable-cookies' ) {
+	            $first++;
+	            continue;
+	        }
+			if( $data['identifier'] == 'customer-service' ) {
+	            $first++;
+	            continue;
+	        }
+			if( $data['identifier'] == 'privacy-policy' ) {
+	            $first++;
+	            continue;
+	        }
+	        
+	        $activeText = '';
+	        $isContacts = '';
+
+			if( $data['identifier'] == $basename ) {
+				$activeText = ' active';
+			} elseif( $basename == 'contacts' ) {
+				$isContacts = ' active';
+			} else {
+				$activeText = '';
+			}
+	        echo '<li class="level0' . $stepText . $activeText . '" ><a href="' . $this->getUrl( $data['identifier'] ) . '" title="' . $data['title'] . '">' . $data['title'] . '</a></li>' . "\n";
+	    }
+		echo '<li class="level0 last' . $isContacts . '"><a href="' . $this->getUrl( 'contacts' ) . '" title="Contact">Contact</a></li>' . "\n";
+	    echo '</ul>';
+    ?>
+</nav>
+<?php // var_dump(Mage::getSingleton('cms/page')->getIdentifier()); ?>

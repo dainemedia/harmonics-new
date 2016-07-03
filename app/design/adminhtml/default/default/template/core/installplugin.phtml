@@ -1,0 +1,126 @@
+
+<?php
+$mbizExtVer = Mage::helper('microbiz_core')->getConnectorVersion();
+
+
+?>
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td><h3 class="icon-head"><?php echo $this->__('Welcome to Microbiz Connector Installation Wizard') ?></h3></td>
+        </tr>
+    </table>
+</div>
+<div class="entry-edit">
+    <div class="entry-edit-head collapseable">
+        <a>Microbiz Connector Plugin Installation</a>
+    </div>
+    <fieldset id="connector_settings" class="config collapseable" style="">
+        <legend>Microbiz Connector Plugin Installation</legend>
+
+                
+<?php
+if(!$mbizExtVer) {?>
+        <form method="post" action="<?php echo Mage::helper("adminhtml")->getUrl("*/*/installplugin") ?>" id="mbiz_install_details_conn">
+                       <div class="mbiz_installation" style="align:left;">
+                         <button class="mbiz_install" onclick="setLocation('<?php echo Mage::helper("adminhtml")->getUrl("*/*/installplugin") ?>')" >Install Connector Plugin</button>
+                        </div><br/>
+</form>
+        <!--code for sign in fields popup code starts here-->
+        <!--<div id="toPopup">
+        <div class="close"></div>
+        <span class="ecs_tooltip">Press Esc to close <span class="arrow"></span></span>
+            <div id="popup_content">
+                <form method="post" action="<?php echo Mage::helper("adminhtml")->getUrl("*/*/installplugin") ?>" id="mbiz_install_details_conn">
+                    <input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>" />
+                    <table cellspacing="0" class="form-list">
+                        <tbody>
+                            <tr id="row_site_desc">
+                                <p><h3>Please Provide MicroBiz Details to Continue Installation</h3></p>
+                            </tr>
+                            <tr id="row_site_url">
+                                <td class="label">
+                                    <label for="mbiz_install_sitename"> MicroBiz Site Url:<em style="color:red;">*</em></label>
+                                </td>
+                                <td class="value">
+                                    <input type="text" placeholder="Your MicroBiz Site Url" class="input-text required-entry validate-url" id="mbiz_install_sitename" name="mbiz_install_sitename" value="" />
+                                </td>
+                            </tr>
+                            <tr id="row_site_uname">
+                                <td class="label">
+                                    <label for="mbiz_install_uname"> MicroBiz Username:<em style="color:red;">*</em></label>
+                                </td>
+                                <td class="value">
+                                    <input type="text" placeholder="Your Admin Username" class="input-text required-entry validate-alphanum" id="mbiz_install_uname" name="mbiz_install_uname" value="" />
+                                </td>
+                            </tr>
+                            <tr id="row_site_pwd">
+                                <td class="label">
+                                    <label for="mbiz_install_pwd"> MicroBiz Password:<em style="color:red;">*</em></label>
+                                </td>
+                                <td class="value">
+                                    <input type="password" placeholder="Your Admin Password" class="input-text required-entry" id="mbiz_install_pwd" name="mbiz_install_pwd" value="" />
+                                </td>
+                            </tr>
+                            <tr id="row_button_set">
+                                <td colspan="2">
+                                    <div class="mbiz_buttonset">
+                                        <button class="button" id="check_mbiz_instance" ><span><span>Continue</span></span></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    <div class="loader"></div>
+    <div id="backgroundPopup"></div>-->
+    <!--code for sign in fields popup code ends here-->
+
+<?php }?>
+<?php
+$isUpgradeAvailable = Mage::getStoreConfig('mbizcoreplugininstall/upgrade_available/status');
+if(trim($mbizExtVer) && $isUpgradeAvailable) { ?>
+
+                    <div class="mbiz_upgradation" style="align:left;">
+                        <button class="mbiz_upgrade" action_url="<?php echo $this->getUrl("mbizcore/adminhtml_mbizcore/upgradeplugin") ?>" >Upgrade Connector Plugin</button>
+                    </div>
+                    <br/>
+<?php } ?>
+<?php if($mbizExtVer) {?>
+
+            <div class="mbiz_uninstallation" style="align:center;">
+                    <button class="mbiz_uninstall" action_url="<?php echo $this->getUrl('mbizcore/adminhtml_mbizcore/uninstallplugin') ?>" >Un-Install Connector Plugin</button>
+            </div>
+            <div class="install_details">
+                <table class="install_tbl">
+                    <tr>
+                        <td class="label">
+                            <label>MicroBiz Connector Installed Version : </label>
+                        </td>
+                        <td class="value">
+                            <?php
+                                echo $mbizExtVer;
+                            ?>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+<?php  }?>
+
+
+    </fieldset>
+</div>
+<script type="text/javascript">
+
+    /*var mbizInstallSignInForm = new varienForm('mbiz_install_details_conn');
+
+    jQuery('#check_mbiz_instance').click(function(){
+        if(mbizInstallSignInForm.validate()) {
+            jQuery('#check_mbiz_instance').prop('disabled',true);
+        }
+    });*/
+
+
+</script>

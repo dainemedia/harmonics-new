@@ -1,0 +1,122 @@
+<?php
+/**
+ * Magento Commercial Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Commercial Edition License
+ * that is available at: http://www.magentocommerce.com/license/commercial-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     pro_default
+ * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://www.magentocommerce.com/license/commercial-edition
+ */
+/* @var $this Enterprise_CustomerBalance_Block_Checkout_Onepage_Payment_Additional */
+?>
+<?php
+/**
+ * @see Enterprise_CustomerBalance_Block_Checkout_Onepage_Payment_Additional
+ */
+?>
+<?php if ($this->isDisplayContainer()): ?>
+<dl id="customerbalance_placer" class="sp-methods checkout-onepage-payment-additional-customerbalance">
+    <dt>
+        <input type="hidden" name="payment[use_customer_balance]" value="0" />
+        <input type="checkbox" class="checkbox" name="payment[use_customer_balance]" value="1" id="use_customer_balance" <?php echo ($this->isCustomerBalanceUsed() ? 'checked' : '') ?>/>
+
+        <?php $balance = Mage::helper('core')->currency($this->getBalance()); ?>
+        <label for="use_customer_balance">
+        <strong>
+            <?php echo Mage::helper('enterprise_customerbalance')->__('Use Store Credit'); ?>
+            (<span id="customerbalance_available_amount"><?php echo $balance; ?></span>
+            <?php echo Mage::helper('enterprise_customerbalance')->__('available'); ?>)
+        </strong>
+        </label>
+    </dt>
+</dl>
+<script type="text/javascript">
+//<![CDATA[
+    var isFullyPaidAfterCustomerBalanceApplication = <?php echo ($this->isFullyPaidAfterApplication() ? 'true' : 'false'); ?>;
+    var customerBalanceSubstracted = <?php if ($this->isCustomerBalanceUsed()): ?>true<?php else: ?>false<?php endif; ?>;
+    if (typeof quoteBaseGrandTotal == 'undefined') {
+        quoteBaseGrandTotal = <?php echo (float)$this->getQuote()->getBaseGrandTotal(); ?>;
+    }
+
+    if (customerBalanceSubstracted) {
+        quoteBaseGrandTotal += <?php echo (float)$this->getQuote()->getBaseCustomerBalanceAmountUsed(); ?>;
+        customerBalanceSubstracted = false;
+    }
+
+    Payment.prototype.switchCustomerBalanceCheckbox = function() {
+
+        if (!customerBalanceSubstracted && $('use_customer_balance').checked) {
+            quoteBaseGrandTotal -= <?php echo (float)$this->getBalance(); ?>;
+            customerBalanceSubstracted = true;
+        }
+        if (customerBalanceSubstracted && !$('use_customer_balance').checked) {
+            quoteBaseGrandTotal += <?php echo (float)$this->getBalance(); ?>;
+            customerBalanceSubstracted = false;
+        }
+        if (quoteBaseGrandTotal < 0.0001) {
+            var elements = $$('input[name="payment[method]"]');
+            for (var i=0; i<elements.length; i++) {
+                if ($('use_customer_balance').checked) {
+                    elements[i].disabled = true;
+                }
+                if (elements[i].value == 'free') {
+                    elements[i].checked = false;
+                    elements[i].disabled = true;
+                    $(elements[i].parentNode).hide();
+                }
+            }
+            if ($('use_customer_balance').checked) {
+                $('checkout-payment-method-load').hide();
+            }
+        } else {
+            var elements = $$('input[name="payment[method]"]');
+            for (var i=0; i<elements.length; i++) {
+                elements[i].disabled = false;
+            }
+            $('checkout-payment-method-load').show();
+        }
+
+        var params = {
+            'review': 1
+        };
+        if (!$('use_customer_balance').checked) {
+            params['remove_storecredit'] = 1
+        }
+        checkout.update(checkout.urls.paymentdata, params);
+    }
+
+    if (payment) {
+        var customerBalanceInit = function() {
+            if ($('use_customer_balance')) {
+                $('use_customer_balance').disabled = false;
+            }
+            // this.switchCustomerBalanceCheckbox();
+        }
+        payment.addAfterInitFunction('customerbalance', customerBalanceInit.bind(payment));
+        var customerBalanceValidate = function() {
+            if (quoteBaseGrandTotal < 0.0001) {
+                return true;
+            }
+            return false;
+        }
+        payment.addBeforeValidateFunction('customerbalance', customerBalanceValidate.bind(payment));
+    }
+
+    Event.observe($('use_customer_balance'), 'click', payment.switchCustomerBalanceCheckbox);
+//]]>
+</script>
+<?php endif; ?>

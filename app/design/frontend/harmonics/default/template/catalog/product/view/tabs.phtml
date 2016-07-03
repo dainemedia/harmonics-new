@@ -1,0 +1,16 @@
+<div id="product-collateral" class="product-collateral">
+	<ul class="etabs">
+		<?php foreach ($this->getTabs() as $_index => $_tab): ?>
+			<?php if($this->getChildHtml($_tab['alias'])): ?>
+				<li class="tab"><a href="#<?php echo $_tab['alias'] ?>" title="<?php echo $_tab['title']?>"><?php echo $_tab['title']?></a></li>
+			<?php endif; ?>
+		<?php endforeach; ?>
+	</ul>
+	<div class="product-tabs-wrapper">
+		<?php foreach ($this->getTabs() as $_index => $_tab): ?>
+			<?php if($this->getChildHtml($_tab['alias'])): ?>
+				<div class="product-tabs-content" id="<?php echo $_tab['alias'] ?>"><?php echo $this->getChildHtml($_tab['alias']) ?></div>
+			<?php endif; ?>
+		<?php endforeach; ?>
+	</div>
+</div>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <reference name="head">
+            <action method="addItem"><type>js_css</type><name>mageworx/lightbox/css/lightbox.css</name><params/></action>
+            <action method="addItem"><type>js</type><name>mageworx/lightbox/js/lightbox.js</name><params/></action>
+            <action method="addCss"><stylesheet>css/multifees.css</stylesheet></action>
+        </reference>
+        <reference name="after_body_start">
+            <block type="core/template" name="checkout.cart.multifees.wrapper" as="multifees_wrapper" template="multifees/wrapper.phtml">
+                <block type="core/html_calendar" name="html_calendar" as="html_calendar" template="page/js/calendar.phtml" />
+            </block>
+        </reference>
+    </firecheckout_index_index>
+</layout>

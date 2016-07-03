@@ -1,0 +1,74 @@
+<?php
+    $validator = $this->getValidator();
+    $addresses = $validator->getAddresses();
+    $count     = count($addresses);
+?>
+
+<div id="address-verification-window" style="display: none;">
+    <div class="page-title">
+        <span><?php echo $this->__('Address verification') ?></span>
+    </div>
+    <?php if ($error = $validator->getError()) : ?>
+        <ul class="messages">
+            <li class="error-msg">
+                <?php echo $this->escapeHtml($error); ?>
+            </li>
+        </ul>
+    <?php else : ?>
+        <p class="verification-note"><?php echo $this->__(
+            'Address could not be verified. Please double check the address before submitting the order. If the address is correct, just place the order without making any changes to it.'
+        ) ?></p>
+    <?php endif; ?>
+
+    <?php
+    foreach ($addresses as $id => $addressData) :
+        $verifiedAddresses = $validator->getVerifiedAddresses($id);
+        if (!$verifiedAddresses || $validator->isVerified($id)) :
+            continue;
+        endif;
+    ?>
+    <div class="content verification-<?php echo $id ?>">
+        <?php if (2 === $count) : ?>
+            <p class="address-verification-title"><?php echo $this->getTitle($id) ?></p>
+        <?php endif; ?>
+
+        <?php if ($error = $validator->getAddressError($id)) : ?>
+            <ul class="messages">
+                <li class="error-msg">
+                    <?php echo $this->escapeHtml($error); ?>
+                </li>
+            </ul>
+        <?php endif; ?>
+        <ul class="address-actions">
+            <li>
+                <input type="radio" class="radio address-verification-radio" name="address-verification[<?php echo $id ?>]" id="address-verification-skip-<?php echo $id ?>" value="skip" checked="checked"/>
+                <label class="address-verification-skip-<?php echo $id ?>" for="address-verification-skip-<?php echo $id ?>"><?php echo $this->__('Use entered address') ?></label>
+            </li>
+            <li>
+                <input type="radio" class="radio address-verification-radio" name="address-verification[<?php echo $id ?>]" id="address-verification-edit-<?php echo $id ?>" value="edit"/>
+                <label for="address-verification-edit-<?php echo $id ?>"><?php echo $this->__('Edit entered address') ?></label>
+            </li>
+            <?php if (!$validator->getAddressError($id)) : ?>
+                <?php foreach ($verifiedAddresses as $verifiedAddress) : ?>
+                    <li>
+                        <?php $idSuffix = md5(implode('_', $verifiedAddress)); ?>
+                        <input type="radio" class="radio address-verification-radio" name="address-verification[<?php echo $id ?>]" id="address-verification-verified-<?php echo $id . '-' . $idSuffix ?>" value="set"/>
+                        <label for="address-verification-verified-<?php echo $id . '-' . $idSuffix ?>"><?php echo $this->__('Use verified address') ?>: <?php echo implode(' ', $verifiedAddress) ?></label>
+                        <?php echo $this->renderVerifiedAddressFields($verifiedAddress, $id); ?>
+                    </li>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </ul>
+    </div>
+    <?php endforeach; ?>
+    <div class="buttons-set">
+        <button class="button verification-option address-verification-skip"><span><span><?php echo $this->__('Place order using selected option') ?></span></span></button>
+        <button class="button verification-option address-verification-edit" style="display: none;"><span><span><?php echo $this->__('Edit address') ?></span></span></button>
+    </div>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+addressVerification = new AddressVerification();
+//]]>
+</script>

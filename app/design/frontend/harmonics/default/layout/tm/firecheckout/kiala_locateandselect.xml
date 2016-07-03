@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <firecheckout_index_index>
+        <update handle="kiala_checkout"/>
+        <reference name="head">
+            <action method="addCss"><stylesheet>css/kiala/locateandselect/kiala_osc.css</stylesheet></action>
+            <block type="locateandselect/onestepcheckout_header" name="kiala.locateandselect.onestepcheckout.header" template="kiala/locateandselect/onestepcheckout/header.phtml"/>
+        </reference>
+        <reference name="checkout.onepage.shipping_method.available">
+            <block type="page/html" name="kiala.locateandselect.kialapoint.wrapper" template="kiala/locateandselect/onestepcheckout/kialapoint/wrapper.phtml">
+                <block type="locateandselect/kialapoint_show" name="kiala.locateandselect.kialapoint.show" template="kiala/locateandselect/onestepcheckout/kialapoint/show.phtml"/>
+            </block>
+        </reference>
+    </firecheckout_index_index>
+    <firecheckout_index_updatecheckout>
+        <reference name="checkout.shipping.method">
+            <block type="page/html" name="kiala.locateandselect.kialapoint.wrapper" template="kiala/locateandselect/onestepcheckout/kialapoint/wrapper.phtml">
+                <block type="locateandselect/kialapoint_show" name="kiala.locateandselect.kialapoint.show" template="kiala/locateandselect/onestepcheckout/kialapoint/show.phtml"/>
+            </block>
+        </reference>
+    </firecheckout_index_updatecheckout>
+</layout>

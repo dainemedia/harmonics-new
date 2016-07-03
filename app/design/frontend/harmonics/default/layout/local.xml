@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<layout>
+	<default>
+		<reference name="root">
+		    <action method="setTemplate"><template>page/1column.phtml</template></action>
+		</reference>
+		<remove name="paypal.partner.right.logo" />
+		<remove name="right.permanent.callout" />
+		<remove name="left.permanent.callout" />
+		<remove name="left.newsletter" />
+		<remove name="paypal.partner.right.logo" />
+		<remove name="right.poll" />
+		<reference name="head">
+			<action method="removeItem">
+				<type>skin_css</type>
+				<name>css/print.css</name>
+			</action>
+			<action method="addItem">
+				<type>skin_js</type>
+				<name>js/vendor/jquery-1.8.3.min.js</name>
+			</action>
+			<!-- <action method="addItem">
+				<type>skin_js</type>
+				<name>js/vendor/modernizr-2.6.2-respond-1.1.0.min.js</name>
+			</action> -->
+			<!-- <action method="addItem">
+				<type>skin_js</type>
+				<name>js/vendor/bootstrap.min.js</name>
+			</action> -->
+		</reference>
+		<reference name="top.links">
+			<!-- Remove top links -->
+			<action method="removeLinkByUrl"><url helper="customer/getAccountUrl"/></action>
+			<remove name="customer_account_link" />
+			<remove name="wishlist_link" />
+            <remove name="checkout_cart_link" />
+            <remove module="facebook" />
+            
+            <!-- Add new top links -->
+            <action method="addLink" translate="label title" module="customer"><label>Account</label><url helper="customer/getAccountUrl"/><title>Account</title><prepare/><urlParams/><position>20</position></action>
+            <action method="addLink" translate="label title" module="checkout"><label>My Basket</label><url helper="checkout/url/getCartUrl"/><title>My Basket</title><prepare/><urlParams/><position>40</position></action>
+		</reference>
+		<reference name="header">
+		    <block type="core/template" name="logo" as="siteLogo" template="page/html/logo.phtml" />
+			<block type="page/html_topmenu" name="cms.nav" as="cmsMenu" template="page/html/cms-navigation.phtml" />
+			<block type="core/template" name="top.search" as="topSearch" template="catalogsearch/form.mini.phtml"/>
+			<block type="core/template" name="header.basket" as="headerBasket" template="checkout/cart/header-basket.phtml" />
+			<block type="core/template" name="header.checkout" as="headerCheckout" template="checkout/cart/header-checkout.phtml" />
+		</reference>
+	</default>
+	
+	<catalog_category_default>
+		<reference name="root">
+			<action method="setTemplate"><template>page/2columns-left.phtml</template></action>
+		</reference>
+		<reference name="left">
+			<block type="catalog/navigation" after="-" name="catalog.vertnav" as="vertNav" template="catalog/navigation/vertical-navigation.phtml"/>
+			<block type="catalog/product_compare_sidebar" after="-" name="catalog.compare.sidebar" template="catalog/product/compare/sidebar.phtml"/>
+		</reference>
+	    <reference name="left">
+	    	<remove name="catalog.leftnav" />
+	    </reference>
+	</catalog_category_default>
+	
+	<catalog_category_layered>
+		<reference name="root">
+			<action method="setTemplate"><template>page/2columns-left.phtml</template></action>
+		</reference>
+		<reference name="left">
+			<block type="catalog/navigation" after="-" name="catalog.vertnav" as="vertNav" template="catalog/navigation/vertical-navigation.phtml"/>
+			<block type="catalog/product_compare_sidebar" after="-" name="catalog.compare.sidebar" template="catalog/product/compare/sidebar.phtml"/>
+		</reference>
+	    <reference name="catalog.leftnav">
+	    	<action method="unsetChild"><alias>category_filter</alias></action>
+	    </reference>
+	</catalog_category_layered>
+	
+	<catalog_product_view>
+		<reference name="product.info">
+			<block type="catalog/product_view_tabs" name="product.info.tabs" as="info_tabs" template="catalog/product/view/tabs.phtml" >
+				<action method="addTab" translate="title" module="catalog">
+					<alias>description</alias>
+					<title>Product Description</title>
+					<block>catalog/product_view_description</block>
+					<template>catalog/product/view/description.phtml</template>
+				</action>
+				<action method="addTab" translate="title" module="catalog">
+					<alias>upsell_products</alias>
+					<title>We Also Recommend</title>
+					<block>catalog/product_list_upsell</block>
+					<template>catalog/product/list/upsell.phtml</template>
+				</action>
+				<action method="addTab" translate="title" module="review">
+					<alias>reviews</alias>
+					<title>Customer Reviews</title>
+					<block>review/product_view_list</block>
+					<template>review/product/view/list.phtml</template>
+				</action>
+				<action method="addTab" translate="title" module="review">
+					<alias>review</alias>
+					<title>Write a Review</title>
+					<block>review/product_view</block>
+					<template>review/product/view/review_tab.phtml</template>
+				</action>
+			</block>
+		</reference>
+		<reference name="review">
+			<block type="review/form" name="product.review.form" as="review_form"/>
+		</reference>
+	</catalog_product_view>
+	
+	<contacts_index_index>
+		<reference name="root">
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
+        	<action method="setHeaderTitle" translate="title" module="contacts"><title>Contact Us</title></action>
+        </reference>
+        <reference name="breadcrumbs">
+            <action method="addCrumb">
+                    <name>Home</name>
+                    <crumbInfo><label>Home</label><title>Home</title><link>/</link></crumbInfo>
+            </action>
+            <action method="addCrumb">
+                    <name>Contacts</name>
+                    <params>
+                            <label>Contact</label>
+                            <title>Contact</title>
+                            <link/>
+                    </params>
+            </action>
+        </reference>
+	</contacts_index_index>
+	
+	<checkout_cart_index>
+		<reference name="content">
+			<remove name="checkout.cart.shipping"/>
+		</reference>
+	</checkout_cart_index> 
+
+	<catalogsearch_result_index>
+        <reference name="root">
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
+        </reference>
+	</catalogsearch_result_index>
+</layout>
